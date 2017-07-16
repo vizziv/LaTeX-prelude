@@ -87,7 +87,12 @@
   \renewcommand{\author}[2][]{%
     \def\@shortauthor{#1}
     \@oldauthor{#2}}
-  \pretitle{\vspace{-2\baselineskip}\begin{center}\LARGE\bf}
+  \pretitle{%
+    \vspace{-2\baselineskip}
+    \begin{center}
+      \hyphenpenalty=10000
+      \LARGE
+      \bf}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle\thispagestyle{fancy}
