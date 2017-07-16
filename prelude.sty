@@ -1,0 +1,381 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{prelude}[2017/01/06 Ziv's Prelude]
+
+% Use the acm option for compatibility with the acmart class.
+\newif\if@acm\@acmfalse
+\newif\if@acmold\@acmoldfalse
+\newif\if@libertine\@libertinefalse
+\newif\if@charter\@charterfalse
+\newif\if@nofont\@nofontfalse
+\newif\if@fancyhdr\@fancyhdrfalse
+\DeclareOption{acm}{\@acmtrue}
+\DeclareOption{acmold}{\@acmoldtrue}
+\DeclareOption{libertine}{\@libertinetrue}
+\DeclareOption{charter}{\@chartertrue}
+\DeclareOption{nofont}{\@nofonttrue}
+\DeclareOption{fancyhdr}{\@fancyhdrtrue}
+
+% Automatically invoke the acm option if the class is loaded.
+\@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
+  \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
+    \ExecuteOptions{libertine}}}
+
+\ProcessOptions\relax
+
+
+% Packages.
+
+\if@acmold
+  \let\proof\relax
+  \let\endproof\relax
+\fi
+
+% AMS packages often need to be first for compatibility.
+\RequirePackage{amsmath, amsthm}
+
+\def\@definefonts{}
+\if@libertine
+  \def\@definefonts{%
+    \RequirePackage[tt=false]{libertine}
+    \RequirePackage[varqu]{zi4}
+    \RequirePackage[libertine]{newtxmath}}
+\fi
+\if@charter
+  \def\@definefonts{%
+    \RequirePackage[charter, cal=cmcal]{mathdesign}}
+\fi
+\if@nofont
+  \def\@definefonts{}
+\fi
+\@definefonts
+
+\if@fancyhdr
+  \RequirePackage[labelfont={bf}, font={small}]{caption}
+  \RequirePackage{fancyhdr, titling}
+\fi
+
+\if@acm
+\else
+  \RequirePackage[hidelinks]{hyperref}
+\fi
+
+\RequirePackage[inline, shortlabels]{enumitem}
+\RequirePackage[plain]{fancyref}
+\RequirePackage[newcommands]{ragged2e}
+\RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
+  natbib, tabularx, tikz, varwidth, xifthen}
+
+
+% Emptiness checking.
+
+% Because \isempty doesn't expand its argument, sometimes we want to pass an
+% alternate test string.
+\newcommand{\ifempty}[4][ne]{%
+  \ifthenelse{\isempty{#1}\OR\isempty{#2}}{#3}{#4}}
+
+
+% Format title, header, and footer.
+
+\if@fancyhdr
+  \def\@shorttitle{}
+  \let\@oldtitle\title
+  \renewcommand{\title}[2][]{%
+    \def\@shorttitle{#1}
+    \@oldtitle{#2}}
+  \def\@shortauthor{}
+  \let\@oldauthor\author
+  \renewcommand{\author}[2][]{%
+    \def\@shortauthor{#1}
+    \@oldauthor{#2}}
+  \pretitle{\vspace{-2\baselineskip}\begin{center}\LARGE\bf}
+  \let\@oldmaketitle\maketitle
+  \renewcommand{\maketitle}{%
+    \@oldmaketitle\thispagestyle{fancy}
+    % Usual "if empty" hack. Could maybe use \ifempty.
+    \if\relax\@shorttitle\relax
+    \else
+      \let\thetitle\@shorttitle
+    \fi
+    \if\relax\@shortauthor\relax
+    \else
+      \let\theauthor\@shortauthor
+    \fi}
+  \pagestyle{fancy}
+  \fancyhf{}
+  \fancyhead[L]{\thetitle}
+  \fancyhead[R]{\theauthor}
+  \fancyfoot[C]{\thepage}
+\fi
+
+\setlist{noitemsep}
+
+\newcommand{\nodate}{%
+  \date{\vspace{-2\baselineskip}}
+  \renewcommand{\thedate}{}}
+
+\newcommand{\noauthor}{%
+  \author{\thedate}
+  \nodate
+  \let\thedate\theauthor}
+
+\date{\today}
+
+
+% References.
+
+\AtBeginDocument{\setcitestyle{numbers, sort&compress, square}}
+
+% Prevents break between previous text and citation number,
+% unless the citation command is given an optional argument.
+\let\@oldcitet\citet
+\renewcommand{\citet}[2][]{%
+  % \NAT@spacechar goes between the author name and citation number.
+  {\ifempty{#1}{\def\NAT@spacechar{~}}{}\@oldcitet[#1]{#2}}}
+\let\@oldcitep\citep
+\renewcommand{\citep}[2][]{%
+  % This assumes we always want a regular space before lone citation numbers.
+  % To supress the space, give \empty as the optional argument.
+  {\ifempty{#1}{\unskip~}{}\@oldcitep[#1]{#2}}}
+
+% Always use same font style for citations... by uncommenting the following.
+% \let\@oldishcitet\citet
+% \renewcommand{\citet}[2][]{{\normalfont\@oldishcitet[#1]{#2}}}
+% \let\@oldishcitep\citep
+% \renewcommand{\citep}[2][]{{\normalfont\@oldishcitep[#1]{#2}}}
+
+% Add new prefixes
+\newcommand*{\fancyrefsublabelprefix}{sub}
+\frefformat{plain}{\fancyrefsublabelprefix}{section\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefsublabelprefix}{Section\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefthmlabelprefix}{thm}
+\frefformat{plain}{\fancyrefthmlabelprefix}{theorem\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefthmlabelprefix}{Theorem\fancyrefdefaultspacing#1}
+\newcommand*{\fancyreflemlabelprefix}{lem}
+\frefformat{plain}{\fancyreflemlabelprefix}{lemma\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyreflemlabelprefix}{Lemma\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefproplabelprefix}{prop}
+\frefformat{plain}{\fancyrefproplabelprefix}{%
+  proposition\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefproplabelprefix}{%
+  Proposition\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefcorlabelprefix}{cor}
+\frefformat{plain}{\fancyrefcorlabelprefix}{corollary\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefcorlabelprefix}{Corollary\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefdeflabelprefix}{def}
+\frefformat{plain}{\fancyrefdeflabelprefix}{%
+  definition\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefdeflabelprefix}{%
+  Definition\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefalglabelprefix}{alg}
+\frefformat{plain}{\fancyrefalglabelprefix}{algorithm\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefalglabelprefix}{Algorithm\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefexlabelprefix}{ex}
+\frefformat{plain}{\fancyrefexlabelprefix}{example\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefexlabelprefix}{Example\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefitemlabelprefix}{item}
+\frefformat{plain}{\fancyrefitemlabelprefix}{#1}
+\Frefformat{plain}{\fancyrefitemlabelprefix}{#1}
+\newcommand*{\fancyrefcaselabelprefix}{case}
+\frefformat{plain}{\fancyrefcaselabelprefix}{case\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefcaselabelprefix}{Case\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefapplabelprefix}{app}
+\frefformat{plain}{\fancyrefapplabelprefix}{appendix\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefapplabelprefix}{Appendix\fancyrefdefaultspacing#1}
+
+% Change equation reference format
+\frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
+\Frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
+
+% We always want things capitalized, even in the middle of a sentence.
+\renewcommand{\fref}{\Fref}
+
+
+% Math typesetting.
+
+% Prevent line breaks in inline math.
+\relpenalty=10000
+\binoppenalty=10000
+
+% By default, use normal text in math, even with styled surrounding text.
+\let\textenv\text
+\renewcommand{\text}{\textnormal}
+
+% Use doublestroke for blackboard bold fonts.
+\renewcommand{\mathbb}{\mathds}
+
+% Correct spacing of italic text before inline math.
+\mathtoolsset{mathic}
+
+% Correct spacing of italic text after inline math.
+\newtoggle{noendsub}
+\toggletrue{noendsub}
+\newcommand{\esub}{\togglefalse{noendsub}}
+\let\@oldmath\(% \)
+\renewcommand{\(}{% \)
+  \@oldmath}
+\let\@oldendmath\)
+\renewcommand{\)}{%
+  % Couldn't get this to work with \itdefault, so manually expanded.
+  \ifdefstring{\f@shape}{it}{%
+    \iftoggle{noendsub}{%
+      \sb{}\kern-\scriptspace}{}}{}\@oldendmath}
+\catcode`\$=13 % active
+\def$#1${\(#1\)}
+
+% Vertical smash for reducing height of display fractions and similar.
+\newcommand{\vsmashbelow}[1]{\raisebox{0em}[\height][0em]{$\displaystyle #1$}}
+
+
+% TikZ
+
+\usetikzlibrary{calc}
+
+% Make the $ hack above compatible with TikZ.
+\let\@oldtikzpicture\tikzpicture
+\def\tikzpicture{%
+  \catcode`\$=3 % math shift
+  \@oldtikzpicture}
+
+
+% Macros for defining further macros.
+
+\newcommand{\subopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2_{#3}}}
+\newcommand{\supopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2^{#3}}}
+\newcommand{\appopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2(#3)}}
+\newcommand{\sqappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2[#3]}}
+\newcommand{\curlappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2\{#3\}}}
+\newcommand{\angappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2 \langle #3 \rangle}}
+\newcommand{\midopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2 \mid #3}}
+
+
+% Theorems.
+
+\if@acm
+  \newtheoremstyle{acmcase}
+    {.5\baselineskip\@plus.2\baselineskip
+      \@minus.2\baselineskip}
+    {.5\baselineskip\@plus.2\baselineskip
+      \@minus.2\baselineskip}
+    {\@acmdefinitionbodyfont}
+    {\@acmdefinitionindent}
+    {\@acmdefinitionheadfont}
+    {.}
+    {.5em}
+    {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
+  \theoremstyle{acmcase}
+  \newtheorem{case}{Case}
+\else
+  \theoremstyle{theorem}
+  \newtheorem{theorem}{Theorem}[section]
+  \newtheorem{lemma}[theorem]{Lemma}
+  \newtheorem{corollary}[theorem]{Corollary}
+  \newtheorem{conjecture}[theorem]{Conjecture}
+  \theoremstyle{definition}
+  \newtheorem{definition}[theorem]{Definition}
+  \newtheorem{example}[theorem]{Example}
+  \theoremstyle{remark}
+  \newtheorem*{remark}{Remark}
+  \newtheorem{case}{Case}
+  % Use a colon instead of parentheses for names of cases.
+  \newcommand{\@thmheadcase}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
+  \let\@oldcase\case
+  \def\case{\let\thmhead\@thmheadcase\@oldcase}
+\fi
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+% Resets case number every proof.
+\let\@oldproof\proof
+\def\proof{\setcounter{case}{0}\@oldproof}
+
+
+% Macros to actually use.
+
+% Suppress the QED symbol from a proof.
+\newcommand{\noqed}{\def\qedsymbol{}}
+
+% Even more quad!
+\newcommand{\qqquad}{\hskip3em\relax}
+
+% Column type that justifies text.
+\newcolumntype{J}{>{\justifying\noindent\arraybackslash}X}
+
+% Variation of \smallbreak and friends that does not encourage a break.
+\newcommand{\smallgap}{%
+  \par
+  \ifdim\lastskip < \smallskipamount
+    \removelastskip
+    \smallskip
+  \fi}
+\newcommand{\medgap}{%
+  \par
+  \ifdim\lastskip < \medskipamount
+    \removelastskip
+    \medskip
+  \fi}
+\newcommand{\biggap}{%
+  \par
+  \ifdim\lastskip < \bigskipamount
+    \removelastskip
+    \bigskip
+  \fi}
+
+
+% Tables for inline text.
+\newenvironment{tabulate}[1]{%
+  \biggap\trivlist\item\centering\tabular{#1}}{%
+  \endtabular\par\endtrivlist\biggap}
+\newenvironment{tabulatex}[2]{%
+  \biggap\trivlist\item\centering\tabularx{#1}{#2}}{%
+  \endtabularx\par\endtrivlist\biggap}
+
+\newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
+\newenvironment{todo}{\begin{framed}\noindent\textbf{TODO:}}{\end{framed}}
+\if@acm
+  \setlength\marginparwidth{0.62in}
+  \setlength\marginparsep{0.06in}
+\fi
+\newcommand{\marginnote}[1]{\marginpar{\scriptsize #1}}
+
+
+% Math macros.
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\renewcommand{\emptyset}{\varnothing}
+\newcommand{\hole}{\cdot}
+
+\newcommand{\mc}{\mathcal}
+
+% More space on left because most math is italic.
+\newcommand{\ol}[1]{%
+  \mkern 2.4mu\overline{\mkern-2.4mu#1\mkern-0.8mu}\mkern 0.8mu}
+
+\if@acm
+  \renewcommand{\C}{\mathbb{C}}
+\else
+  \newcommand{\C}{\mathbb{C}}
+\fi
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\1}{\mathbb{1}}
+
+\newcommand{\dd}[2][]{\frac{d#1}{d#2}}
+\newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
+\renewcommand{\angle}[1]{\langle #1 \rangle}
+
+\newcommand{\E}[2][]{\sqappopt[#2#1]{\mathbf{E}}{\midopt{#2}{#1}}}
+\renewcommand{\P}[2][]{\curlappopt[#2#1]{\mathbf{P}}{\midopt{#2}{#1}}}
+\newcommand{\Var}[2][]{\appopt{\mathbf{Var}}{\midopt{#2}{#1}}}
+\newcommand{\tail}[2][]{\appopt{\subopt{\ol{F}}{#1}}{#2}}
+\newcommand{\cdf}[2][]{\appopt{\subopt{F}{#1}}{#2}}
+\newcommand{\density}[2][]{\appopt{\subopt{f}{#1}}{#2}}
+\newcommand{\indicator}[1]{\appopt{\mathbb{1}}{#1}}
+\newcommand{\sdiff}{\smallsetminus}
+
+
+\endinput
