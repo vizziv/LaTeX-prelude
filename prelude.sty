@@ -52,6 +52,7 @@
 \if@fancyhdr
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
+  \RequirePackage[bf, sf]{titlesec}
 \fi
 
 \if@acm
@@ -91,8 +92,7 @@
     \vspace{-2\baselineskip}
     \begin{center}
       \hyphenpenalty=10000
-      \LARGE
-      \bf}
+      \LARGE\bfseries\sffamily}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle\thispagestyle{fancy}
@@ -107,9 +107,9 @@
     \fi}
   \pagestyle{fancy}
   \fancyhf{}
-  \fancyhead[L]{\thetitle}
-  \fancyhead[R]{\theauthor}
-  \fancyfoot[C]{\thepage}
+  \fancyhead[L]{\sffamily\thetitle}
+  \fancyhead[R]{\sffamily\theauthor}
+  \fancyfoot[C]{\sffamily\thepage}
 \fi
 
 \setlist{noitemsep}
@@ -272,6 +272,8 @@
     {.}
     {.5em}
     {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
+  \theoremstyle{acmplain}
+  \newtheorem{assumption}[theorem]{Assumption}
   \theoremstyle{acmcase}
   \newtheorem{case}{Case}
 \else
@@ -283,6 +285,7 @@
   \theoremstyle{definition}
   \newtheorem{definition}[theorem]{Definition}
   \newtheorem{example}[theorem]{Example}
+  \newtheorem{assumption}[theorem]{Assumption}
   \theoremstyle{remark}
   \newtheorem*{remark}{Remark}
   \newtheorem{case}{Case}
