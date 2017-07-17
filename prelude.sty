@@ -50,9 +50,9 @@
 \@definefonts
 
 \if@fancyhdr
+  \RequirePackage[bf, sf]{titlesec}
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
-  \RequirePackage[bf, sf]{titlesec}
 \fi
 
 \if@acm
@@ -98,17 +98,19 @@
     \@oldmaketitle\thispagestyle{fancy}
     % Usual "if empty" hack. Could maybe use \ifempty.
     \if\relax\@shorttitle\relax
+      \let\@thetitle\@title
     \else
-      \let\thetitle\@shorttitle
+      \let\@thetitle\@shorttitle
     \fi
     \if\relax\@shortauthor\relax
+      \let\@theauthor\@author
     \else
-      \let\theauthor\@shortauthor
+      \let\@theauthor\@shortauthor
     \fi}
   \pagestyle{fancy}
   \fancyhf{}
-  \fancyhead[L]{\sffamily\thetitle}
-  \fancyhead[R]{\sffamily\theauthor}
+  \fancyhead[L]{\sffamily\@thetitle}
+  \fancyhead[R]{\sffamily\@theauthor}
   \fancyfoot[C]{\sffamily\thepage}
 \fi
 
