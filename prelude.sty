@@ -152,6 +152,9 @@
 \newcommand*{\fancyrefsublabelprefix}{sub}
 \frefformat{plain}{\fancyrefsublabelprefix}{section\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefsublabelprefix}{Section\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefapplabelprefix}{app}
+\frefformat{plain}{\fancyrefapplabelprefix}{appendix\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefapplabelprefix}{Appendix\fancyrefdefaultspacing#1}
 \newcommand*{\fancyrefthmlabelprefix}{thm}
 \frefformat{plain}{\fancyrefthmlabelprefix}{theorem\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefthmlabelprefix}{Theorem\fancyrefdefaultspacing#1}
@@ -171,9 +174,6 @@
   definition\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefdeflabelprefix}{%
   Definition\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefalglabelprefix}{alg}
-\frefformat{plain}{\fancyrefalglabelprefix}{algorithm\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefalglabelprefix}{Algorithm\fancyrefdefaultspacing#1}
 \newcommand*{\fancyrefexlabelprefix}{ex}
 \frefformat{plain}{\fancyrefexlabelprefix}{example\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefexlabelprefix}{Example\fancyrefdefaultspacing#1}
@@ -183,9 +183,14 @@
 \newcommand*{\fancyrefcaselabelprefix}{case}
 \frefformat{plain}{\fancyrefcaselabelprefix}{case\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefcaselabelprefix}{Case\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefapplabelprefix}{app}
-\frefformat{plain}{\fancyrefapplabelprefix}{appendix\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefapplabelprefix}{Appendix\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefalglabelprefix}{alg}
+\frefformat{plain}{\fancyrefalglabelprefix}{algorithm\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefalglabelprefix}{Algorithm\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefasmlabelprefix}{asm}
+\frefformat{plain}{\fancyrefasmlabelprefix}{%
+  assumption\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefasmlabelprefix}{%
+  Assumption\fancyrefdefaultspacing#1}
 
 % Change equation reference format
 \frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
