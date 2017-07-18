@@ -89,13 +89,15 @@
     \def\@shortauthor{#1}
     \@oldauthor{#2}}
   \pretitle{%
-    \vspace{-2\baselineskip}
+    \vspace{-3.75\baselineskip}
     \begin{center}
       \hyphenpenalty=10000
       \LARGE\bfseries\sffamily}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
-    \@oldmaketitle\thispagestyle{fancy}
+    \@oldmaketitle
+    \thispagestyle{fancy}
+    \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
     \if\relax\@shorttitle\relax
       \let\@thetitle\@title
@@ -117,7 +119,7 @@
 \setlist{noitemsep}
 
 \newcommand{\nodate}{%
-  \date{\vspace{-2\baselineskip}}
+  \date{\vspace{-1.75\baselineskip}}
   \renewcommand{\thedate}{}}
 
 \newcommand{\noauthor}{%
