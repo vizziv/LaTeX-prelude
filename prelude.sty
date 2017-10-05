@@ -386,8 +386,8 @@
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
 \renewcommand{\angle}[1]{\langle #1 \rangle}
 
-\newcommand{\E}[2][]{\sqappopt[#2#1]{\mathbf{E}}{\midopt{#2}{#1}}}
-\renewcommand{\P}[2][]{\curlappopt[#2#1]{\mathbf{P}}{\midopt{#2}{#1}}}
+\newcommand{\E}[2][]{\mathbf{E}[\midopt{#2}{#1}]}
+\renewcommand{\P}[2][]{\mathbf{P}\{\midopt{#2}{#1}\}}
 \newcommand{\Var}[2][]{\appopt{\mathbf{Var}}{\midopt{#2}{#1}}}
 \newcommand{\tail}[2][]{\appopt{\subopt{\ol{F}}{#1}}{#2}}
 \newcommand{\cdf}[2][]{\appopt{\subopt{F}{#1}}{#2}}
