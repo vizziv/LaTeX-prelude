@@ -174,11 +174,9 @@
 \newcommand*{\fancyrefcorlabelprefix}{cor}
 \frefformat{plain}{\fancyrefcorlabelprefix}{corollary\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefcorlabelprefix}{Corollary\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefobslabelprefix}{obs}
-\frefformat{plain}{\fancyrefobslabelprefix}{%
-  observation\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefobslabelprefix}{%
-  Observation\fancyrefdefaultspacing#1}
+\newcommand*{\fancyrefclaimlabelprefix}{claim}
+\frefformat{plain}{\fancyrefclaimlabelprefix}{claim\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefclaimlabelprefix}{Claim\fancyrefdefaultspacing#1}
 \newcommand*{\fancyrefdeflabelprefix}{def}
 \frefformat{plain}{\fancyrefdeflabelprefix}{%
   definition\fancyrefdefaultspacing#1}
@@ -190,6 +188,11 @@
 \newcommand*{\fancyrefitemlabelprefix}{item}
 \frefformat{plain}{\fancyrefitemlabelprefix}{#1}
 \Frefformat{plain}{\fancyrefitemlabelprefix}{#1}
+\newcommand*{\fancyrefobslabelprefix}{obs}
+\frefformat{plain}{\fancyrefobslabelprefix}{%
+  observation\fancyrefdefaultspacing#1}
+\Frefformat{plain}{\fancyrefobslabelprefix}{%
+  Observation\fancyrefdefaultspacing#1}
 \newcommand*{\fancyrefcaselabelprefix}{case}
 \frefformat{plain}{\fancyrefcaselabelprefix}{case\fancyrefdefaultspacing#1}
 \Frefformat{plain}{\fancyrefcaselabelprefix}{Case\fancyrefdefaultspacing#1}
@@ -286,10 +289,11 @@
     {.5em}
     {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
   \theoremstyle{acmplain}
-  \newtheorem{assumption}[theorem]{Assumption}
-  \newtheorem{observation}[theorem]{Observation}
+  \newtheorem{claim}[theorem]{Claim}
   \theoremstyle{acmdefinition}
-  \newtheorem{remark}[theorem]{Remark}
+  \newtheorem{assumption}[theorem]{Assumption}
+  \newtheorem*{remark}{Remark}
+  \newtheorem{observation}[theorem]{Observation}
   \theoremstyle{acmcase}
   \newtheorem{case}{Case}
 \else
@@ -298,11 +302,12 @@
   \newtheorem{lemma}[theorem]{Lemma}
   \newtheorem{corollary}[theorem]{Corollary}
   \newtheorem{conjecture}[theorem]{Conjecture}
-  \newtheorem{observation}[theorem]{Observation}
+  \newtheorem{claim}[theorem]{Claim}
   \theoremstyle{definition}
   \newtheorem{definition}[theorem]{Definition}
   \newtheorem{example}[theorem]{Example}
   \newtheorem{assumption}[theorem]{Assumption}
+  \newtheorem{observation}[theorem]{Observation}
   \theoremstyle{remark}
   \newtheorem*{remark}{Remark}
   \newtheorem{case}{Case}
