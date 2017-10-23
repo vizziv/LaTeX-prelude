@@ -147,6 +147,14 @@
   % To supress the space, give \empty as the optional argument.
   {\ifempty{#1}{\unskip~}{}\@oldcitep[#1]{#2}}}
 
+% Same for capitalized versions.
+\let\@oldCitet\Citet
+\renewcommand{\Citet}[2][]{%
+  {\ifempty{#1}{\def\NAT@spacechar{~}}{}\@oldCitet[#1]{#2}}}
+\let\@oldCitep\Citep
+\renewcommand{\Citep}[2][]{%
+  {\ifempty{#1}{\unskip~}{}\@oldCitep[#1]{#2}}}
+
 % Always use same font style for citations... by uncommenting the following.
 % \let\@oldishcitet\citet
 % \renewcommand{\citet}[2][]{{\normalfont\@oldishcitet[#1]{#2}}}
