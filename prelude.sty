@@ -112,9 +112,16 @@
     \fi}
   \pagestyle{fancy}
   \fancyhf{}
-  \fancyhead[L]{\sffamily\@thetitle}
-  \fancyhead[R]{\sffamily\@theauthor}
-  \fancyfoot[C]{\sffamily\thepage}
+  \@ifclassloaded{book}{%
+    \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+    \renewcommand{\sectionmark}[1]{%
+      \markright{\arabic{chapter}.\arabic{section} #1}}
+    \fancyhead[CO]{\sffamily\leftmark}
+    \fancyhead[CE]{\sffamily\rightmark}
+    \fancyhead[LE, RO]{\sffamily\thepage}}{%
+    \fancyhead[L]{\sffamily\@thetitle}
+    \fancyhead[R]{\sffamily\@theauthor}
+    \fancyfoot[C]{\sffamily\thepage}}
 \fi
 
 \setlist{noitemsep}
