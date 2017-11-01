@@ -53,6 +53,11 @@
   \RequirePackage[bf, sf]{titlesec}
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
+  \titleformat{\chapter}[hang]{%
+    \huge\sffamily\bfseries}{%
+    \thechapter$\quad\mid\quad$}{%
+    0pt}{%
+    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries}
 \fi
 
 \if@acm
@@ -79,6 +84,9 @@
 % Format title, header, and footer.
 
 \if@fancyhdr
+  \@ifclassloaded{book}{%
+    \newcommand{\@titlesize}{\huge}}{%
+    \newcommand{\@titlesize}{\LARGE}}
   \def\@shorttitle{}
   \let\@oldtitle\title
   \renewcommand{\title}[2][]{%
@@ -93,7 +101,7 @@
     \vspace{-3.75\baselineskip}
     \begin{center}
       \hyphenpenalty=10000
-      \LARGE\bfseries\sffamily}
+      \@titlesize\bfseries\sffamily}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle
@@ -118,7 +126,11 @@
       \markright{\arabic{chapter}.\arabic{section} #1}}
     \fancyhead[CE]{\sffamily\leftmark}
     \fancyhead[CO]{\sffamily\rightmark}
-    \fancyhead[LE, RO]{\sffamily\thepage}}{%
+    \fancyhead[LE, RO]{\sffamily\thepage}
+    \fancypagestyle{plain}{
+      \fancyhf{}
+      \fancyfoot[C]{\sffamily\thepage}
+      \renewcommand{\headrulewidth}{0pt}}}{%
     \fancyhead[L]{\sffamily\@thetitle}
     \fancyhead[R]{\sffamily\@theauthor}
     \fancyfoot[C]{\sffamily\thepage}}
