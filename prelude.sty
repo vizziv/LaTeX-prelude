@@ -278,6 +278,9 @@
 % Vertical smash for reducing height of display fractions and similar.
 \newcommand{\vsmashbelow}[1]{\raisebox{0em}[\height][0em]{$\displaystyle #1$}}
 
+\newcommand{\@raisemathhelper}[3]{\raisebox{#1}{$#2#3$}}
+\newcommand{\raisemath}[1]{\mathpalette{\@raisemathhelper{#1}}}
+
 
 % TikZ
 
