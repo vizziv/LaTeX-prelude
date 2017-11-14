@@ -281,6 +281,11 @@
 \newcommand{\@raisemathhelper}[3]{\raisebox{#1}{$#2#3$}}
 \newcommand{\raisemath}[1]{\mathpalette{\@raisemathhelper{#1}}}
 
+% Use less space for align*.
+\renewenvironment{align*}{%
+  \begin{equation*}\begin{aligned}}{%
+  \end{aligned}\end{equation*}\ignorespacesafterend}
+
 
 % TikZ
 
@@ -362,10 +367,10 @@
 % Named theorems and observations.
 \newenvironment{namedtheorem*}[1]{%
   \def\@theoremname{#1}\begin{generictheorem*}}{%
-  \end{generictheorem*}}
+  \end{generictheorem*}\ignorespacesafterend}
 \newenvironment{namedobservation*}[1]{%
   \def\@theoremname{#1}\begin{genericobservation*}}{%
-  \end{genericobservation*}}
+  \end{genericobservation*}\ignorespacesafterend}
 
 
 % Macros to actually use.
@@ -403,13 +408,15 @@
 % Tables for inline text.
 \newenvironment{tabulate}[1]{%
   \biggap\trivlist\item\centering\tabular{#1}}{%
-  \endtabular\par\endtrivlist\biggap}
+  \endtabular\par\endtrivlist\biggap\ignorespacesafterend}
 \newenvironment{tabulatex}[2]{%
   \biggap\trivlist\item\centering\tabularx{#1}{#2}}{%
-  \endtabularx\par\endtrivlist\biggap}
+  \endtabularx\par\endtrivlist\biggap\ignorespacesafterend}
 
 \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
-\newenvironment{todo}{\begin{framed}\noindent\textbf{TODO:}}{\end{framed}}
+\newenvironment{todo}{%
+  \begin{framed}\noindent\textbf{TODO:}}{%
+  \end{framed}\ignorespacesafterend}
 \if@acm
   \setlength\marginparwidth{0.62in}
   \setlength\marginparsep{0.06in}
