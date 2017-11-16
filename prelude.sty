@@ -136,7 +136,7 @@
     \fancyfoot[C]{\sffamily\thepage}}
 \fi
 
-\setlist{noitemsep}
+\setlist{nosep}
 
 \newcommand{\nodate}{%
   \date{\vspace{-1.75\baselineskip}}
@@ -381,14 +381,14 @@
 
 \newenvironment{solution}[1][]{%
   \begin{proof}[Solution\ifempty{#1}{}{ to \fref{#1}}]
-  \renewcommand{\qedsymbol}{}}{
+  \noqed}{
   \end{proof}\ignorespacesafterend}
 
 
 % Macros to actually use.
 
 % Suppress the QED symbol from a proof.
-\newcommand{\noqed}{\def\qedsymbol{}}
+\newcommand{\noqed}{\renewcommand\qedsymbol{}\popQED}
 
 % Even more quad!
 \newcommand{\qqquad}{\hskip3em\relax}
