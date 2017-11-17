@@ -365,9 +365,10 @@
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
 
-% Resets case number every proof.
+% Resets case number every proof and restores ordinary QED symbol.
 \let\@oldproof\proof
-\def\proof{\setcounter{case}{0}\@oldproof}
+\let\@oldqed\qed
+\def\proof{\setcounter{case}{0}\renewcommand{\qed}{\@oldqed}\@oldproof}
 
 % Named theorems and observations.
 \newenvironment{namedtheorem*}[1]{%
@@ -388,7 +389,7 @@
 % Macros to actually use.
 
 % Suppress the QED symbol from a proof.
-\newcommand{\noqed}{\renewcommand\qedsymbol{}\popQED}
+\newcommand{\noqed}{\renewcommand{\qed}{}}
 
 % Even more quad!
 \newcommand{\qqquad}{\hskip3em\relax}
