@@ -53,12 +53,12 @@
   \RequirePackage[bf, sf]{titlesec}
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
-  \titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+  \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
   \titleformat{\chapter}{%
     \huge\sffamily\bfseries}{%
     \thechapter}{%
     1em}{%
-    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries\centering}[%
+    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries}[%
     \rule{\textwidth}{\heavyrulewidth}]
 \fi
 
@@ -126,6 +126,8 @@
     \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
     \renewcommand{\sectionmark}[1]{%
       \markright{\arabic{chapter}.\arabic{section} #1}}
+    \let\@oldtableofcontents\tableofcontents
+    \renewcommand{\tableofcontents}{\@oldtableofcontents\chaptermark{Contents}}
     \fancyhead[CE]{\sffamily\leftmark}
     \fancyhead[CO]{\sffamily\rightmark}
     \fancyhead[LE, RO]{\sffamily\thepage}
