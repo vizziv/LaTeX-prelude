@@ -53,11 +53,13 @@
   \RequirePackage[bf, sf]{titlesec}
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
-  \titleformat{\chapter}[hang]{%
+  \titlespacing*{\chapter}{0pt}{-50pt}{40pt}
+  \titleformat{\chapter}{%
     \huge\sffamily\bfseries}{%
-    \thechapter$\quad\mid\quad$}{%
-    0pt}{%
-    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries}
+    \thechapter}{%
+    1em}{%
+    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries\centering}[%
+    \rule{\textwidth}{\heavyrulewidth}]
 \fi
 
 \if@acm
