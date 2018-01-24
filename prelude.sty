@@ -377,7 +377,7 @@
 % Resets case number every proof and restores ordinary QED symbol.
 \let\@oldproof\proof
 \let\@oldqed\qed
-\def\proof{\setcounter{case}{0}\renewcommand{\qed}{\@oldqed}\@oldproof}
+\def\proof{\startcases\renewcommand{\qed}{\@oldqed}\@oldproof}
 
 % Named theorems and observations.
 \newenvironment{namedtheorem*}[1]{%
@@ -399,6 +399,9 @@
 
 % Suppress the QED symbol from a proof.
 \newcommand{\noqed}{\renewcommand{\qed}{}}
+
+% Start a series of cases. Useful for cases outside proofs.
+\newcommand{\startcases}{\setcounter{case}{0}}
 
 % Even more quad!
 \newcommand{\qqquad}{\hskip3em\relax}
