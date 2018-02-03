@@ -18,7 +18,9 @@
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \ExecuteOptions{libertine}}}
+    \ExecuteOptions{libertine}}
+  % Need this to not mess up a nested conditional later.
+  \newif\if@ACM@authorversion}
 
 \ProcessOptions\relax
 
@@ -157,6 +159,23 @@
   \let\thedate\theauthor}
 
 \date{\today}
+
+\if@acm
+  \if@ACM@authorversion
+    \acmArticleSeq{-1}
+    \let\@oldsetcopyright\footnotetextcopyrightpermission
+    \newlength{\@authorversionskip}
+    \setlength{\@authorversionskip}{0in}
+    \ifdefstring{\ACM@format}{acmsmall}{%
+      \setlength{\@authorversionskip}{0.525in}}{}
+    \ifdefstring{\ACM@format}{acmlarge}{%
+      \setlength{\@authorversionskip}{0.525in}}{}
+    \ifdefstring{\ACM@format}{sigconf}{%
+      \setlength{\@authorversionskip}{0.53in}}{}
+    \renewcommand{\footnotetextcopyrightpermission}[1]{%
+        \@oldsetcopyright{#1\vspace{\@authorversionskip}}}
+  \fi
+\fi
 
 
 % References.
