@@ -317,6 +317,20 @@
   \begin{equation*}\begin{aligned}}{%
   \end{aligned}\end{equation*}\ignorespacesafterend}
 
+% Dots inside parentheses.
+\let\@olddots\dots
+\renewcommand{\dots}{\@olddots\mkern0mu}
+\let\@olddotsc\dotsc
+\renewcommand{\dotsc}{\@olddotsc\mkern0mu}
+\let\@olddotsb\dotsb
+\renewcommand{\dotsb}{\@olddotsb\mkern0mu}
+\let\@olddotsm\dotsm
+\renewcommand{\dotsm}{\@olddotsm\mkern0mu}
+\let\@olddotsi\dotsi
+\renewcommand{\dotsi}{\@olddotsi\mkern0mu}
+\let\@olddotso\dotso
+\renewcommand{\dotso}{\@olddotso\mkern0mu}
+
 
 % TikZ
 
@@ -327,6 +341,25 @@
 \def\tikzpicture{%
   \catcode`\$=3 % math shift
   \@oldtikzpicture}
+
+
+% Make rules in algorithm environment match those in tables.
+
+\renewcommand{\fs@ruled}{%
+  \def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@ruled
+  \def\@fs@pre{%
+    \vspace{\abovetopsep}%
+    \hrule height\heavyrulewidth \kern2pt%
+    \vspace{\belowrulesep}}%
+  \def\@fs@post{%
+    \vspace{\aboverulesep}%
+    \kern2pt\hrule height\heavyrulewidth \relax%
+    \vspace{\belowbottomsep}}%
+  \def\@fs@mid{%
+    \vspace{\aboverulesep}%
+    \kern2pt\hrule height\lightrulewidth \kern2pt%
+    \vspace{\belowrulesep}}%
+  \let\@fs@iftopcapt\iftrue}
 
 
 % Macros for defining further macros.
