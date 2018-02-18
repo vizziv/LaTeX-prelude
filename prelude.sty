@@ -312,10 +312,14 @@
 \newcommand{\@raisemathhelper}[3]{\raisebox{#1}{$#2#3$}}
 \newcommand{\raisemath}[1]{\mathpalette{\@raisemathhelper{#1}}}
 
-% Use less space for align*.
+% Use less space for align and align*.
+% This also changes equation numbering, but in a way that I usually like.
 \renewenvironment{align*}{%
   \begin{equation*}\begin{aligned}}{%
   \end{aligned}\end{equation*}\ignorespacesafterend}
+\renewenvironment{align}{%
+  \begin{equation}\begin{aligned}[b]}{%
+  \end{aligned}\end{equation}\ignorespacesafterend}
 
 % Dots inside parentheses.
 \let\@olddots\dots
