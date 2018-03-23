@@ -162,12 +162,12 @@
 
 \if@acm
   \if@ACM@authorversion
-    \acmArticleSeq{-1}
+    \acmArticleSeq{0}
     \let\@oldsetcopyright\footnotetextcopyrightpermission
     \newlength{\@authorversionskip}
     \setlength{\@authorversionskip}{0in}
     \ifdefstring{\ACM@format}{acmsmall}{%
-      \setlength{\@authorversionskip}{0.525in}}{}
+      \setlength{\@authorversionskip}{0.39in}}{}
     \ifdefstring{\ACM@format}{acmlarge}{%
       \setlength{\@authorversionskip}{0.525in}}{}
     \ifdefstring{\ACM@format}{sigconf}{%
@@ -323,17 +323,17 @@
 
 % Dots inside parentheses.
 \let\@olddots\dots
-\renewcommand{\dots}{\@olddots\mkern0mu}
+\renewcommand{\dots}{\@olddots\ifmmode\mkern0mu\fi}
 \let\@olddotsc\dotsc
-\renewcommand{\dotsc}{\@olddotsc\mkern0mu}
+\renewcommand{\dotsc}{\@olddotsc\ifmmode\mkern0mu\fi}
 \let\@olddotsb\dotsb
-\renewcommand{\dotsb}{\@olddotsb\mkern0mu}
+\renewcommand{\dotsb}{\@olddotsb\ifmmode\mkern0mu\fi}
 \let\@olddotsm\dotsm
-\renewcommand{\dotsm}{\@olddotsm\mkern0mu}
+\renewcommand{\dotsm}{\@olddotsm\ifmmode\mkern0mu\fi}
 \let\@olddotsi\dotsi
-\renewcommand{\dotsi}{\@olddotsi\mkern0mu}
+\renewcommand{\dotsi}{\@olddotsi\ifmmode\mkern0mu\fi}
 \let\@olddotso\dotso
-\renewcommand{\dotso}{\@olddotso\mkern0mu}
+\renewcommand{\dotso}{\@olddotso\ifmmode\mkern0mu\fi}
 
 
 % TikZ
@@ -380,6 +380,35 @@
 % Theorems.
 
 \if@acm
+  \theoremstyle{acmplain}
+\else
+  \theoremstyle{plain}
+\fi
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem*{generictheorem*}{\@theoremname}
+
+\if@acm
+  \theoremstyle{acmdefinition}
+\else
+  \theoremstyle{definition}
+\fi
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem*{genericobservation*}{\@theoremname}
+\if@acm
+\else
+  \theoremstyle{remark}
+\fi
+\newtheorem*{remark*}{Remark}
+
+\if@acm
   \newtheoremstyle{acmcase}
     {.5\baselineskip\@plus.2\baselineskip
       \@minus.2\baselineskip}
@@ -391,34 +420,10 @@
     {.}
     {.5em}
     {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
-  \theoremstyle{acmplain}
-  \newtheorem{claim}[theorem]{Claim}
-  \newtheorem*{generictheorem*}{\@theoremname}
-  \theoremstyle{acmdefinition}
-  \newtheorem{assumption}[theorem]{Assumption}
-  \newtheorem*{remark*}{Remark}
-  \newtheorem{exercise}{Exercise}[section]
-  \newtheorem{observation}[theorem]{Observation}
-  \newtheorem*{genericobservation*}{\@theoremname}
   \theoremstyle{acmcase}
   \newtheorem{case}{Case}
 \else
-  \theoremstyle{plain}
-  \newtheorem{theorem}{Theorem}[section]
-  \newtheorem{lemma}[theorem]{Lemma}
-  \newtheorem{corollary}[theorem]{Corollary}
-  \newtheorem{conjecture}[theorem]{Conjecture}
-  \newtheorem{claim}[theorem]{Claim}
-  \newtheorem*{generictheorem*}{\@theoremname}
-  \theoremstyle{definition}
-  \newtheorem{definition}[theorem]{Definition}
-  \newtheorem{example}[theorem]{Example}
-  \newtheorem{assumption}[theorem]{Assumption}
-  \newtheorem{exercise}{Exercise}[section]
-  \newtheorem{observation}[theorem]{Observation}
-  \newtheorem*{genericobservation*}{\@theoremname}
   \theoremstyle{remark}
-  \newtheorem*{remark*}{Remark}
   \newtheorem{case}{Case}
   % Use a colon instead of parentheses for names of cases.
   \newcommand{\@thmheadcase}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
