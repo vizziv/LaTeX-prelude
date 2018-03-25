@@ -301,8 +301,7 @@
 \renewcommand{\)}{%
   % Couldn't get this to work with \itdefault, so manually expanded.
   \ifdefstring{\f@shape}{it}{%
-    \iftoggle{noendsub}{%
-      \sb{}\kern-\scriptspace}{}}{}\@oldendmath}
+    \iftoggle{noendsub}{\sb{}}{}\kern-\scriptspace}{}\@oldendmath}
 \catcode`\$=13 % active
 \def$#1${\(#1\)}
 
