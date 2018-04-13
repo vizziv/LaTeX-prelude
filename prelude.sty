@@ -367,13 +367,13 @@
 
 % Macros for defining further macros.
 
-\newcommand{\subopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2_{#3}}}
-\newcommand{\supopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2^{#3}}}
-\newcommand{\appopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2(#3)}}
-\newcommand{\sqappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2[#3]}}
-\newcommand{\curlappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2\{#3\}}}
-\newcommand{\angappopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2 \langle #3 \rangle}}
-\newcommand{\midopt}[3][ne]{\ifempty[#1]{#3}{#2}{#2 \mid #3}}
+\newcommand{\subopt}[2]{\ifempty{#2}{#1}{#1_{#2}}}
+\newcommand{\supopt}[2]{\ifempty{#2}{#1}{#1^{#2}}}
+\newcommand{\appopt}[2]{\ifempty{#2}{#1}{#1(#2)}}
+\newcommand{\sqappopt}[2]{\ifempty{#2}{#1}{#1[#2]}}
+\newcommand{\curlappopt}[2]{\ifempty{#2}{#1}{#1\{#2\}}}
+\newcommand{\angappopt}[2]{\ifempty{#2}{#1}{#1 \langle #2 \rangle}}
+\newcommand{\midopt}[2]{\ifempty{#2}{#1}{#1 \mid #2}}
 
 
 % Theorems.
@@ -467,7 +467,9 @@
 \newcommand{\qqquad}{\hskip3em\relax}
 
 % Suppress the copyright block when using ACM class.
-\newcommand{\nocopyright}{\renewcommand{\footnotetextcopyrightpermission}[1]{}}
+\if@acm
+  \newcommand{\nocopyright}{\renewcommand{\footnotetextcopyrightpermission}[1]{}}
+\fi
 
 % Column type that justifies text.
 \newcolumntype{J}{>{\justifying\noindent\arraybackslash}X}
@@ -537,20 +539,37 @@
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\1}{\mathbb{1}}
 
+\let\mvert\vert
+\undef\angle
+\DeclarePairedDelimiter\angle\langle\rangle
+\undef\vert
+\DeclarePairedDelimiter\vert\lvert\rvert
+\DeclarePairedDelimiter\floor\lfloor\rfloor
+\DeclarePairedDelimiter\ceil\lceil\rceil
+% "gp" for "group"
+\DeclarePairedDelimiter\gp()
+\DeclarePairedDelimiter\sqgp[]
+\DeclarePairedDelimiter\curlgp\{\}
+
 \newcommand{\dd}[2][]{\frac{d#1}{d#2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
-\renewcommand{\angle}[1]{\langle #1 \rangle}
-\newcommand{\floor}[1]{\lfloor #1 \rfloor}
-\newcommand{\ceil}[1]{\lceil #1 \rceil}
 
-\newcommand{\E}[2][]{\mathbf{E}[\midopt{#2}{#1}]}
-\renewcommand{\P}[2][]{\mathbf{P}\{\midopt{#2}{#1}\}}
-\newcommand{\Var}[2][]{\appopt{\mathbf{Var}}{\midopt{#2}{#1}}}
-\newcommand{\tail}[2][]{\appopt{\subopt{\ol{F}}{#1}}{#2}}
-\newcommand{\cdf}[2][]{\appopt{\subopt{F}{#1}}{#2}}
-\newcommand{\density}[2][]{\appopt{\subopt{f}{#1}}{#2}}
-\newcommand{\indicator}[1]{\appopt{\mathbb{1}}{#1}}
-\newcommand{\sdiff}{\smallsetminus}
+\newcommand{\ldelimP}{\{}
+\newcommand{\rdelimP}{\}}
+\newcommand{\ldelimE}{[}
+\newcommand{\rdelimE}{]}
+\newcommand{\ldelimVar}{(}
+\newcommand{\rdelimVar}{)}
+\undef\P
+\DeclarePairedDelimiterXPP{\P}[1]{\mathbf{P}}{\ldelimP}{\rdelimP}{}{%
+  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  #1}
+\DeclarePairedDelimiterXPP{\E}[1]{\mathbf{E}}{\ldelimE}{\rdelimE}{}{%
+  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  #1}
+\DeclarePairedDelimiterXPP{\Var}[1]{\mathbf{Var}}{\ldelimVar}{\rdelimVar}{}{%
+  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  #1}
 
 
 \endinput
