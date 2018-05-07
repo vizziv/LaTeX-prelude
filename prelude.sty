@@ -18,7 +18,7 @@
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \ExecuteOptions{libertine}}
+    \ExecuteOptions{libertine, fancyhdr}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
