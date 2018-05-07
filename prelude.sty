@@ -60,7 +60,8 @@
     \huge\sffamily\bfseries}{%
     \thechapter}{%
     1em}{%
-    \hyphenpenalty=10000\RaggedRight\sloppy\huge\sffamily\bfseries}[%
+    \hyphenpenalty=10000\raggedright%
+    \huge\sffamily\bfseries}[%
     \rule{\textwidth}{\heavyrulewidth}]
 \fi
 
@@ -71,7 +72,7 @@
 
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[plain]{fancyref}
-\RequirePackage[newcommands]{ragged2e}
+\RequirePackage{ragged2e}
 \RequirePackage[section]{algorithm}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
   natbib, tabularx, tikz, varwidth, xifthen}
@@ -125,7 +126,7 @@
   \pretitle{%
     \vspace{-3.75\baselineskip}
     \begin{center}
-      \hyphenpenalty=10000
+      \hyphenpenalty=10000%
       \@titlesize\bfseries\sffamily}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
