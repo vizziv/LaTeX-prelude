@@ -89,6 +89,22 @@
 
 \frenchspacing
 
+% Remove newlines
+\newcommand{\@gobblestar}{\futurelet\@let@token\@dogobblestar}
+\def\@dogobblestar{%
+  \let\next=\relax
+  \ifx\@let@token*%
+  \def\next{\@gobble}%
+  \else\ifx\@let@token[%]
+  \def\next{\@gobbleoptional}%
+  \fi\fi
+  \next}
+\def\@gobbleoptional[#1]{}
+\newcommand\nonewlines[1]{%
+  \let\@oldnewline=\\
+  \let\\=\relax
+  #1%
+  \let\\=\@oldnewline}
 
 % Format title, header, and footer.
 
@@ -118,12 +134,14 @@
     \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
     \if\relax\@shorttitle\relax
-      \let\@thetitle\@title
+      \def\@titlenonewlines{\nonewlines{\@title}}
+      \let\@thetitle\@titlenonewlines
     \else
       \let\@thetitle\@shorttitle
     \fi
     \if\relax\@shortauthor\relax
-      \let\@theauthor\@author
+      \def\@authornonewlines{\nonewlines{\@author}}
+      \let\@theauthor\@authornonewlines
     \else
       \let\@theauthor\@shortauthor
     \fi}
