@@ -166,7 +166,14 @@
     \fancyfoot[C]{\sffamily\thepage}}
 \fi
 
-\setlist{nosep}
+\if@acm
+\else
+  \newlength{\listtopsep}
+  \setlength{\listtopsep}{\smallskipamount}
+  \newlength{\listitemsep}
+  \setlength{\listitemsep}{\smallskipamount}
+  \setlist{parsep=\parskip, topsep=\listtopsep, itemsep=\listitemsep}
+\fi
 
 \newcommand{\nodate}{%
   \date{\vspace{-1.75\baselineskip}}
