@@ -90,22 +90,27 @@
 
 \frenchspacing
 
+
 % Remove newlines
+
 \newcommand{\@gobblestar}{\futurelet\@let@token\@dogobblestar}
 \def\@dogobblestar{%
-  \let\next=\relax
+  \let\@gobblestarnext=\relax
   \ifx\@let@token*%
-  \def\next{\@gobble}%
-  \else\ifx\@let@token[%]
-  \def\next{\@gobbleoptional}%
-  \fi\fi
-  \next}
+    \def\@gobblestarnext{\@gobble}%
+  \else
+    \ifx\@let@token[%]
+      \def\@gobblestarnext{\@gobbleoptional}%
+    \fi
+  \fi
+  \@gobblestarnext}
 \def\@gobbleoptional[#1]{}
-\newcommand\nonewlines[1]{%
+\newcommand{\nonewlines}[1]{%
   \let\@oldnewline=\\
   \let\\=\relax
   #1%
   \let\\=\@oldnewline}
+
 
 % Format title, header, and footer.
 
