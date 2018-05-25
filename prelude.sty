@@ -7,18 +7,19 @@
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
-\newif\if@fancyhdr\@fancyhdrfalse
+\newif\if@fancyhdr\@fancyhdrtrue
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{libertine}{\@libertinetrue}
 \DeclareOption{charter}{\@chartertrue}
 \DeclareOption{nofont}{\@nofonttrue}
 \DeclareOption{fancyhdr}{\@fancyhdrtrue}
+\DeclareOption{nofancyhdr}{\@fancyhdrfalse}
 
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \ExecuteOptions{libertine, fancyhdr}}
+    \ExecuteOptions{libertine}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
@@ -416,6 +417,7 @@
 \fi
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{claim}[theorem]{Claim}
