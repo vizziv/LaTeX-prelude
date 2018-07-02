@@ -7,7 +7,7 @@
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
-\newif\if@fancyhdr\@fancyhdrtrue
+\newif\if@fancyhdr\@fancyhdrfalse
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{libertine}{\@libertinetrue}
@@ -19,7 +19,7 @@
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \ExecuteOptions{libertine}}
+    \ExecuteOptions{libertine, fancyhdr}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
@@ -73,18 +73,17 @@
 
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[plain]{fancyref}
-\RequirePackage{ragged2e}
 \RequirePackage[section]{algorithm}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
-  natbib, tabularx, tikz, varwidth, xifthen}
+  natbib, ragged2e, tabularx, tikz, varwidth, xifthen, xparse}
 
 
 % Emptiness checking.
 
 % Because \isempty doesn't expand its argument, sometimes we want to pass an
 % alternate test string.
-\newcommand{\ifempty}[4][ne]{%
-  \ifthenelse{\isempty{#1}\OR\isempty{#2}}{#3}{#4}}
+\newcommand{\ifempty}[3]{%
+  \ifthenelse{\isempty{#1}}{#2}{#3}}
 
 
 % I'm done dealing with \@....
@@ -94,21 +93,9 @@
 
 % Remove newlines
 
-\newcommand{\@gobblestar}{\futurelet\@let@token\@dogobblestar}
-\def\@dogobblestar{%
-  \let\@gobblestarnext=\relax
-  \ifx\@let@token*%
-    \def\@gobblestarnext{\@gobble}%
-  \else
-    \ifx\@let@token[%]
-      \def\@gobblestarnext{\@gobbleoptional}%
-    \fi
-  \fi
-  \@gobblestarnext}
-\def\@gobbleoptional[#1]{}
 \newcommand{\nonewlines}[1]{%
   \let\@oldnewline=\\
-  \let\\=\relax
+  \let\\=\ignorespaces
   #1%
   \let\\=\@oldnewline}
 
@@ -170,6 +157,14 @@
     \fancyhead[L]{\sffamily\@thetitle}
     \fancyhead[R]{\sffamily\@theauthor}
     \fancyfoot[C]{\sffamily\thepage}}
+\fi
+
+\if@acm
+  \RenewDocumentCommand{\title}{om}{%
+    \IfNoValueTF{#1}{%
+      \gdef\shorttitle{\nonewlines{#2}}}{%
+      \gdef\shorttitle{#1}}%
+    \gdef\@title{#2}}
 \fi
 
 \if@acm
