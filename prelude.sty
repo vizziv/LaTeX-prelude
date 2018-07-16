@@ -191,16 +191,16 @@
   \if@ACM@authorversion
     \acmArticleSeq{0}
     \let\@oldsetcopyright\footnotetextcopyrightpermission
-    \newlength{\@authorversionskip}
-    \setlength{\@authorversionskip}{0in}
+    \newlength{\authorversionskip}
+    \setlength{\authorversionskip}{0in}
     \ifdefstring{\ACM@format}{acmsmall}{%
-      \setlength{\@authorversionskip}{0.39in}}{}
+      \setlength{\authorversionskip}{0.39in}}{}
     \ifdefstring{\ACM@format}{acmlarge}{%
-      \setlength{\@authorversionskip}{0.525in}}{}
+      \setlength{\authorversionskip}{0.525in}}{}
     \ifdefstring{\ACM@format}{sigconf}{%
-      \setlength{\@authorversionskip}{0.53in}}{}
+      \setlength{\authorversionskip}{0.09in}}{}
     \renewcommand{\footnotetextcopyrightpermission}[1]{%
-        \@oldsetcopyright{#1\vspace{\@authorversionskip}}}
+        \@oldsetcopyright{#1\vspace{\authorversionskip}}}
   \fi
 \fi
 
