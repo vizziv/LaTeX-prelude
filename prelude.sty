@@ -194,16 +194,27 @@
     \newlength{\authorversionskip}
     \setlength{\authorversionskip}{0in}
     \ifdefstring{\ACM@format}{acmsmall}{%
-      \setlength{\authorversionskip}{0.39in}}{}
+      \setlength{\authorversionskip}{0.39in}
+      % Horrible hackiness to hide article number.
+      \let\@oldiffolios\if@ACM@printfolios
+      \let\@oldhffont\@headfootfont
+      \def\@headfootfont{%
+        \renewcommand\@acmArticle[2]{##1}
+        \@oldhffont}}{}
     \ifdefstring{\ACM@format}{acmlarge}{%
-      \setlength{\authorversionskip}{0.525in}}{}
+      \setlength{\authorversionskip}{0.525in}
+      % Horrible hackiness to hide article number.
+      \let\@oldiffolios\if@ACM@printfolios
+      \let\@oldhffont\@headfootfont
+      \def\@headfootfont{%
+        \renewcommand\@acmArticle[2]{##1}
+        \@oldhffont}}{}
     \ifdefstring{\ACM@format}{sigconf}{%
       \setlength{\authorversionskip}{0.09in}}{}
     \renewcommand{\footnotetextcopyrightpermission}[1]{%
         \@oldsetcopyright{#1\vspace{\authorversionskip}}}
   \fi
 \fi
-
 
 % References.
 
@@ -494,9 +505,19 @@
 % Even more quad!
 \newcommand{\qqquad}{\hskip3em\relax}
 
-% Suppress the copyright block when using ACM class.
+% Suppress the copyright block when using ACM class and other cleaning up.
 \if@acm
   \newcommand{\nocopyright}{\renewcommand{\footnotetextcopyrightpermission}[1]{}}
+  \newcommand{\acmclean}{%
+    \settopmatter{printfolios, printacmref=false}
+    \nocopyright
+    \authorsaddresses{}
+    \ifdefstring{\ACM@format}{acmsmall}{%
+      \fancyfoot{}
+      \fancypagestyle{firstpagestyle}{\fancyhf{}}}{}
+    \ifdefstring{\ACM@format}{acmlarge}{%
+      \fancyfoot{}
+      \fancypagestyle{firstpagestyle}{\fancyhf{}}}{}}
 \fi
 
 % Column type that justifies text.
