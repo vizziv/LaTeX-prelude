@@ -188,27 +188,17 @@
 \date{\today}
 
 \if@acm
+  \newtoggle{noarticlenum}
   \if@ACM@authorversion
-    \acmArticleSeq{0}
     \let\@oldsetcopyright\footnotetextcopyrightpermission
     \newlength{\authorversionskip}
     \setlength{\authorversionskip}{0in}
     \ifdefstring{\ACM@format}{acmsmall}{%
       \setlength{\authorversionskip}{0.39in}
-      % Horrible hackiness to hide article number.
-      \let\@oldiffolios\if@ACM@printfolios
-      \let\@oldhffont\@headfootfont
-      \def\@headfootfont{%
-        \renewcommand\@acmArticle[2]{##1}
-        \@oldhffont}}{}
+      \toggletrue{noarticlenum}}{}
     \ifdefstring{\ACM@format}{acmlarge}{%
       \setlength{\authorversionskip}{0.525in}
-      % Horrible hackiness to hide article number.
-      \let\@oldiffolios\if@ACM@printfolios
-      \let\@oldhffont\@headfootfont
-      \def\@headfootfont{%
-        \renewcommand\@acmArticle[2]{##1}
-        \@oldhffont}}{}
+      \toggletrue{noarticlenum}}{}
     \ifdefstring{\ACM@format}{sigconf}{%
       \setlength{\authorversionskip}{0.09in}}{}
     \renewcommand{\footnotetextcopyrightpermission}[1]{%
@@ -513,11 +503,22 @@
     \nocopyright
     \authorsaddresses{}
     \ifdefstring{\ACM@format}{acmsmall}{%
+      \toggletrue{noarticlenum}
       \fancyfoot{}
       \fancypagestyle{firstpagestyle}{\fancyhf{}}}{}
     \ifdefstring{\ACM@format}{acmlarge}{%
+      \toggletrue{noarticlenum}
       \fancyfoot{}
       \fancypagestyle{firstpagestyle}{\fancyhf{}}}{}}
+  % Either authorversion of \acmclean can set this toggle.
+  \AtBeginDocument{%
+    \iftoggle{noarticlenum}{%
+      \acmArticleSeq{0}
+      % Horrible hackiness to hide article number.
+      \let\@oldhffont\@headfootfont
+      \def\@headfootfont{%
+        \renewcommand\@acmArticle[2]{##1}
+        \@oldhffont}}{}}
 \fi
 
 % Column type that justifies text.
