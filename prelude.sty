@@ -502,6 +502,9 @@
     \settopmatter{printfolios, printacmref=false}
     \nocopyright
     \authorsaddresses{}
+    \ifdefstring{\ACM@format}{sigconf}{%
+      \ifdefstring{\acmConference@name}{ACM Conference}{%
+        \fancyhead[LE, RO]{}}{}}{}
     \ifdefstring{\ACM@format}{acmsmall}{%
       \toggletrue{noarticlenum}
       \fancyfoot{}
