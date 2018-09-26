@@ -551,10 +551,10 @@
 % Tables for inline text.
 \newenvironment{tabulate}[1]{%
   \medgap\centering\tabular{#1}}{%
-  \endtabular\medgap\ignorespacesafterend}
+  \endtabular\medgap\noindent\ignorespacesafterend}
 \newenvironment{tabulatex}[2]{%
   \medgap\centering\tabularx{#1}{#2}}{%
-  \endtabularx\medgap\ignorespacesafterend}
+  \endtabularx\medgap\noindent\ignorespacesafterend}
 
 \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
 \newenvironment{todo}{%
