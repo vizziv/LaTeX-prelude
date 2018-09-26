@@ -550,11 +550,11 @@
 
 % Tables for inline text.
 \newenvironment{tabulate}[1]{%
-  \biggap\trivlist\item\centering\tabular{#1}}{%
-  \endtabular\par\endtrivlist\biggap\ignorespacesafterend}
+  \biggap\centering\tabular{#1}}{%
+  \endtabular\biggap\ignorespacesafterend}
 \newenvironment{tabulatex}[2]{%
-  \biggap\trivlist\item\centering\tabularx{#1}{#2}}{%
-  \endtabularx\par\endtrivlist\biggap\ignorespacesafterend}
+  \biggap\centering\tabularx{#1}{#2}}{%
+  \endtabularx\biggap\ignorespacesafterend}
 
 \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
 \newenvironment{todo}{%
