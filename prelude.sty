@@ -550,11 +550,11 @@
 
 % Tables for inline text.
 \newenvironment{tabulate}[1]{%
-  \biggap\centering\tabular{#1}}{%
-  \endtabular\biggap\ignorespacesafterend}
+  \medgap\centering\tabular{#1}}{%
+  \endtabular\medgap\ignorespacesafterend}
 \newenvironment{tabulatex}[2]{%
-  \biggap\centering\tabularx{#1}{#2}}{%
-  \endtabularx\biggap\ignorespacesafterend}
+  \medgap\centering\tabularx{#1}{#2}}{%
+  \endtabularx\medgap\ignorespacesafterend}
 
 \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
 \newenvironment{todo}{%
