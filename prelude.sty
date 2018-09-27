@@ -546,14 +546,22 @@
     \removelastskip
     \bigskip
   \fi}
+\newcommand{\vgap}[1]{%
+  \par
+  \ifdim\lastskip < #1
+    \removelastskip
+    \vspace{#1}
+  \fi}
 
 % Tables for inline text.
+\newlength{\tabulateskip}
+\setlength{\tabulateskip}{\medskipamount}
 \newenvironment{tabulate}[1]{%
-  \medgap\centering\tabular{#1}}{%
-  \endtabular\medgap\noindent\ignorespacesafterend}
+  \vgap{\tabulateskip}\centering\tabular{#1}}{%
+  \endtabular\vgap{\tabulateskip}\noindent\ignorespacesafterend}
 \newenvironment{tabulatex}[2]{%
-  \medgap\centering\tabularx{#1}{#2}}{%
-  \endtabularx\medgap\noindent\ignorespacesafterend}
+  \vgap{\tabulateskip}\centering\tabularx{#1}{#2}}{%
+  \endtabularx\vgap{\tabulateskip}\noindent\ignorespacesafterend}
 
 \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
 \newenvironment{todo}{%
