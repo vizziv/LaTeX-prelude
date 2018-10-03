@@ -314,7 +314,7 @@
 \renewcommand{\text}{\textnormal}
 
 % Use doublestroke for blackboard bold fonts.
-\renewcommand{\mathbb}{\mathds}
+\def\mathbb{\mathds}
 
 % Correct spacing of italic text before inline math.
 \mathtoolsset{mathic}
@@ -412,7 +412,11 @@
 \else
   \theoremstyle{plain}
 \fi
-\newtheorem{theorem}{Theorem}[section]
+\if@ieee
+  \newtheorem{theorem}{Theorem}
+\else
+  \newtheorem{theorem}{Theorem}[section]
+\fi
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -460,9 +464,12 @@
   \def\case{\let\thmhead\@thmheadcase\@oldcase}
 \fi
 
-\numberwithin{equation}{section}
-\numberwithin{figure}{section}
-\numberwithin{table}{section}
+\if@ieee
+\else
+  \numberwithin{equation}{section}
+  \numberwithin{figure}{section}
+  \numberwithin{table}{section}
+\fi
 
 % Resets case number every proof and restores ordinary QED symbol.
 \let\@oldproof\proof
@@ -589,11 +596,7 @@
 \newcommand{\ol}[1]{%
   \mkern 2.4mu\overline{\mkern-2.4mu#1\mkern-0.8mu}\mkern 0.8mu}
 
-\if@acm
-  \renewcommand{\C}{\mathbb{C}}
-\else
-  \newcommand{\C}{\mathbb{C}}
-\fi
+\def\C{\mathbb{C}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
