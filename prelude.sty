@@ -4,12 +4,14 @@
 % Use the acm option for compatibility with the acmart class.
 \newif\if@acm\@acmfalse
 \newif\if@acmold\@acmoldfalse
+\newif\if@ieee\@ieeefalse
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
+\DeclareOption{ieee}{\@ieeetrue}
 \DeclareOption{libertine}{\@libertinetrue}
 \DeclareOption{charter}{\@chartertrue}
 \DeclareOption{nofont}{\@nofonttrue}
@@ -19,7 +21,8 @@
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \ExecuteOptions{libertine, fancyhdr}}
+    \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont}}{%
+      \ExecuteOptions{libertine, fancyhdr}}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
@@ -80,8 +83,6 @@
 
 % Emptiness checking.
 
-% Because \isempty doesn't expand its argument, sometimes we want to pass an
-% alternate test string.
 \newcommand{\ifempty}[3]{%
   \ifthenelse{\isempty{#1}}{#2}{#3}}
 
