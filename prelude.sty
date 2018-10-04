@@ -32,9 +32,17 @@
 % Packages.
 
 \if@acmold
-  \let\proof\relax
-  \let\endproof\relax
+  \let\proof\undefined
+  \let\endproof\undefined
 \fi
+
+\if@ieee
+  \let\proof\undefined
+  \let\endproof\undefined
+  \let\labelindent\undefined
+  \let\NAT@parse\undefined
+\fi
+
 
 % AMS packages often need to be first for compatibility.
 \RequirePackage{amsmath, amsthm}
@@ -128,7 +136,7 @@
     \thispagestyle{fancy}
     \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
-    \if\relax\@shorttitle\relax
+    \if\undefined\@shorttitle\relax
       \def\@titlenonewlines{\nonewlines{\@title}}
       \let\@thetitle\@titlenonewlines
     \else
