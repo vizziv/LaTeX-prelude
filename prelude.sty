@@ -307,6 +307,12 @@
 \frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
 \Frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
 
+% IEEE abbreviates "Figure" to "Fig."
+\if@ieee
+  \frefformat{plain}{\fancyreffiglabelprefix}{fig.\fancyrefdefaultspacing#1}
+  \Frefformat{plain}{\fancyreffiglabelprefix}{Fig.\fancyrefdefaultspacing#1}
+\fi
+
 % We always want things capitalized, even in the middle of a sentence.
 \renewcommand{\fref}{\Fref}
 
