@@ -136,7 +136,7 @@
     \thispagestyle{fancy}
     \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
-    \if\undefined\@shorttitle\relax
+    \if\relax\@shorttitle\relax
       \def\@titlenonewlines{\nonewlines{\@title}}
       \let\@thetitle\@titlenonewlines
     \else
@@ -362,6 +362,13 @@
 \renewenvironment{align}{%
   \begin{equation}\begin{aligned}[b]}{%
   \end{aligned}\end{equation}\ignorespacesafterend}
+% Same for alignat
+\renewenvironment{alignat*}[1]{%
+  \begin{equation*}\begin{alignedat}{#1}}{%
+  \end{alignedat}\end{equation*}\ignorespacesafterend}
+\renewenvironment{alignat}[1]{%
+  \begin{equation}\begin{alignedat}[b]{#1}}{%
+  \end{alignedat}\end{equation}\ignorespacesafterend}
 
 % Dots inside parentheses.
 \let\@olddots\dots
