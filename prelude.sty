@@ -354,21 +354,34 @@
 \newcommand{\@raisemathhelper}[3]{\raisebox{#1}{$#2#3$}}
 \newcommand{\raisemath}[1]{\mathpalette{\@raisemathhelper{#1}}}
 
-% Use less space for align and align*.
+% Use less space for align and alignat.
 % This also changes equation numbering, but in a way that I usually like.
+% It requires a trick for \qedhere to work correctly.
+\newtoggle{alignqedhere}
+\togglefalse{alignqedhere}
+\newcommand{\@prealigned}{%
+  % Need to use \global because \qedhere will be written inside the aligned,
+  % but we want it to appear inside the equation* outside the aligned.
+  % Using global scope is okay because equations don't nest.
+  \begingroup
+  \renewcommand{\qedhere}{%
+    \global\toggletrue{alignqedhere}}}
+\newcommand{\@postaligned}{%
+  \endgroup
+  \iftoggle{alignqedhere}{\qedhere}{}
+  \global\togglefalse{alignqedhere}}
 \renewenvironment{align*}{%
-  \begin{equation*}\begin{aligned}}{%
-  \end{aligned}\end{equation*}\ignorespacesafterend}
+  \begin{equation*}\@prealigned\begin{aligned}[b]}{%
+  \end{aligned}\@postaligned\end{equation*}\ignorespacesafterend}
 \renewenvironment{align}{%
-  \begin{equation}\begin{aligned}[b]}{%
-  \end{aligned}\end{equation}\ignorespacesafterend}
-% Same for alignat
+  \begin{equation}\@prealigned\begin{aligned}[b]}{%
+  \end{aligned}\@postaligned\end{equation}\ignorespacesafterend}
 \renewenvironment{alignat*}[1]{%
-  \begin{equation*}\begin{alignedat}{#1}}{%
-  \end{alignedat}\end{equation*}\ignorespacesafterend}
+  \begin{equation*}\@prealigned\begin{alignedat}{#1}}{%
+  \end{alignedat}\@postaligned\end{equation*}\ignorespacesafterend}
 \renewenvironment{alignat}[1]{%
-  \begin{equation}\begin{alignedat}[b]{#1}}{%
-  \end{alignedat}\end{equation}\ignorespacesafterend}
+  \begin{equation}\@prealigned\begin{alignedat}[b]{#1}}{%
+  \end{alignedat}\@postaligned\end{equation}\ignorespacesafterend}
 
 % Dots inside parentheses.
 \let\@olddots\dots
