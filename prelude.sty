@@ -78,7 +78,9 @@
 \fi
 
 \if@acm
+  \AtBeginDocument{\setcitestyle{numbers,sort&compress,square}}
 \else
+  \RequirePackage[numbers, sort&compress, square]{natbib}
   \RequirePackage[hidelinks]{hyperref}
 \fi
 
@@ -86,7 +88,7 @@
 \RequirePackage[plain]{fancyref}
 \RequirePackage[section]{algorithm}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
-  natbib, ragged2e, tabularx, tikz, varwidth, xifthen, xparse}
+  ragged2e, tabularx, tikz, varwidth, xifthen, xparse}
 
 
 % Emptiness checking.
@@ -215,8 +217,6 @@
 \fi
 
 % References.
-
-\AtBeginDocument{\setcitestyle{numbers,sort&compress,square}}
 
 % Prevents break between previous text and citation number,
 % unless the citation command is given an optional argument.
@@ -640,16 +640,19 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 
 \let\mvert\vert
+\newcommand{\given}{\nonscript\:\mvert\nonscript\:\mathopen{}}
+\newcommand{\@resizegiven}{%
+  \renewcommand{\given}{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}}
 \undef\angle
-\DeclarePairedDelimiter\angle\langle\rangle
+\DeclarePairedDelimiterX\angle[1]\langle\rangle{\@resizegiven #1}
 \undef\vert
-\DeclarePairedDelimiter\vert\lvert\rvert
-\DeclarePairedDelimiter\floor\lfloor\rfloor
-\DeclarePairedDelimiter\ceil\lceil\rceil
+\DeclarePairedDelimiterX\vert[1]\lvert\rvert{\@resizegiven #1}
+\DeclarePairedDelimiterX\floor[1]\lfloor\rfloor{\@resizegiven #1}
+\DeclarePairedDelimiterX\ceil[1]\lceil\rceil{\@resizegiven #1}
 % "gp" for "group"
-\DeclarePairedDelimiter\gp()
-\DeclarePairedDelimiter\sqgp[]
-\DeclarePairedDelimiter\curlgp\{\}
+\DeclarePairedDelimiterX\gp[1](){\@resizegiven #1}
+\DeclarePairedDelimiterX\sqgp[1][]{\@resizegiven #1}
+\DeclarePairedDelimiterX\curlgp[1]\{\}{\@resizegiven #1}
 
 \newcommand{\dd}[2][]{\frac{d#1}{d#2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
@@ -662,13 +665,13 @@
 \newcommand{\rdelimVar}{)}
 \undef\P
 \DeclarePairedDelimiterXPP{\P}[1]{\mathbf{P}}{\ldelimP}{\rdelimP}{}{%
-  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  \@resizegiven
   #1}
 \DeclarePairedDelimiterXPP{\E}[1]{\mathbf{E}}{\ldelimE}{\rdelimE}{}{%
-  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  \@resizegiven
   #1}
 \DeclarePairedDelimiterXPP{\Var}[1]{\mathbf{Var}}{\ldelimVar}{\rdelimVar}{}{%
-  \def\given{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}
+  \@resizegiven
   #1}
 
 
