@@ -640,9 +640,10 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 
 \let\mvert\vert
-\newcommand{\given}{\nonscript\:\mvert\nonscript\:\mathopen{}}
+\newcommand{\given}{\nonscript\;\mvert\nonscript\;\mathopen{}}
 \newcommand{\@resizegiven}{%
-  \renewcommand{\given}{\nonscript\:\delimsize\mvert\nonscript\:\mathopen{}}}
+  \renewcommand{\given}{\nonscript\;\delimsize\mvert\nonscript\;\mathopen{}}}
+\renewcommand{\mid}{\given}
 \undef\angle
 \DeclarePairedDelimiterX\angle[1]\langle\rangle{\@resizegiven #1}
 \undef\vert
@@ -654,7 +655,8 @@
 \DeclarePairedDelimiterX\sqgp[1][]{\@resizegiven #1}
 \DeclarePairedDelimiterX\curlgp[1]\{\}{\@resizegiven #1}
 
-\newcommand{\dd}[2][]{\frac{d#1}{d#2}}
+\renewcommand{\d}{\mathrm{d}}
+\newcommand{\dd}[2][]{\frac{\d #1}{\d #2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
 
 \newcommand{\ldelimP}{\{}
