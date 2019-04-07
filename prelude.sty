@@ -88,7 +88,7 @@
 \RequirePackage[plain]{fancyref}
 \RequirePackage[section]{algorithm}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
-  ragged2e, tabularx, tikz, varwidth, xifthen, xparse}
+  ragged2e, tabularx, tikz, varwidth, xifthen, xparse, xstring}
 
 
 % Emptiness checking.
@@ -223,20 +223,24 @@
 \let\@oldcitet\citet
 \renewcommand{\citet}[2][]{%
   % \NAT@spacechar goes between the author name and citation number.
-  {\ifempty{#1}{\def\NAT@spacechar{~}}{}\@oldcitet[#1]{#2}}}
+  {\IfSubStr{#2}{,}{}{\ifempty{#1}{\def\NAT@spacechar{~}}{}}%
+    \@oldcitet[#1]{#2}}}
 \let\@oldcitep\citep
 \renewcommand{\citep}[2][]{%
   % This assumes we always want a regular space before lone citation numbers.
   % To supress the space, give \empty as the optional argument.
-  {\ifempty{#1}{\unskip~}{}\@oldcitep[#1]{#2}}}
+  {\IfSubStr{#2}{,}{}{\ifempty{#1}{\unskip~}{}}%
+    \@oldcitep[#1]{#2}}}
 
 % Same for capitalized versions.
 \let\@oldCitet\Citet
 \renewcommand{\Citet}[2][]{%
-  {\ifempty{#1}{\def\NAT@spacechar{~}}{}\@oldCitet[#1]{#2}}}
+  {\IfSubStr{#2}{,}{}{\ifempty{#1}{\def\NAT@spacechar{~}}{}}%
+    \@oldCitet[#1]{#2}}}
 \let\@oldCitep\Citep
 \renewcommand{\Citep}[2][]{%
-  {\ifempty{#1}{\unskip~}{}\@oldCitep[#1]{#2}}}
+  {\IfSubStr{#2}{,}{}{\ifempty{#1}{\unskip~}{}}%
+    \@oldCitep[#1]{#2}}}
 
 % Always use same font style for citations... by uncommenting the following.
 % \let\@oldishcitet\citet
