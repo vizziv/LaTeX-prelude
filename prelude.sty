@@ -47,6 +47,9 @@
 % AMS packages often need to be first for compatibility.
 \RequirePackage{amsmath, amsthm}
 
+\newcommand{\@titlestyle}{\sffamily\bfseries}
+\newcommand{\@titlestyleoptions}{sf, bf}
+\newcommand{\@headerstyle}{\sffamily}
 \def\@definefonts{}
 \if@libertine
   \def\@definefonts{%
@@ -56,7 +59,12 @@
 \fi
 \if@charter
   \def\@definefonts{%
-    \RequirePackage[charter, cal=cmcal]{mathdesign}}
+    \RequirePackage[charter, cal=cmcal]{mathdesign}
+    \RequirePackage[varqu]{zi4}
+    \RequirePackage{berasans}}
+  \renewcommand{\@titlestyle}{\bfseries}
+  \renewcommand{\@titlestyleoptions}{bf}
+  \renewcommand{\@headerstyle}{}
 \fi
 \if@nofont
   \def\@definefonts{}
@@ -64,16 +72,16 @@
 \@definefonts
 
 \if@fancyhdr
-  \RequirePackage[bf, sf]{titlesec}
+  \RequirePackage[\@titlestyleoptions]{titlesec}
   \RequirePackage[labelfont={bf}, font={small}]{caption}
   \RequirePackage{fancyhdr, titling}
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
   \titleformat{\chapter}{%
-    \huge\sffamily\bfseries}{%
+    \huge\@titlestyle}{%
     \thechapter}{%
     1em}{%
     \hyphenpenalty=10000\raggedright%
-    \huge\sffamily\bfseries}[%
+    \huge\@titlestyle}[%
     \rule{\textwidth}{\heavyrulewidth}]
 \fi
 
@@ -130,7 +138,7 @@
     \vspace{-3.75\baselineskip}
     \begin{center}
       \hyphenpenalty=10000%
-      \@titlesize\bfseries\sffamily}
+      \@titlesize\@titlestyle}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle
@@ -157,16 +165,16 @@
       \markright{\arabic{chapter}.\arabic{section} #1}}
     \let\@oldtableofcontents\tableofcontents
     \renewcommand{\tableofcontents}{\@oldtableofcontents\chaptermark{Contents}}
-    \fancyhead[CE]{\sffamily\leftmark}
-    \fancyhead[CO]{\sffamily\rightmark}
-    \fancyhead[LE, RO]{\sffamily\thepage}
+    \fancyhead[CE]{\@headerstyle\leftmark}
+    \fancyhead[CO]{\@headerstyle\rightmark}
+    \fancyhead[LE, RO]{\@headerstyle\thepage}
     \fancypagestyle{plain}{
       \fancyhf{}
-      \fancyfoot[C]{\sffamily\thepage}
+      \fancyfoot[C]{\@headerstyle\thepage}
       \renewcommand{\headrulewidth}{0pt}}}{%
-    \fancyhead[L]{\sffamily\@thetitle}
-    \fancyhead[R]{\sffamily\@theauthor}
-    \fancyfoot[C]{\sffamily\thepage}}
+    \fancyhead[L]{\@headerstyle\@thetitle}
+    \fancyhead[R]{\@headerstyle\@theauthor}
+    \fancyfoot[C]{\@headerstyle\thepage}}
 \fi
 
 \if@acm
