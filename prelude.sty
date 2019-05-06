@@ -93,10 +93,12 @@
 \fi
 
 \RequirePackage[inline, shortlabels]{enumitem}
-\RequirePackage[plain]{fancyref}
 \RequirePackage[section]{algorithm}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
-  ragged2e, tabularx, tikz, varwidth, xifthen, xparse, xstring}
+  ragged2e, tabularx, tikz, thmtools, varwidth, xifthen, xparse, xstring}
+
+% Wants to be loaded after any package that deals with labels or references.
+\RequirePackage[capitalize]{cleveref}
 
 
 % Emptiness checking.
@@ -109,7 +111,7 @@
 \frenchspacing
 
 
-% Remove newlines
+% Remove newlines.
 
 \newcommand{\nonewlines}[1]{%
   \let\@oldnewline=\\
@@ -256,76 +258,36 @@
 % \let\@oldishcitep\citep
 % \renewcommand{\citep}[2][]{{\normalfont\@oldishcitep[#1]{#2}}}
 
-% Add new prefixes
-\newcommand*{\fancyrefsublabelprefix}{sub}
-\frefformat{plain}{\fancyrefsublabelprefix}{section\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefsublabelprefix}{Section\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefapplabelprefix}{app}
-\frefformat{plain}{\fancyrefapplabelprefix}{appendix\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefapplabelprefix}{Appendix\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefthmlabelprefix}{thm}
-\frefformat{plain}{\fancyrefthmlabelprefix}{theorem\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefthmlabelprefix}{Theorem\fancyrefdefaultspacing#1}
-\newcommand*{\fancyreflemlabelprefix}{lem}
-\frefformat{plain}{\fancyreflemlabelprefix}{lemma\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyreflemlabelprefix}{Lemma\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefproplabelprefix}{prop}
-\frefformat{plain}{\fancyrefproplabelprefix}{%
-  proposition\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefproplabelprefix}{%
-  Proposition\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefcorlabelprefix}{cor}
-\frefformat{plain}{\fancyrefcorlabelprefix}{corollary\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefcorlabelprefix}{Corollary\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefclaimlabelprefix}{claim}
-\frefformat{plain}{\fancyrefclaimlabelprefix}{claim\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefclaimlabelprefix}{Claim\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefdeflabelprefix}{def}
-\frefformat{plain}{\fancyrefdeflabelprefix}{%
-  definition\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefdeflabelprefix}{%
-  Definition\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefexlabelprefix}{ex}
-\frefformat{plain}{\fancyrefexlabelprefix}{example\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefexlabelprefix}{Example\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefexrlabelprefix}{exr}
-\frefformat{plain}{\fancyrefexrlabelprefix}{exercise\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefexrlabelprefix}{Exercise\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefitemlabelprefix}{item}
-\frefformat{plain}{\fancyrefitemlabelprefix}{#1}
-\Frefformat{plain}{\fancyrefitemlabelprefix}{#1}
-\newcommand*{\fancyrefobslabelprefix}{obs}
-\frefformat{plain}{\fancyrefobslabelprefix}{%
-  observation\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefobslabelprefix}{%
-  Observation\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefcaselabelprefix}{case}
-\frefformat{plain}{\fancyrefcaselabelprefix}{case\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefcaselabelprefix}{Case\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefalglabelprefix}{alg}
-\frefformat{plain}{\fancyrefalglabelprefix}{algorithm\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefalglabelprefix}{Algorithm\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefasmlabelprefix}{asm}
-\frefformat{plain}{\fancyrefasmlabelprefix}{%
-  assumption\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefasmlabelprefix}{%
-  Assumption\fancyrefdefaultspacing#1}
-\newcommand*{\fancyrefrmklabelprefix}{rmk}
-\frefformat{plain}{\fancyrefrmklabelprefix}{remark\fancyrefdefaultspacing#1}
-\Frefformat{plain}{\fancyrefrmklabelprefix}{Remark\fancyrefdefaultspacing#1}
-
-% Change equation reference format
-\frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
-\Frefformat{plain}{\fancyrefeqlabelprefix}{(#1)}
+% Configure cleveref.
+\newcommand{\crefrangeconjunction}{--}
+\crefname{equation}{}{}
+\Crefname{equation}{Equation}{Equations}
+\crefname{enumi}{}{}
+\Crefname{enumi}{Item}{Items}
 
 % IEEE abbreviates "Figure" to "Fig."
 \if@ieee
-  \frefformat{plain}{\fancyreffiglabelprefix}{fig.\fancyrefdefaultspacing#1}
-  \Frefformat{plain}{\fancyreffiglabelprefix}{Fig.\fancyrefdefaultspacing#1}
+  \crefname{figure}{Fig.}{Fig.}
+  % But use the whole word when starting a sentence.
+  \Crefname{figure}{Figure}{Figure}
 \fi
 
-% We always want things capitalized, even in the middle of a sentence.
-\renewcommand{\fref}{\Fref}
+% Add some backwards compatibility with fancyref.
+\newcommand{\fref}{\cref}
+\newcommand{\Fref}{\Cref}
+
+% Allow spaces between labels in \cref and \Cref.
+% (This is an egreg stackexchange answer.)
+\ExplSyntaxOn
+\cs_set_eq:Nc \bers_cref:nn { @cref }
+\cs_generate_variant:Nn \bers_cref:nn { nx }
+\cs_set_protected:cpn { @cref } #1 #2
+ {
+  \seq_set_split:Nnn \l_bers_cref_seq { , } { #2 }
+  \bers_cref:nx { #1 } { \seq_use:Nn \l_bers_cref_seq { , } }
+ }
+\seq_new:N \l_bers_cref_seq
+\ExplSyntaxOff
 
 
 % Math typesetting.
@@ -467,7 +429,7 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{claim}[theorem]{Claim}
-\newtheorem*{generictheorem*}{\@theoremname}
+\thmt@original@newtheorem*{generictheorem*}{\@theoremname}
 
 \if@acm
   \theoremstyle{acmdefinition}
@@ -479,7 +441,7 @@
 \newtheorem{assumption}[theorem]{Assumption}
 \newtheorem{exercise}{Exercise}[section]
 \newtheorem{observation}[theorem]{Observation}
-\newtheorem*{genericobservation*}{\@theoremname}
+\thmt@original@newtheorem*{genericobservation*}{\@theoremname}
 \if@acm
 \else
   \theoremstyle{remark}
@@ -523,10 +485,10 @@
 
 % Named theorems and observations.
 \newenvironment{namedtheorem*}[1]{%
-  \def\@theoremname{#1}\begin{generictheorem*}}{%
+  \newcommand{\@theoremname}{#1}\begin{generictheorem*}}{%
   \end{generictheorem*}\ignorespacesafterend}
 \newenvironment{namedobservation*}[1]{%
-  \def\@theoremname{#1}\begin{genericobservation*}}{%
+  \newcommand{\@theoremname}{#1}\begin{genericobservation*}}{%
   \end{genericobservation*}\ignorespacesafterend}
 
 % Solutions to exercises.
