@@ -272,6 +272,9 @@
   \Crefname{figure}{Figure}{Figure}
 \fi
 
+% We usually want the same names for \cref and \Cref.
+\newcommand{\cCrefname}[3]{\crefname{#1}{#2}{#3}\Crefname{#1}{#2}{#3}}
+
 % Add some backwards compatibility with fancyref.
 \newcommand{\fref}{\cref}
 \newcommand{\Fref}{\Cref}
@@ -424,11 +427,17 @@
 \else
   \newtheorem{theorem}{Theorem}[section]
 \fi
+\cCrefname{theorem}{Theorem}{Theorems}
 \newtheorem{lemma}[theorem]{Lemma}
+\cCrefname{lemma}{Lemma}{Lemmas}
 \newtheorem{proposition}[theorem]{Proposition}
+\cCrefname{proposition}{Proposition}{Propositions}
 \newtheorem{corollary}[theorem]{Corollary}
+\cCrefname{corollary}{Corollary}{Corollaries}
 \newtheorem{conjecture}[theorem]{Conjecture}
+\cCrefname{conjecture}{Conjecture}{Conjectures}
 \newtheorem{claim}[theorem]{Claim}
+\cCrefname{claim}{Claim}{Claims}
 \thmt@original@newtheorem*{generictheorem*}{\@theoremname}
 
 \if@acm
@@ -437,10 +446,15 @@
   \theoremstyle{definition}
 \fi
 \newtheorem{definition}[theorem]{Definition}
+\cCrefname{definition}{Definition}{Definitions}
 \newtheorem{example}[theorem]{Example}
+\cCrefname{example}{Example}{Examples}
 \newtheorem{assumption}[theorem]{Assumption}
+\cCrefname{assumption}{Assumption}{Assumptions}
 \newtheorem{exercise}{Exercise}[section]
+\cCrefname{exercise}{Exercise}{Exercises}
 \newtheorem{observation}[theorem]{Observation}
+\cCrefname{observation}{Observation}{Observations}
 \thmt@original@newtheorem*{genericobservation*}{\@theoremname}
 \if@acm
 \else
@@ -470,6 +484,7 @@
   \let\@oldcase\case
   \def\case{\let\thmhead\@thmheadcase\@oldcase}
 \fi
+\cCrefname{case}{Case}{Cases}
 
 \if@ieee
 \else
