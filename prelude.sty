@@ -268,13 +268,17 @@
 
 % IEEE abbreviates "Figure" to "Fig."
 \if@ieee
-  \crefname{figure}{Fig.}{Fig.}
-  % But use the whole word when starting a sentence.
-  \Crefname{figure}{Figure}{Figure}
+  \crefname{figure}{Fig.}{Figs.}
+\else
+  \crefname{figure}{Figure}{Figures}
 \fi
+% But use the whole word when starting a sentence, even in IEEE.
+\Crefname{figure}{Figure}{Figures}
 
 % We usually want the same names for \cref and \Cref.
 \newcommand{\cCrefname}[3]{\crefname{#1}{#2}{#3}\Crefname{#1}{#2}{#3}}
+
+\cCrefname{table}{Table}{Tables}
 
 % Add some backwards compatibility with fancyref.
 \newcommand{\fref}{\cref}
