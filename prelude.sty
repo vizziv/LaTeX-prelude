@@ -334,8 +334,7 @@
   % Couldn't get this to work with \itdefault, so manually expanded.
   \ifdefstring{\f@shape}{it}{%
     \iftoggle{noendsub}{\sb{}}{}\kern-\scriptspace}{}\@oldendmath}
-\catcode`\$=13 % active
-\def$#1${\(#1\)}
+% Later we do \def$#1${\(#1\)}, but first we define other macros using $.
 
 % Vertical smash for reducing height of display fractions and similar.
 \newcommand{\vsmashbelow}[1]{\raisebox{0em}[\height][0em]{$\displaystyle #1$}}
@@ -535,15 +534,17 @@
 \newcommand*\if@single[3]{%
   \setbox0\hbox{${\mathaccent"0362{#1}}^H$}%
   \setbox2\hbox{${\mathaccent"0362{\kern0pt#1}}^H$}%
-  \ifdim\ht0=\ht2 #3\else #2\fi
-  }
-%The bar will be moved to the right by a half of \macc@kerna, which is computed by amsmath:
+  \ifdim\ht0=\ht2 #3\else #2\fi}
+% The bar will be moved to the right by a half of \macc@kerna,
+% which is computed by amsmath:
 \newcommand*\rel@kern[1]{\kern#1\dimexpr\macc@kerna}
-%If there's a superscript following the bar, then no negative kern may follow the bar;
-%an additional {} makes sure that the superscript is high enough in this case:
+% If there's a superscript following the bar,
+% then no negative kern may follow the bar;
+% an additional {} makes sure that the superscript is high enough in this case:
 \newcommand*\widebar[1]{\@ifnextchar^{{\wide@bar{#1}{0}}}{\wide@bar{#1}{1}}}
-%Use a separate algorithm for single symbols:
-\newcommand*\wide@bar[2]{\if@single{#1}{\wide@bar@{#1}{#2}{1}}{\wide@bar@{#1}{#2}{2}}}
+% Use a separate algorithm for single symbols:
+\newcommand*\wide@bar[2]{%
+  \if@single{#1}{\wide@bar@{#1}{#2}{1}}{\wide@bar@{#1}{#2}{2}}}
 \newcommand*\wide@bar@[3]{%
   \begingroup
   \def\mathaccent##1##2{%
@@ -604,6 +605,10 @@
 
 
 % Macros to actually use.
+
+% Use fixed italic spacing.
+\catcode`\$=13 % active
+\def$#1${\(#1\)}
 
 % Suppress the QED symbol from a proof.
 \newcommand{\noqed}{\renewcommand{\qed}{}}
