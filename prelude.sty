@@ -211,7 +211,7 @@
 \date{\today}
 
 \if@acm
-  \newcommand{\acmformat}{\ACM@format}
+  \let\acmformat\ACM@format
   \newtoggle{noarticlenum}
   \if@ACM@authorversion
     \let\@oldsetcopyright\footnotetextcopyrightpermission
