@@ -464,16 +464,18 @@
 \cCrefname{example}{Example}{Examples}
 \newtheorem{assumption}[theorem]{Assumption}
 \cCrefname{assumption}{Assumption}{Assumptions}
-\newtheorem{exercise}{Exercise}[section]
-\cCrefname{exercise}{Exercise}{Exercises}
 \newtheorem{observation}[theorem]{Observation}
 \cCrefname{observation}{Observation}{Observations}
 \thmt@original@newtheorem*{genericobservation*}{\@theoremname}
+\newtheorem{exercise}{Exercise}[section]
+\cCrefname{exercise}{Exercise}{Exercises}
+\newtheorem{question}[exercise]{Question}
+\cCrefname{question}{Question}{Questions}
 \if@acm
 \else
   \theoremstyle{remark}
 \fi
-\newtheorem{remark}{Remark}
+\newtheorem{remark}[theorem]{Remark}
 \cCrefname{remark}{Remark}{Remarks}
 
 \if@acm
@@ -524,7 +526,11 @@
 
 \newenvironment{solution}[1][]{%
   \begin{proof}[Solution\ifempty{#1}{}{ to \cref{#1}}]
-  \noqed}{
+  \noqed}{%
+  \end{proof}\ignorespacesafterend}
+\newenvironment{answer}[1][]{%
+  \begin{proof}[Answer\ifempty{#1}{}{ to \cref{#1}}]
+  \noqed}{%
   \end{proof}\ignorespacesafterend}
 
 
