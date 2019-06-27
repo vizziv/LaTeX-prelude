@@ -98,7 +98,7 @@
 \RequirePackage[section]{algorithm}
 \RequirePackage[shortcuts]{extdash}
 \RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
-  ragged2e, tabularx, tikz, thmtools, varwidth, xifthen, xparse, xstring}
+  ragged2e, tabularx, tikz, thmtools, varwidth, xparse, xstring}
 
 % Wants to be loaded after any package that deals with labels or references.
 \RequirePackage[capitalize]{cleveref}
@@ -106,7 +106,7 @@
 
 % Emptiness checking.
 
-\newcommand{\ifempty}[3]{\ifthenelse{\isempty{#1}}{#2}{#3}}
+\newcommand{\ifempty}{\ifblank}
 
 
 % I'm done dealing with \@....
@@ -710,6 +710,7 @@
 
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
+\let\varemptyset\emptyset
 \renewcommand{\emptyset}{\varnothing}
 \newcommand{\hole}{\cdot}
 
