@@ -615,6 +615,9 @@
 
 % Macros to actually use.
 
+% For use in align and alignat.
+\newcommand{\centermathcell}[1]{\omit\hfil$\displaystyle#1$\hfil\ignorespaces}
+
 % Use fixed italic spacing.
 \catcode`\$=13 % active
 \def$#1${\(#1\)}
