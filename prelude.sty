@@ -147,7 +147,7 @@
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle
-    \thispagestyle{fancy}
+    \thispagestyle{plain}
     \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
     \if\relax\@shorttitle\relax
@@ -162,7 +162,12 @@
     \else
       \let\@theauthor\@shortauthor
     \fi}
+  \fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\@headerstyle\thepage}
+    \renewcommand{\headrulewidth}{0pt}}
   \pagestyle{fancy}
+  \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
     \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
@@ -172,11 +177,7 @@
     \renewcommand{\tableofcontents}{\@oldtableofcontents\chaptermark{Contents}}
     \fancyhead[CE]{\@headerstyle\leftmark}
     \fancyhead[CO]{\@headerstyle\rightmark}
-    \fancyhead[LE, RO]{\@headerstyle\thepage}
-    \fancypagestyle{plain}{
-      \fancyhf{}
-      \fancyfoot[C]{\@headerstyle\thepage}
-      \renewcommand{\headrulewidth}{0pt}}}{%
+    \fancyhead[LE, RO]{\@headerstyle\thepage}}{%
     \fancyhead[L]{\@headerstyle\@thetitle}
     \fancyhead[R]{\@headerstyle\@theauthor}
     \fancyfoot[C]{\@headerstyle\thepage}}
