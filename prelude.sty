@@ -635,6 +635,13 @@
 % Even more quad!
 \newcommand{\qqquad}{\hskip3em\relax}
 
+% Replace Libertine's math v with the text italic v.
+\newcommand{\usemathitv}{%
+  \mathchardef\mathv=\numexpr"7000+`v\relax
+  \begingroup\lccode`~=`v \lowercase{\endgroup\def~}{%
+    \mathit{\mkern-0.9mu\mathv\mkern0.6mu}}
+  \AtBeginDocument{\mathcode`v="8000}}
+
 % Suppress the copyright block when using ACM class and other cleaning up.
 \if@acm
   \newcommand{\nocopyright}{\renewcommand{\footnotetextcopyrightpermission}[1]{}}
