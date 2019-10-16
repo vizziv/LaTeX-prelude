@@ -94,6 +94,10 @@
   \RequirePackage[hidelinks]{hyperref}
 \fi
 
+% Helps deal with "too many math alphabets" errors.
+\newcommand{\bmmax}{3}
+\newcommand{\hmmax}{2}
+
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[section]{algorithm}
 \RequirePackage[shortcuts]{extdash}
@@ -360,17 +364,17 @@
   \endgroup
   \iftoggle{alignqedhere}{\qedhere}{}
   \global\togglefalse{alignqedhere}}
-\renewenvironment{align*}{%
-  \begin{equation*}\@prealigned\begin{aligned}[b]}{%
+\renewenvironment{align*}[1][b]{%
+  \begin{equation*}\@prealigned\begin{aligned}[#1]}{%
   \end{aligned}\@postaligned\end{equation*}\ignorespacesafterend}
-\renewenvironment{align}{%
-  \begin{equation}\@prealigned\begin{aligned}[b]}{%
+\renewenvironment{align}[1][b]{%
+  \begin{equation}\@prealigned\begin{aligned}[#1]}{%
   \end{aligned}\@postaligned\end{equation}\ignorespacesafterend}
-\renewenvironment{alignat*}[1]{%
-  \begin{equation*}\@prealigned\begin{alignedat}{#1}}{%
+\renewenvironment{alignat*}[2][b]{%
+  \begin{equation*}\@prealigned\begin{alignedat}[#1]{#2}}{%
   \end{alignedat}\@postaligned\end{equation*}\ignorespacesafterend}
-\renewenvironment{alignat}[1]{%
-  \begin{equation}\@prealigned\begin{alignedat}[b]{#1}}{%
+\renewenvironment{alignat}[2][b]{%
+  \begin{equation}\@prealigned\begin{alignedat}[#1]{#2}}{%
   \end{alignedat}\@postaligned\end{equation}\ignorespacesafterend}
 
 % Dots inside parentheses.
