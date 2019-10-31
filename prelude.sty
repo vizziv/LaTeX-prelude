@@ -120,19 +120,17 @@
 
 % Remove newlines.
 
-\newcommand{\nonewlines}[1]{%
-  \let\@oldnewline=\\
-  \let\\=\ignorespaces
-  #1%
-  \let\\=\@oldnewline}
+\newcommand{\nonewlines}[1]{{\def\\{\ignorespaces}#1}}
 
 
 % Format title, header, and footer.
 
 \if@fancyhdr
   \@ifclassloaded{book}{%
-    \newcommand{\@titlesize}{\huge}}{%
-    \newcommand{\@titlesize}{\LARGE}}
+    \newcommand{\@titlesize}{\huge}%
+  }{%
+    \newcommand{\@titlesize}{\LARGE}%
+  }
   \def\@shorttitle{}
   \let\@oldtitle\title
   \renewcommand{\title}[2][]{%
@@ -146,8 +144,10 @@
   \pretitle{%
     \vspace{-3.75\baselineskip}
     \begin{center}
+      % Protrusion can mess up centering slightly on first line of title.
+      \microtypesetup{protrusion=false}
       \hyphenpenalty=10000%
-      \@titlesize\@titlestyle}
+      \@titlestyle\@titlesize}
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle
@@ -166,7 +166,7 @@
     \else
       \let\@theauthor\@shortauthor
     \fi}
-  \fancypagestyle{plain}{
+  \fancypagestyle{plain}{%
     \fancyhf{}
     \fancyfoot[C]{\@headerstyle\thepage}
     \renewcommand{\headrulewidth}{0pt}}
@@ -181,10 +181,12 @@
     \renewcommand{\tableofcontents}{\@oldtableofcontents\chaptermark{Contents}}
     \fancyhead[CE]{\@headerstyle\leftmark}
     \fancyhead[CO]{\@headerstyle\rightmark}
-    \fancyhead[LE, RO]{\@headerstyle\thepage}}{%
+    \fancyhead[LE, RO]{\@headerstyle\thepage}%
+  }{%
     \fancyhead[L]{\@headerstyle\@thetitle}
     \fancyhead[R]{\@headerstyle\@theauthor}
-    \fancyfoot[C]{\@headerstyle\thepage}}
+    \fancyfoot[C]{\@headerstyle\thepage}%
+  }
 \fi
 
 \if@acm
@@ -426,10 +428,10 @@
 
 \newcommand{\subopt}[2]{\ifempty{#2}{#1}{#1_{#2}}}
 \newcommand{\supopt}[2]{\ifempty{#2}{#1}{#1^{#2}}}
-\newcommand{\appopt}[2]{\ifempty{#2}{#1}{#1(#2)}}
-\newcommand{\sqappopt}[2]{\ifempty{#2}{#1}{#1[#2]}}
-\newcommand{\curlappopt}[2]{\ifempty{#2}{#1}{#1\{#2\}}}
-\newcommand{\angappopt}[2]{\ifempty{#2}{#1}{#1 \langle #2 \rangle}}
+\newcommand{\appopt}[2]{\ifempty{#2}{#1}{#1\gp*{#2}}}
+\newcommand{\sqappopt}[2]{\ifempty{#2}{#1}{#1\sqgp*{#2}}}
+\newcommand{\curlappopt}[2]{\ifempty{#2}{#1}{#1\curlgp*{#2}}}
+\newcommand{\angappopt}[2]{\ifempty{#2}{#1}{#1\angle*{#2}}}
 \newcommand{\midopt}[2]{\ifempty{#2}{#1}{#1 \mid #2}}
 
 
