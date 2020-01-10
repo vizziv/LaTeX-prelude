@@ -220,10 +220,10 @@
 \if@acm
   \let\acmformat\ACM@format
   \newtoggle{noarticlenum}
+  \newlength{\authorversionskip}
+  \setlength{\authorversionskip}{0in}
   \if@ACM@authorversion
     \let\@oldsetcopyright\footnotetextcopyrightpermission
-    \newlength{\authorversionskip}
-    \setlength{\authorversionskip}{0in}
     \ifdefstring{\ACM@format}{acmsmall}{%
       \setlength{\authorversionskip}{0.39in}
       \toggletrue{noarticlenum}}{}
