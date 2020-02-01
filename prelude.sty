@@ -352,7 +352,16 @@
 
 % Use less space for align and alignat.
 % This also changes equation numbering, but in a way that I usually like.
-% It requires a trick for \qedhere to work correctly.
+% First we store the old versions.
+\csletcs{amsalign*}{align*}
+\csletcs{endamsalign*}{endalign*}
+\csletcs{amsalign}{align}
+\csletcs{endamsalign}{endalign}
+\csletcs{amsalignat*}{alignat*}
+\csletcs{endamsalignat*}{endalignat*}
+\csletcs{amsalignat}{alignat}
+\csletcs{endamsalignat}{endalignat}
+% We need a trick for \qedhere to work correctly.
 \newtoggle{alignqedhere}
 \togglefalse{alignqedhere}
 \newcommand{\@prealigned}{%
@@ -366,6 +375,7 @@
   \endgroup
   \iftoggle{alignqedhere}{\qedhere}{}
   \global\togglefalse{alignqedhere}}
+% Now we can redefine align and friends.
 \renewenvironment{align*}[1][b]{%
   \begin{equation*}\@prealigned\begin{aligned}[#1]}{%
   \end{aligned}\@postaligned\end{equation*}\ignorespacesafterend}
@@ -378,6 +388,37 @@
 \renewenvironment{alignat}[2][b]{%
   \begin{equation}\@prealigned\begin{alignedat}[#1]{#2}}{%
   \end{alignedat}\@postaligned\end{equation}\ignorespacesafterend}
+% Now we store the new versions.
+\csletcs{preludealign*}{align*}
+\csletcs{endpreludealign*}{endalign*}
+\csletcs{preludealign}{align}
+\csletcs{endpreludealign}{endalign}
+\csletcs{preludealignat*}{alignat*}
+\csletcs{endpreludealignat*}{endalignat*}
+\csletcs{preludealignat}{alignat}
+\csletcs{endpreludealignat}{endalignat}
+% We can swap between the old and new versions at will.
+\newcommand{\useamsalign}{%
+  \csdef{align*}{\csname amsalign*\endcsname}%
+  \csdef{endalign*}{\csname endamsalign*\endcsname}%
+  \csdef{align}{\csname amsalign\endcsname}%
+  \csdef{endalign}{\csname endamsalign\endcsname}%
+  \csdef{alignat*}{\csname amsalignat*\endcsname}%
+  \csdef{endalignat*}{\csname endamsalignat*\endcsname}%
+  \csdef{alignat}{\csname amsalignat\endcsname}%
+  \csdef{endalignat}{\csname endamsalignat\endcsname}%
+}
+\newcommand{\usepreludealign}{%
+  \csdef{align*}{\csname preludealign*\endcsname}%
+  \csdef{endalign*}{\csname endpreludealign*\endcsname}%
+  \csdef{align}{\csname preludealign\endcsname}%
+  \csdef{endalign}{\csname endpreludealign\endcsname}%
+  \csdef{alignat*}{\csname preludealignat*\endcsname}%
+  \csdef{endalignat*}{\csname endpreludealignat*\endcsname}%
+  \csdef{alignat}{\csname preludealignat\endcsname}%
+  \csdef{endalignat}{\csname endpreludealignat\endcsname}%
+}
+
 
 % Dots inside parentheses.
 \let\@olddots\dots
@@ -766,7 +807,7 @@
 \DeclarePairedDelimiterX\sqgp[1][]{\@resizegiven #1}
 \DeclarePairedDelimiterX\curlgp[1]\{\}{\@resizegiven #1}
 
-\renewcommand{\d}{\mathrm{d}}
+\renewcommand{\d}{\mathop{}\!\mathrm{d}}
 \newcommand{\dd}[2][]{\frac{\d #1}{\d #2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
 
