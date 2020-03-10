@@ -422,17 +422,28 @@
 
 % Dots inside parentheses.
 \let\@olddots\dots
-\renewcommand{\dots}{\@olddots\ifmmode\mkern0mu\fi}
 \let\@olddotsc\dotsc
-\renewcommand{\dotsc}{\@olddotsc\ifmmode\mkern0mu\fi}
 \let\@olddotsb\dotsb
-\renewcommand{\dotsb}{\@olddotsb\ifmmode\mkern0mu\fi}
 \let\@olddotsm\dotsm
-\renewcommand{\dotsm}{\@olddotsm\ifmmode\mkern0mu\fi}
 \let\@olddotsi\dotsi
-\renewcommand{\dotsi}{\@olddotsi\ifmmode\mkern0mu\fi}
 \let\@olddotso\dotso
-\renewcommand{\dotso}{\@olddotso\ifmmode\mkern0mu\fi}
+\newcommand{\useparenfriendlydots}{%
+  \renewcommand{\dots}{\@olddots\ifmmode\mkern0mu\fi}%
+  \renewcommand{\dotsc}{\@olddotsc\ifmmode\mkern0mu\fi}%
+  \renewcommand{\dotsb}{\@olddotsb\ifmmode\mkern0mu\fi}%
+  \renewcommand{\dotsm}{\@olddotsm\ifmmode\mkern0mu\fi}%
+  \renewcommand{\dotsi}{\@olddotsi\ifmmode\mkern0mu\fi}%
+  \renewcommand{\dotso}{\@olddotso\ifmmode\mkern0mu\fi}%
+}
+\newcommand{\useolddots}{%
+  \renewcommand{\dots}{\@olddots}%
+  \renewcommand{\dotsc}{\@olddotsc}%
+  \renewcommand{\dotsb}{\@olddotsb}%
+  \renewcommand{\dotsm}{\@olddotsm}%
+  \renewcommand{\dotsi}{\@olddotsi}%
+  \renewcommand{\dotso}{\@olddotso}%
+}
+\useparenfriendlydots
 
 
 % TikZ
