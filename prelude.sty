@@ -11,6 +11,7 @@
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
+\newif\if@oldtodo\@oldtodofalse
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{ieee}{\@ieeetrue}
@@ -19,6 +20,8 @@
 \DeclareOption{nofont}{\@nofonttrue}
 \DeclareOption{fancyhdr}{\@fancyhdrtrue}
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
+\DeclareOption{oldtodo}{\@oldtodotrue}
+\DeclareOption{nooldtodo}{\@oldtodofalse}
 
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
@@ -101,8 +104,14 @@
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[section]{algorithm}
 \RequirePackage[shortcuts]{extdash}
-\RequirePackage{bm, booktabs, dsfont, etoolbox, framed, mathtools, microtype,
+\RequirePackage{bm, booktabs, dsfont, etoolbox, mathtools, microtype,
   ragged2e, tabularx, tikz, thmtools, varwidth, xparse, xstring}
+
+\if@oldtodo
+  \RequirePackage{framed}
+\else
+  \RequirePackage[textsize=scriptsize, backgroundcolor=orange!56]{todonotes}
+\fi
 
 % Wants to be loaded after any package that deals with labels or references.
 \RequirePackage[capitalize]{cleveref}
@@ -764,16 +773,20 @@
   \vgap{\tabulateskip}\centering\tabularx{#1}{#2}}{%
   \endtabularx\vgap{\tabulateskip}\noindent\ignorespacesafterend}
 
-\newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
-\newenvironment{todo}{%
-  \begin{framed}\noindent\textbf{TODO:}}{%
-  \end{framed}\ignorespacesafterend}
+\if@oldtodo
+  \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
+  \newenvironment{todo}{%
+    \begin{framed}\noindent\textbf{TODO:}}{%
+    \end{framed}\ignorespacesafterend}
+  \newcommand{\marginnote}[1]{\marginpar{\scriptsize #1}}
+\else
+  \let\@oldtodo\todo
+  \renewcommand{\todo}{\unskip\@oldtodo}
+\fi
 \if@acm
-  \setlength\marginparwidth{0.62in}
+  \setlength\marginparwidth{0.52in}
   \setlength\marginparsep{0.06in}
 \fi
-\newcommand{\marginnote}[1]{\marginpar{\scriptsize #1}}
-
 
 % Math macros.
 
