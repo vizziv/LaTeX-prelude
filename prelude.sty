@@ -110,7 +110,10 @@
 \if@oldtodo
   \RequirePackage{framed}
 \else
-  \RequirePackage[textsize=scriptsize, backgroundcolor=orange!56]{todonotes}
+\RequirePackage[textsize=scriptsize,
+  bordercolor=orange!91!black,
+  linecolor=orange!91!black,
+  backgroundcolor=orange!31]{todonotes}
 \fi
 
 % Wants to be loaded after any package that deals with labels or references.
@@ -779,9 +782,6 @@
     \begin{framed}\noindent\textbf{TODO:}}{%
     \end{framed}\ignorespacesafterend}
   \newcommand{\marginnote}[1]{\marginpar{\scriptsize #1}}
-\else
-  \let\@oldtodo\todo
-  \renewcommand{\todo}{\unskip\@oldtodo}
 \fi
 \if@acm
   \setlength\marginparwidth{0.52in}
