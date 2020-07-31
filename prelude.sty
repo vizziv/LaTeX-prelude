@@ -688,10 +688,6 @@
 % For use in align and alignat.
 \newcommand{\centermathcell}[1]{\omit\hfil$\displaystyle#1$\hfil\ignorespaces}
 
-% Use fixed italic spacing.
-\catcode`\$=13 % active
-\def$#1${\(#1\)}
-
 % Suppress the QED symbol from a proof.
 \newcommand{\noqed}{\renewcommand{\qed}{}}
 
@@ -852,5 +848,15 @@
   \@resizegiven
   #1}
 
+% Easier interface to restatable theorems
+\patchcmd{\thmt@restatable}{\label{thmt@@#3}}{\label{thmt@@#3}\label{#3}}{}{}
+\newcommand{\restate}{\@ifstar{\restate@star}{\restate@nostar}}
+\newcommand{\restate@star}[1]{\csuse{#1}*}
+\newcommand{\restate@nostar}[1]{\csuse{#1}}
+
+% Use fixed italic spacing for inline math.
+% This is after everything else so that it doesn't mess up earlier macro definitions.
+\catcode`\$=13 % active
+\def$#1${\(#1\)}
 
 \endinput
