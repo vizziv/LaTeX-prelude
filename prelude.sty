@@ -851,8 +851,16 @@
 % Easier interface to restatable theorems
 \patchcmd{\thmt@restatable}{\label{thmt@@#3}}{\label{thmt@@#3}\label{#3}}{}{}
 \newcommand{\restate}{\@ifstar{\restate@star}{\restate@nostar}}
-\newcommand{\restate@star}[1]{\csuse{#1}*}
-\newcommand{\restate@nostar}[1]{\csuse{#1}}
+\newcommand{\restate@star}[1]{%
+  \ifcsdef{#1}{\csuse{#1}*}{\PackageError{prelude}
+    {Attempted to restate an undeclared theorem}
+    {You need to use a restatable environment to declare the theorem
+      before restating it}}}
+\newcommand{\restate@nostar}[1]{%
+  \ifcsdef{#1}{\csuse{#1}}{\PackageError{prelude}
+    {Attempted to restate an undeclared theorem}
+    {You need to use a restatable environment to declare the theorem
+      before restating it}}}
 
 % Use fixed italic spacing for inline math.
 % This is after everything else so that it doesn't mess up earlier macro definitions.
