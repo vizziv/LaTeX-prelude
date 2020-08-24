@@ -849,7 +849,13 @@
   #1}
 
 % Easier interface to restatable theorems
-\patchcmd{\thmt@restatable}{\label{thmt@@#3}}{\label{thmt@@#3}\label{#3}}{}{}
+% The \csuse stuff deals with the fact that the \thmt@restatable command is
+% defined using \newcommand and takes an optional argument.
+\expandafter\patchcmd\csname\string\thmt@restatable\endcsname{%
+  \label{thmt@@#3}%
+}{%
+  \label{#3}\label{thmt@@#3}%
+}{}{}
 \newcommand{\restate}{\@ifstar{\restate@star}{\restate@nostar}}
 \newcommand{\restate@star}[1]{%
   \ifcsdef{#1}{\csuse{#1}*}{\PackageError{prelude}
