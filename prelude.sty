@@ -163,6 +163,7 @@
   \let\@oldmaketitle\maketitle
   \renewcommand{\maketitle}{%
     \@oldmaketitle
+    \def\and{\unskip, }
     \thispagestyle{plain}
     \vspace{-2\baselineskip}
     % Usual "if empty" hack. Could maybe use \ifempty.
