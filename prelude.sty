@@ -873,6 +873,10 @@
     {You need to use a restatable environment to declare the theorem
       before restating it}}}
 
+% Tag one line of an align*.
+% Mostly useful when using amsalign.
+\newcommand{\yestag}{\stepcounter{equation}\tag{\theequation}}
+
 % Use fixed italic spacing for inline math.
 % This is after everything else so that it doesn't mess up earlier macro definitions.
 \catcode`\$=13 % active
