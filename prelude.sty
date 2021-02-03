@@ -50,7 +50,8 @@
 
 
 % AMS packages often need to be first for compatibility.
-\RequirePackage{amsmath, amsthm}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
 \newcommand{\@titlestyleoptions}{sf, bf}
@@ -104,8 +105,19 @@
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[section]{algorithm}
 \RequirePackage[shortcuts]{extdash}
-\RequirePackage{bm, booktabs, dsfont, etoolbox, mathtools, microtype,
-  ragged2e, tabularx, tikz, thmtools, varwidth, xparse, xstring}
+\RequirePackage{bm}
+\RequirePackage{booktabs}
+\RequirePackage{dsfont}
+\RequirePackage{etoolbox}
+\RequirePackage{mathtools}
+\RequirePackage{microtype}
+\RequirePackage{ragged2e}
+\RequirePackage{tabularx}
+\RequirePackage{tikz}
+\RequirePackage{thmtools}
+\RequirePackage{varwidth}
+\RequirePackage{xparse}
+\RequirePackage{xstring}
 
 \if@oldtodo
   \RequirePackage{framed}
