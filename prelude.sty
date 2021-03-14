@@ -12,6 +12,7 @@
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
 \newif\if@oldtodo\@oldtodofalse
+\newif\if@amsalign\@amsaligntrue
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{ieee}{\@ieeetrue}
@@ -22,6 +23,8 @@
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
 \DeclareOption{oldtodo}{\@oldtodotrue}
 \DeclareOption{nooldtodo}{\@oldtodofalse}
+\DeclareOption{amsalign}{\@amsaligntrue}
+\DeclareOption{preludealign}{\@amsalignfalse}
 
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
@@ -443,7 +446,9 @@
   \csdef{alignat}{\csname preludealignat\endcsname}%
   \csdef{endalignat}{\csname endpreludealignat\endcsname}%
 }
-
+\if@amsalign
+  \useamsalign
+\fi
 
 % Dots inside parentheses.
 \let\@olddots\dots
