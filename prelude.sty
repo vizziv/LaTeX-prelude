@@ -251,6 +251,7 @@
   \newlength{\authorversionskip}
   \setlength{\authorversionskip}{0in}
   \if@ACM@authorversion
+    \settopmatter{printfolios}
     \let\@oldsetcopyright\footnotetextcopyrightpermission
     \ifdefstring{\ACM@format}{acmsmall}{%
       \setlength{\authorversionskip}{0.39in}
