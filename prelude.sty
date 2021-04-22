@@ -58,6 +58,7 @@
 % AMS packages often need to be first for compatibility.
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
+\RequirePackage{amsfonts}
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
 \newcommand{\@titlestyleoptions}{sf, bf}
@@ -358,7 +359,7 @@
 
 % Use doublestroke for blackboard bold fonts.
 \let\oldmathbb\mathbb
-\def\mathbb{\mathds}
+\renewcommand{\mathbb}{\mathds}
 
 % Correct spacing of italic text before inline math.
 \mathtoolsset{mathic}
