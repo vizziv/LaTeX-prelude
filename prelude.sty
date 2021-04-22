@@ -7,6 +7,7 @@
 \newif\if@acm\@acmfalse
 \newif\if@acmold\@acmoldfalse
 \newif\if@ieee\@ieeefalse
+\newif\if@ieeeold\@ieeefalse
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
@@ -16,6 +17,7 @@
 \DeclareOption{acm}{\@acmtrue}
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{ieee}{\@ieeetrue}
+\DeclareOption{ieeeold}{\@ieeeoldtrue}
 \DeclareOption{libertine}{\@libertinetrue}
 \DeclareOption{charter}{\@chartertrue}
 \DeclareOption{nofont}{\@nofonttrue}
@@ -29,8 +31,9 @@
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieee, nofont}}{%
-      \ExecuteOptions{libertine, fancyhdr}}}
+    \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont}}{%
+      \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont}}{%
+        \ExecuteOptions{libertine, fancyhdr}}}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
@@ -44,7 +47,7 @@
   \let\endproof\undefined
 \fi
 
-\if@ieee
+\if@ieeeold
   \let\proof\undefined
   \let\endproof\undefined
   \let\labelindent\undefined
@@ -317,7 +320,7 @@
 
 % Some styles abbreviate "Figure" to "Fig.",
 % but we should still use "Figure" at the start of a sentence.
-\if@ieee
+\if@ieeeold
   \crefname{figure}{Fig.}{Figs.}
 \fi
 \ifdefstring{\ACM@format}{acmsmall}{%
@@ -354,6 +357,7 @@
 \renewcommand{\text}{\textnormal}
 
 % Use doublestroke for blackboard bold fonts.
+\let\oldmathbb\mathbb
 \def\mathbb{\mathds}
 
 % Correct spacing of italic text before inline math.
@@ -525,7 +529,7 @@
 \else
   \theoremstyle{plain}
 \fi
-\if@ieee
+\if@ieeeold
   \newtheorem{theorem}{Theorem}
 \else
   \newtheorem{theorem}{Theorem}[section]
@@ -596,7 +600,7 @@
 \fi
 \cCrefname{case}{Case}{Cases}
 
-\if@ieee
+\if@ieeeold
 \else
   \numberwithin{equation}{section}
   \numberwithin{figure}{section}
