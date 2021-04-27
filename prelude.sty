@@ -15,9 +15,11 @@
 \newif\if@oldtodo\@oldtodofalse
 \newif\if@amsalign\@amsaligntrue
 \DeclareOption{acm}{\@acmtrue}
+% acmold DOES NOT imply acm
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{ieee}{\@ieeetrue}
-\DeclareOption{ieeeold}{\@ieeeoldtrue}
+% ieeeold DOES imply ieee
+\DeclareOption{ieeeold}{\@ieeetrue\@ieeeoldtrue}
 \DeclareOption{libertine}{\@libertinetrue}
 \DeclareOption{charter}{\@chartertrue}
 \DeclareOption{nofont}{\@nofonttrue}
@@ -321,7 +323,7 @@
 
 % Some styles abbreviate "Figure" to "Fig.",
 % but we should still use "Figure" at the start of a sentence.
-\if@ieeeold
+\if@ieee
   \crefname{figure}{Fig.}{Figs.}
 \fi
 \ifdefstring{\ACM@format}{acmsmall}{%
@@ -530,7 +532,7 @@
 \else
   \theoremstyle{plain}
 \fi
-\if@ieeeold
+\if@ieee
   \newtheorem{theorem}{Theorem}
 \else
   \newtheorem{theorem}{Theorem}[section]
@@ -601,7 +603,7 @@
 \fi
 \cCrefname{case}{Case}{Cases}
 
-\if@ieeeold
+\if@ieee
 \else
   \numberwithin{equation}{section}
   \numberwithin{figure}{section}
