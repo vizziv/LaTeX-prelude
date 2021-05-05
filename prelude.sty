@@ -14,6 +14,7 @@
 \newif\if@fancyhdr\@fancyhdrfalse
 \newif\if@oldtodo\@oldtodofalse
 \newif\if@amsalign\@amsaligntrue
+\newif\if@numberinsection\@numberinsectiontrue
 \DeclareOption{acm}{\@acmtrue}
 % acmold DOES NOT imply acm
 \DeclareOption{acmold}{\@acmoldtrue}
@@ -29,12 +30,14 @@
 \DeclareOption{nooldtodo}{\@oldtodofalse}
 \DeclareOption{amsalign}{\@amsaligntrue}
 \DeclareOption{preludealign}{\@amsalignfalse}
+\DeclareOption{numberinsection}{\@numberinsectiontrue}
+\DeclareOption{numberglobal}{\@numberinsectionfalse}
 
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont}}{%
-      \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont}}{%
+    \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont, numberglobal}}{%
+      \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont, numberglobal}}{%
         \ExecuteOptions{libertine, fancyhdr}}}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
@@ -112,8 +115,14 @@
 \newcommand{\bmmax}{3}
 \newcommand{\hmmax}{2}
 
+
+\if@numberinsection
+  \RequirePackage[section]{algorithm}
+\else
+  \RequirePackage{algorithm}
+\fi
+
 \RequirePackage[inline, shortlabels]{enumitem}
-\RequirePackage[section]{algorithm}
 \RequirePackage[shortcuts]{extdash}
 \RequirePackage{bm}
 \RequirePackage{booktabs}
@@ -534,10 +543,10 @@
 \else
   \theoremstyle{plain}
 \fi
-\if@ieee
-  \newtheorem{theorem}{Theorem}
-\else
+\if@numberinsection
   \newtheorem{theorem}{Theorem}[section]
+\else
+  \newtheorem{theorem}{Theorem}
 \fi
 \cCrefname{theorem}{Theorem}{Theorems}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -605,8 +614,7 @@
 \fi
 \cCrefname{case}{Case}{Cases}
 
-\if@ieee
-\else
+\if@numberinsection
   \numberwithin{equation}{section}
   \numberwithin{figure}{section}
   \numberwithin{table}{section}
