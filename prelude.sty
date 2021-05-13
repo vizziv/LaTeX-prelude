@@ -315,6 +315,9 @@
 % \let\@oldishcitep\citep
 % \renewcommand{\citep}[2][]{{\normalfont\@oldishcitep[#1]{#2}}}
 
+% Fix a bug in natbib.
+\patchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}
+
 
 % References.
 
