@@ -63,8 +63,11 @@
 % AMS packages often need to be first for compatibility.
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
-\RequirePackage{amsfonts}
-\RequirePackage{amssymb}
+\if@acm
+\else
+  \RequirePackage{amsfonts}
+  \RequirePackage{amssymb}
+\fi
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
 \newcommand{\@titlestyleoptions}{sf, bf}
