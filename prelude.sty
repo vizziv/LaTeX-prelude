@@ -546,27 +546,40 @@
 
 % Theorems.
 
+% See new restatble interface below.
+\newcommand{\newrestatable}[1]{%
+  \csdef{restatable:#1}{\restatable@begin{}{#1}}
+  \csdef{restatable*:#1}{\restatable@begin{*}{#1}}
+  \csdef{endrestatable:#1}{\csuse{endrestatable}}
+  \csdef{endrestatable*:#1}{\csuse{endrestatable*}}
+}
+
+\newcommand{\newtheoremenv}[4][theorem]{%
+  \newtheorem{#2}[#1]{#3}
+  \cCrefname{#2}{#3}{#4}
+  \newrestatable{#2}
+}
+
 \if@acm
   \theoremstyle{acmplain}
 \else
   \theoremstyle{plain}
 \fi
+
 \if@numberinsection
   \newtheorem{theorem}{Theorem}[section]
 \else
   \newtheorem{theorem}{Theorem}
 \fi
 \cCrefname{theorem}{Theorem}{Theorems}
-\newtheorem{lemma}[theorem]{Lemma}
-\cCrefname{lemma}{Lemma}{Lemmas}
-\newtheorem{proposition}[theorem]{Proposition}
-\cCrefname{proposition}{Proposition}{Propositions}
-\newtheorem{corollary}[theorem]{Corollary}
-\cCrefname{corollary}{Corollary}{Corollaries}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\cCrefname{conjecture}{Conjecture}{Conjectures}
-\newtheorem{claim}[theorem]{Claim}
-\cCrefname{claim}{Claim}{Claims}
+\newrestatable{theorem}
+
+\newtheoremenv{lemma}{Lemma}{Lemmas}
+\newtheoremenv{proposition}{Proposition}{Propositions}
+\newtheoremenv{corollary}{Corollary}{Corollaries}
+\newtheoremenv{conjecture}{Conjecture}{Conjectures}
+\newtheoremenv{claim}{Claim}{Claims}
+
 \thmt@original@newtheorem*{generictheorem*}{\@theoremname}
 
 \if@acm
@@ -574,29 +587,27 @@
 \else
   \theoremstyle{definition}
 \fi
-\newtheorem{definition}[theorem]{Definition}
-\cCrefname{definition}{Definition}{Definitions}
-\newtheorem{example}[theorem]{Example}
-\cCrefname{example}{Example}{Examples}
-\newtheorem{assumption}[theorem]{Assumption}
-\cCrefname{assumption}{Assumption}{Assumptions}
-\newtheorem{condition}[theorem]{Condition}
-\cCrefname{condition}{Condition}{Conditions}
-\newtheorem{observation}[theorem]{Observation}
-\cCrefname{observation}{Observation}{Observations}
+
+\newtheoremenv{definition}{Definition}{Definitions}
+\newtheoremenv{example}{Example}{Examples}
+\newtheoremenv{assumption}{Assumption}{Assumptions}
+\newtheoremenv{condition}{Condition}{Conditions}
+\newtheoremenv{observation}{Observation}{Observations}
+
 \thmt@original@newtheorem*{genericobservation*}{\@theoremname}
+
 \newtheorem{exercise}{Exercise}[section]
 \cCrefname{exercise}{Exercise}{Exercises}
-\newtheorem{question}[exercise]{Question}
-\cCrefname{question}{Question}{Questions}
-\newtheorem{problem}[exercise]{Problem}
-\cCrefname{problem}{Problem}{Problems}
+\newrestatable{exercise}
+
+\newtheoremenv[exercise]{question}{Question}{Questions}
+\newtheoremenv[exercise]{problem}{Problem}{Problems}
+
 \if@acm
 \else
   \theoremstyle{remark}
 \fi
-\newtheorem{remark}[theorem]{Remark}
-\cCrefname{remark}{Remark}{Remarks}
+\newtheoremenv{remark}{Remark}{Remarks}
 
 \if@acm
   \newtheoremstyle{acmcase}
@@ -896,14 +907,21 @@
   \@resizegiven
   #1}
 
-% Easier interface to restatable theorems
-% The \csuse stuff deals with the fact that the \thmt@restatable command is
-% defined using \newcommand and takes an optional argument.
-\expandafter\patchcmd\csname\string\thmt@restatable\endcsname{%
-  \label{thmt@@#3}%
-}{%
-  \label{#3}\label{thmt@@#3}%
-}{}{}
+% Easier interface to restatable theorems.
+% Use \newrestatable{env} to make restatable versions, restatable:env and restatable*:env.
+% The first thing in a restatable theorem has to be \label{lbl} (for some lbl).
+% To restate a restatable theorem, use \restate{lbl} or \restate*{lbl}.
+\def\restatable@begin@aux#1#2[#3]#4#5{%
+  \ifx#4\label
+  \else
+    \PackageError{prelude}
+      {Missing label in restatable theorem environment (restatable#1:#2)}
+      {The first thing in the environment should be a label.
+        You can use the label name with the restate command to restate the theorem.}
+  \fi
+  \csuse{restatable#1}[#3]{#2}{#5}\label{#5}
+}
+\newcommand{\restatable@begin}[2]{\@ifnextchar[{\restatable@begin@aux{#1}{#2}}{\restatable@begin@aux{#1}{#2}[]}}
 \newcommand{\restate}{\@ifstar{\restate@star}{\restate@nostar}}
 \newcommand{\restate@star}[1]{%
   \ifcsdef{#1}{\csuse{#1}*}{\PackageError{prelude}
