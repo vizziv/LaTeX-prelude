@@ -423,7 +423,9 @@
   % Using global scope is okay because equations don't nest.
   \begingroup
   \renewcommand{\qedhere}{%
-    \global\toggletrue{alignqedhere}}}
+    \global\toggletrue{alignqedhere}}%
+  \!% see http://tex.stackexchange.com/questions/98482
+}
 \newcommand{\@postaligned}{%
   \endgroup
   \iftoggle{alignqedhere}{\qedhere}{}
