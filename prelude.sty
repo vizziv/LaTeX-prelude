@@ -127,6 +127,7 @@
 
 \RequirePackage[inline, shortlabels]{enumitem}
 \RequirePackage[shortcuts]{extdash}
+\RequirePackage[labelformat=simple]{subcaption}
 \RequirePackage{bm}
 \RequirePackage{booktabs}
 \RequirePackage{dsfont}
@@ -347,6 +348,7 @@
   \crefname{figure}{Fig.}{Figs.}}{}
 \ifdefstring{\ACM@format}{acmlarge}{%
   \crefname{figure}{Fig.}{Figs.}}{}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
 
 % Allow spaces between labels in \cref and \Cref.
 % (This is an egreg stackexchange answer.)
