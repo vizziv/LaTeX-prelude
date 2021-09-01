@@ -556,10 +556,17 @@
   \csdef{endrestatable*:#1}{\csuse{endrestatable*}}
 }
 
+\newcommand{\newtheoremenumerate}[1]{%
+  \newlist{enumerate:#1}{enumerate}{1}
+  \crefalias{enumerate:#1i}{#1}
+  \setlist[enumerate:#1]{label=(\alph*), ref=\csuse{the#1}(\alph*)}
+}
+
 \newcommand{\newtheoremenv}[4][theorem]{%
   \newtheorem{#2}[#1]{#3}
   \cCrefname{#2}{#3}{#4}
   \newrestatable{#2}
+  \newtheoremenumerate{#2}
 }
 
 \if@acm
@@ -575,6 +582,7 @@
 \fi
 \cCrefname{theorem}{Theorem}{Theorems}
 \newrestatable{theorem}
+\newtheoremenumerate{theorem}
 
 \newtheoremenv{lemma}{Lemma}{Lemmas}
 \newtheoremenv{proposition}{Proposition}{Propositions}
