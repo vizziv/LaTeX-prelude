@@ -19,8 +19,8 @@
 % acmold DOES NOT imply acm
 \DeclareOption{acmold}{\@acmoldtrue}
 \DeclareOption{ieee}{\@ieeetrue}
-% ieeeold DOES imply ieee
-\DeclareOption{ieeeold}{\@ieeetrue\@ieeeoldtrue}
+% ieeeold DOES NOT imply ieee
+\DeclareOption{ieeeold}{\@ieeeoldtrue}
 \DeclareOption{libertine}{\@libertinetrue}
 \DeclareOption{charter}{\@chartertrue}
 \DeclareOption{nofont}{\@nofonttrue}
@@ -342,6 +342,9 @@
 % Some styles abbreviate "Figure" to "Fig.",
 % but we should still use "Figure" at the start of a sentence.
 \if@ieee
+  \crefname{figure}{Fig.}{Figs.}
+\fi
+\if@ieeeold
   \crefname{figure}{Fig.}{Figs.}
 \fi
 \ifdefstring{\ACM@format}{acmsmall}{%
