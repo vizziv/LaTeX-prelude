@@ -946,7 +946,38 @@
 
 % Tag one line of an align*.
 % Mostly useful when using amsalign.
-\newcommand{\yestag}{\stepcounter{equation}\tag{\theequation}}
+% The \cref@currentlabel hackery makes this work with sort&compress in cleveref.
+% See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command.
+\if@numberinsection
+  \newcommand{\yestag@cref@format}{[equation][\arabic{equation}][\thesection]}
+\else
+  \newcommand{\yestag@cref@format}{[equation][\theequation][]}
+\fi
+\newcommand*\yestag@make@df@tag@@[1]{%
+  \cref@old@make@df@tag@@{#1}%
+  \let\cref@old@df@tag\df@tag
+  \expandafter\gdef\expandafter\df@tag\expandafter{%
+    \cref@old@df@tag
+    \def\cref@currentlabel{\yestag@cref@format#1}%
+  }%
+}
+\newcommand*\yestag@make@df@tag@@@[1]{%
+  \cref@old@make@df@tag@@@{#1}%
+  \let\cref@old@df@tag\df@tag
+  \expandafter\gdef\expandafter\df@tag\expandafter{%
+    \cref@old@df@tag
+    \toks@\@xp{\p@equation{#1}}%
+    \edef\cref@currentlabel{\yestag@cref@format\the\toks@}%
+  }%
+}
+\newcommand{\yestag}{%
+  \refstepcounter{equation}%
+  \begingroup%
+    \let\make@df@tag@@\yestag@make@df@tag@@
+    \let\make@df@tag@@@\yestag@make@df@tag@@@
+  \tag{\theequation}%
+  \endgroup%
+}
 
 % Use fixed italic spacing for inline math.
 % This is after everything else so that it doesn't mess up earlier macro definitions.
