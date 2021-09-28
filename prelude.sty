@@ -21,9 +21,9 @@
 \DeclareOption{ieee}{\@ieeetrue}
 % ieeeold DOES NOT imply ieee
 \DeclareOption{ieeeold}{\@ieeeoldtrue}
-\DeclareOption{libertine}{\@libertinetrue}
-\DeclareOption{charter}{\@chartertrue}
-\DeclareOption{nofont}{\@nofonttrue}
+\DeclareOption{libertine}{\@libertinetrue\@charterfalse\@nofontfalse}
+\DeclareOption{charter}{\@chartertrue\@libertinefalse\@nofontfalse}
+\DeclareOption{nofont}{\@nofonttrue\@libertinefalse\@charterfalse}
 \DeclareOption{fancyhdr}{\@fancyhdrtrue}
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
 \DeclareOption{oldtodo}{\@oldtodotrue}
@@ -71,20 +71,20 @@
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
 \newcommand{\@titlestyleoptions}{sf, bf}
-\newcommand{\@headerstyle}{\sffamily}
+\newcommand{\@headerstyle}{}
 \def\@definefonts{}
 \if@libertine
   \def\@definefonts{%
     \RequirePackage[tt=false]{libertine}
     \RequirePackage[varqu]{zi4}
     \RequirePackage[libertine]{newtxmath}}
+  \renewcommand{\@headerstyle}{\sffamily}
 \fi
 \if@charter
   \def\@definefonts{%
     \RequirePackage[charter, cal=cmcal]{mathdesign}
     \RequirePackage[varqu]{zi4}
     \RequirePackage{berasans}}
-  \renewcommand{\@headerstyle}{}
 \fi
 \if@nofont
   \def\@definefonts{}
