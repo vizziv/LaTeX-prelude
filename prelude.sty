@@ -8,10 +8,12 @@
 \newif\if@acmold\@acmoldfalse
 \newif\if@ieee\@ieeefalse
 \newif\if@ieeeold\@ieeefalse
+\newif\if@lipics\@lipicsfalse
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
+\newif\if@natbib\@natbibtrue
 \newif\if@oldtodo\@oldtodofalse
 \newif\if@amsalign\@amsaligntrue
 \newif\if@numberinsection\@numberinsectiontrue
@@ -21,11 +23,14 @@
 \DeclareOption{ieee}{\@ieeetrue}
 % ieeeold DOES NOT imply ieee
 \DeclareOption{ieeeold}{\@ieeeoldtrue}
+\DeclareOption{lipics}{\@lipicstrue}
 \DeclareOption{libertine}{\@libertinetrue\@charterfalse\@nofontfalse}
 \DeclareOption{charter}{\@chartertrue\@libertinefalse\@nofontfalse}
 \DeclareOption{nofont}{\@nofonttrue\@libertinefalse\@charterfalse}
 \DeclareOption{fancyhdr}{\@fancyhdrtrue}
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
+\DeclareOption{natbib}{\@natbibtrue}
+\DeclareOption{nonatbib}{\@natbibfalse}
 \DeclareOption{oldtodo}{\@oldtodotrue}
 \DeclareOption{nooldtodo}{\@oldtodofalse}
 \DeclareOption{amsalign}{\@amsaligntrue}
@@ -43,6 +48,12 @@
   \newif\if@ACM@authorversion}
 
 \ProcessOptions\relax
+
+\if@lipics
+  \@libertinefalse
+  \@nofonttrue
+  \@fancyhdrfalse
+\fi
 
 
 % Packages.
@@ -105,11 +116,16 @@
     \rule{\textwidth}{\heavyrulewidth}]
 \fi
 
+
 \if@acm
   \AtBeginDocument{\setcitestyle{numbers,sort&compress,square}}
 \else
-  \RequirePackage[numbers, sort&compress, square]{natbib}
-  \RequirePackage[hidelinks]{hyperref}
+  \if@natbib
+    \RequirePackage[numbers, sort&compress, square]{natbib}
+  \fi
+  \if@lipics\else
+    \RequirePackage[hidelinks]{hyperref}
+  \fi
 \fi
 
 % Helps deal with "too many math alphabets" errors.
@@ -150,7 +166,9 @@
 \fi
 
 % Wants to be loaded after any package that deals with labels or references.
-\RequirePackage[capitalize]{cleveref}
+\if@lipics\else
+  \RequirePackage[capitalize]{cleveref}
+\fi
 
 
 % Emptiness checking.
@@ -289,8 +307,14 @@
 
 % Citations.
 
+\newtoggle{natbibpatch}
+\togglefalse{natbibpatch}
+
+\if@natbib
+
 % Prevents break between previous text and citation number,
 % unless the citation command is given an optional argument.
+
 \let\@oldcitet\citet
 \renewcommand{\citet}[2][]{%
   % \NAT@spacechar goes between the author name and citation number.
@@ -319,14 +343,21 @@
 % \let\@oldishcitep\citep
 % \renewcommand{\citep}[2][]{{\normalfont\@oldishcitep[#1]{#2}}}
 
+\toggletrue{natbibpatch}
+
+\fi % \if@natbib
+
 % Fix a bug in natbib.
-\patchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}
+% Uses toggle because it's patching a plain TeX \else.
+\iftoggle{natbibpatch}{\patchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}}{}
 
 
 % References.
 
-\newcommand{\crefrangeconjunction}{--}
-\newcommand{\creflastconjunction}{, and~}
+\if@lipics\else
+  \newcommand{\crefrangeconjunction}{--}
+  \newcommand{\creflastconjunction}{, and~}
+\fi
 
 % We usually want the same names for \cref and \Cref.
 \newcommand{\cCrefname}[3]{\crefname{#1}{#2}{#3}\Crefname{#1}{#2}{#3}}
@@ -566,7 +597,9 @@
 }
 
 \newcommand{\newtheoremenv}[4][theorem]{%
-  \newtheorem{#2}[#1]{#3}
+  \if@lipics\else
+    \newtheorem{#2}[#1]{#3}
+  \fi
   \cCrefname{#2}{#3}{#4}
   \newrestatable{#2}
   \newtheoremenumerate{#2}
@@ -578,10 +611,12 @@
   \theoremstyle{plain}
 \fi
 
-\if@numberinsection
-  \newtheorem{theorem}{Theorem}[section]
-\else
-  \newtheorem{theorem}{Theorem}
+\if@lipics\else
+  \if@numberinsection
+    \newtheorem{theorem}{Theorem}[section]
+  \else
+    \newtheorem{theorem}{Theorem}
+  \fi
 \fi
 \cCrefname{theorem}{Theorem}{Theorems}
 \newrestatable{theorem}
@@ -609,7 +644,9 @@
 
 \thmt@original@newtheorem*{genericobservation*}{\@theoremname}
 
-\newtheorem{exercise}{Exercise}[section]
+\if@lipics\else
+  \newtheorem{exercise}{Exercise}[section]
+\fi
 \cCrefname{exercise}{Exercise}{Exercises}
 \newrestatable{exercise}
 
