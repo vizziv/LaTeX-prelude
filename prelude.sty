@@ -76,7 +76,7 @@
 \if@libertine
   \def\@definefonts{%
     \RequirePackage[tt=false]{libertine}
-    \RequirePackage[varqu]{zi4}
+    \RequirePackage[varqu, scaled=0.95]{zi4}
     \RequirePackage[libertine]{newtxmath}}
   \renewcommand{\@headerstyle}{\small\sffamily}
 \fi
@@ -194,11 +194,7 @@
       \hyphenpenalty=10000%
       \@titlestyle\@titlesize}
   \let\@oldmaketitle\maketitle
-  \renewcommand{\maketitle}{%
-    \@oldmaketitle
-    \def\and{\unskip, }
-    \thispagestyle{plain}
-    \vspace{-2\baselineskip}
+  \newcommand{\inittitleauthor}{%
     % Usual "if empty" hack. Could maybe use \ifempty.
     \if\relax\@shorttitle\relax
       \def\@titlenonewlines{\nonewlines{\@title}}
@@ -212,6 +208,12 @@
     \else
       \let\@theauthor\@shortauthor
     \fi}
+  \renewcommand{\maketitle}{%
+    \@oldmaketitle
+    \def\and{\unskip, }
+    \thispagestyle{plain}
+    \vspace{-2\baselineskip}
+    \inittitleauthor}
   \fancypagestyle{plain}{%
     \fancyhf{}
     \fancyfoot[C]{\@headerstyle\thepage}
