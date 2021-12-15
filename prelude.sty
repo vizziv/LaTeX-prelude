@@ -9,6 +9,7 @@
 \newif\if@ieee\@ieeefalse
 \newif\if@ieeeold\@ieeefalse
 \newif\if@lipics\@lipicsfalse
+\newif\if@informs\@informsfalse
 \newif\if@libertine\@libertinefalse
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
@@ -24,6 +25,7 @@
 % ieeeold DOES NOT imply ieee
 \DeclareOption{ieeeold}{\@ieeeoldtrue}
 \DeclareOption{lipics}{\@lipicstrue}
+\DeclareOption{informs}{\@informstrue}
 \DeclareOption{libertine}{\@libertinetrue\@charterfalse\@nofontfalse}
 \DeclareOption{charter}{\@chartertrue\@libertinefalse\@nofontfalse}
 \DeclareOption{nofont}{\@nofonttrue\@libertinefalse\@charterfalse}
@@ -43,7 +45,8 @@
   \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
     \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont, numberglobal}}{%
       \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont, numberglobal}}{%
-        \ExecuteOptions{libertine, fancyhdr}}}}
+        \@ifclassloaded{informs3}{\ExecuteOptions{informs, nofont}}{
+          \ExecuteOptions{libertine, fancyhdr}}}}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
@@ -58,16 +61,18 @@
 
 % Packages.
 
+\RequirePackage{noconflict}
+
 \if@acmold
-  \let\proof\undefined
-  \let\endproof\undefined
+  \save{acmold@}{proof, endproof}
 \fi
 
 \if@ieeeold
-  \let\proof\undefined
-  \let\endproof\undefined
-  \let\labelindent\undefined
-  \let\NAT@parse\undefined
+  \save{ieeeold@}{proof, endproof, labelindent, NAT@parse}
+\fi
+
+\if@informs
+  \save{informs@}{mc, argmin, argmax, proof, endproof, Center, endCenter}
 \fi
 
 
@@ -155,6 +160,11 @@
 \RequirePackage{varwidth}
 \RequirePackage{xparse}
 \RequirePackage{xstring}
+
+\if@informs
+  \save{ragged2e@}{Center, endCenter}
+  \reinstate{informs@}{Center, endCenter}
+\fi
 
 \if@oldtodo
   \RequirePackage{framed}
@@ -306,6 +316,11 @@
 
 
 % Citations.
+
+\if@informs
+  \newcommand{\BIBand}{and}
+  \newcommand{\newblock}{\relax}
+\fi
 
 \newtoggle{natbibpatch}
 \togglefalse{natbibpatch}
@@ -608,7 +623,20 @@
 \if@acm
   \theoremstyle{acmplain}
 \else
-  \theoremstyle{plain}
+  \if@informs
+    \newtheoremstyle{TH}
+      {6pt plus 3pt minus 2pt}
+      {6pt plus 3pt minus 2pt}
+      {\normalfont\TheoremTextFont}
+      {0em}
+      {\normalfont\TheoremHeaderFont}
+      {.}
+      {.5em}
+      {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+    \theoremstyle{TH}
+  \else
+    \theoremstyle{plain}
+  \fi
 \fi
 
 \if@lipics\else
@@ -633,7 +661,20 @@
 \if@acm
   \theoremstyle{acmdefinition}
 \else
-  \theoremstyle{definition}
+  \if@informs
+    \newtheoremstyle{EX}
+      {6pt plus 3pt minus 2pt}
+      {6pt plus 3pt minus 2pt}
+      {\normalfont\ExampleTextFont}
+      {0em}
+      {\normalfont\ExampleHeaderFont}
+      {.}
+      {.5em}
+      {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+    \theoremstyle{EX}
+  \else
+    \theoremstyle{definition}
+  \fi
 \fi
 
 \newtheoremenv{definition}{Definition}{Definitions}
