@@ -159,6 +159,7 @@
 \RequirePackage{thmtools}
 \RequirePackage{varwidth}
 \RequirePackage{xparse}
+\RequirePackage{xpatch}
 \RequirePackage{xstring}
 
 \if@informs
@@ -364,7 +365,7 @@
 
 % Fix a bug in natbib.
 % Uses toggle because it's patching a plain TeX \else.
-\iftoggle{natbibpatch}{\patchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}}{}
+\iftoggle{natbibpatch}{\xpatchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}}{}
 
 
 % References.
@@ -604,11 +605,17 @@
   \csdef{endrestatable*:#1}{\csuse{endrestatable*}}
 }
 
+\newcommand{\theoremenumlabel}{\alph}
+
 \newcommand{\newtheoremenumerate}[1]{%
   \newlist{enumerate:#1}{enumerate}{1}
   \crefalias{enumerate:#1i}{#1}
-  \setlist[enumerate:#1]{label=(\alph*), ref=\csuse{the#1}(\alph*)}
+  \setlist[enumerate:#1]{label=(\theoremenumlabel*), ref=\csuse{the#1}(\theoremenumlabel*)}
 }
+
+\def\theoremlist\begin#1{\@ifnextchar[{\theoremlist@aux@opts{#1}}{\theoremlist@aux@noopts{#1}}}
+\def\theoremlist@aux@opts#1[#2]{\leavevmode\begin{#1}[#2, beginpenalty=10000]}
+\def\theoremlist@aux@noopts#1{\leavevmode\begin{#1}[beginpenalty=10000]}
 
 \newcommand{\newtheoremenv}[4][theorem]{%
   \if@lipics\else
@@ -831,6 +838,14 @@
   \fi
   \endgroup}
 
+% Fix issue between thm-restate and cleveref
+\@ifpackageloaded{cleveref}{
+  \xpatchcmd{\thmt@restatable}
+    {\let\label=\@gobble}
+    {\let\label=\gobbled@cleveref@label}
+    {}{}
+  \newcommand\gobbled@cleveref@label[2][]{}
+}{}
 
 % Macros to actually use.
 
