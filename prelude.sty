@@ -107,18 +107,25 @@
 \fi
 \@definefonts
 
+\newcommand{\HUGE}{\@setfontsize\Huge{38}{47}}
+
 \if@fancyhdr
   \RequirePackage[\@titlestyleoptions]{titlesec}
   \RequirePackage[labelfont=bf, font=small, labelsep=period]{caption}
   \RequirePackage{fancyhdr, titling}
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
-  \titleformat{\chapter}{%
-    \huge\@titlestyle}{%
-    \thechapter}{%
-    1em}{%
-    \hyphenpenalty=10000\raggedright%
-    \huge\@titlestyle}[%
-    \rule{\textwidth}{\heavyrulewidth}]
+  \titleformat{\chapter}%
+    {\normalfont\huge\@titlestyle}%
+    {\thechapter}%
+    {1em}%
+    {\hyphenpenalty=10000\raggedright\normalfont\huge\@titlestyle}%
+    [\rule{\textwidth}{\heavyrulewidth}]
+  \titleformat{\part}[display]%
+    {\centering\normalfont\LARGE\scshape}%
+    {Part \thepart}%
+    {0.5em}%
+    {\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
+    {}
 \fi
 
 
@@ -238,11 +245,11 @@
       \let\@theauthor\@shortauthor
     \fi}
   \renewcommand{\maketitle}{%
+    \inittitleauthor
     \@oldmaketitle
     \def\and{\unskip, }
     \thispagestyle{plain}
-    \vspace{-2\baselineskip}
-    \inittitleauthor}
+    \vspace{-2\baselineskip}}
   \fancypagestyle{plain}{%
     \fancyhf{}
     \fancyfoot[C]{\@headerstyle\thepage}
