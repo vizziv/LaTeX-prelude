@@ -15,7 +15,6 @@
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
 \newif\if@natbib\@natbibtrue
-\newif\if@oldtodo\@oldtodofalse
 \newif\if@amsalign\@amsaligntrue
 \newif\if@numberinsection\@numberinsectiontrue
 \DeclareOption{acm}{\@acmtrue}
@@ -33,8 +32,6 @@
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
 \DeclareOption{natbib}{\@natbibtrue}
 \DeclareOption{nonatbib}{\@natbibfalse}
-\DeclareOption{oldtodo}{\@oldtodotrue}
-\DeclareOption{nooldtodo}{\@oldtodofalse}
 \DeclareOption{amsalign}{\@amsaligntrue}
 \DeclareOption{preludealign}{\@amsalignfalse}
 \DeclareOption{numberinsection}{\@numberinsectiontrue}
@@ -172,15 +169,6 @@
 \if@informs
   \save{ragged2e@}{Center, endCenter}
   \reinstate{informs@}{Center, endCenter}
-\fi
-
-\if@oldtodo
-  \RequirePackage{framed}
-\else
-\RequirePackage[textsize=scriptsize,
-  bordercolor=orange!91!black,
-  linecolor=orange!91!black,
-  backgroundcolor=orange!31]{todonotes}
 \fi
 
 % Wants to be loaded after any package that deals with labels or references.
@@ -949,17 +937,29 @@
   \vgap{\tabulateskip}\centering\tabularx{#1}{#2}}{%
   \endtabularx\vgap{\tabulateskip}\noindent\ignorespacesafterend}
 
-\if@oldtodo
-  \newcommand{\todonote}[1]{\fbox{\textbf{TODO:} #1}}
-  \newenvironment{todo}{%
-    \begin{framed}\noindent\textbf{TODO:}}{%
-    \end{framed}\ignorespacesafterend}
-  \newcommand{\marginnote}[1]{\marginpar{\scriptsize #1}}
-\fi
+% Margin paragraphs.
+
 \if@acm
   \setlength\marginparwidth{0.52in}
   \setlength\marginparsep{0.08in}
 \fi
+% If the note is in its own paragraph, print inline.
+% Otherwise, print in margin.
+% Optional argument can be alignment for margin case, e.g. \RaggedRight.
+\newcommand{\maybemarginpar}[2][]{%
+  % Are we at the end of the paragraph?
+  \@ifnextchar\par{%
+    % Are we at the start of the paragraph?
+    \ifbool{vmode}{%
+      % Yes to both, so we are in our own paragraph.
+      \leavevmode{#2\par}%
+    }{%
+      \marginpar{#1#2}%
+    }%
+  }{%
+    \marginpar{#1#2}%
+  }%
+}
 
 % Math macros.
 
