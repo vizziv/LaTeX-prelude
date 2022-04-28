@@ -252,7 +252,7 @@
   \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+    \renewcommand{\chaptermark}[1]{\markboth{\arabic{chapter} #1}{}}
     \renewcommand{\sectionmark}[1]{%
       \markright{\arabic{chapter}.\arabic{section} #1}}
     \let\@oldtableofcontents\tableofcontents
