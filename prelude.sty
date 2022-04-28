@@ -111,18 +111,17 @@
   \RequirePackage[labelfont=bf, font=small, labelsep=period]{caption}
   \RequirePackage{fancyhdr, titling}
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
-  \titleformat{\chapter}%
-    {\normalfont\huge\@titlestyle}%
-    {\thechapter}%
-    {1em}%
+  \titleformat{\chapter}[display]%
+    {\normalfont\Large\scshape}%
+    {Chapter~\thechapter}%
+    {0.125em}%
     {\hyphenpenalty=10000\raggedright\normalfont\huge\@titlestyle}%
     [\rule{\textwidth}{\heavyrulewidth}]
   \titleformat{\part}[display]%
     {\centering\normalfont\LARGE\scshape}%
-    {Part \thepart}%
+    {Part~\thepart}%
     {0.5em}%
     {\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
-    {}
 \fi
 
 
@@ -252,13 +251,10 @@
   \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{\markboth{\arabic{chapter} #1}{}}
-    \renewcommand{\sectionmark}[1]{%
-      \markright{\arabic{chapter}.\arabic{section} #1}}
-    \let\@oldtableofcontents\tableofcontents
-    \renewcommand{\tableofcontents}{\@oldtableofcontents\chaptermark{Contents}}
-    \fancyhead[CE]{\@headerstyle\leftmark}
-    \fancyhead[CO]{\@headerstyle\rightmark}
+    \renewcommand{\chaptermark}[1]{\markboth{Chapter~\thechapter\kern0.75em#1}{}}
+    \renewcommand{\sectionmark}[1]{\markright{\thesection\kern0.75em#1}}
+    \fancyhead[CE]{\@headerstyle\nouppercase\leftmark}
+    \fancyhead[CO]{\@headerstyle\nouppercase\rightmark}
     \fancyhead[LE, RO]{\@headerstyle\thepage}%
   }{%
     \fancyhead[L]{\@headerstyle\@thetitle}
