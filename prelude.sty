@@ -111,12 +111,14 @@
   \RequirePackage[labelfont=bf, font=small, labelsep=period]{caption}
   \RequirePackage{fancyhdr, titling}
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
+  \newlength{\chapterrulewidth}
+  \setlength{\chapterrulewidth}{\headrulewidth}
   \titleformat{\chapter}[display]%
     {\normalfont\Large\scshape}%
-    {Chapter~\thechapter}%
+    {\chaptername~\thechapter}%
     {0.125em}%
     {\hyphenpenalty=10000\raggedright\normalfont\huge\@titlestyle}%
-    [\rule{\textwidth}{\heavyrulewidth}]
+    [\rule{\textwidth}{\chapterrulewidth}]
   \titleformat{\part}[display]%
     {\centering\normalfont\LARGE\scshape}%
     {Part~\thepart}%
@@ -251,7 +253,7 @@
   \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{\markboth{Chapter~\thechapter\kern0.75em#1}{}}
+    \renewcommand{\chaptermark}[1]{\markboth{\if@mainmatter\chaptername~\thechapter\kern0.75em\fi#1}{}}
     \renewcommand{\sectionmark}[1]{\markright{\thesection\kern0.75em#1}}
     \fancyhead[CE]{\@headerstyle\nouppercase\leftmark}
     \fancyhead[CO]{\@headerstyle\nouppercase\rightmark}
