@@ -83,7 +83,6 @@
 \fi
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
-\newcommand{\@titlestyleoptions}{sf, bf}
 \newcommand{\@headerstyle}{\small}
 \def\@definefonts{}
 \if@libertine
@@ -107,9 +106,14 @@
 \newcommand{\HUGE}{\@setfontsize\Huge{38}{47}}
 
 \if@fancyhdr
-  \RequirePackage[\@titlestyleoptions]{titlesec}
-  \RequirePackage[labelfont=bf, labelsep=period]{caption}
+  \RequirePackage{titlesec}
+  \RequirePackage[font=sf, labelfont=bf, labelsep=period]{caption}
   \RequirePackage{fancyhdr, titling}
+  \titleformat{\part}[display]%
+    {\centering\normalfont\LARGE\scshape}%
+    {Part~\thepart}%
+    {0.5em}%
+    {\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
   \newlength{\chapterrulewidth}
   \setlength{\chapterrulewidth}{\headrulewidth}
@@ -119,11 +123,11 @@
     {0.125em}%
     {\hyphenpenalty=10000\raggedright\normalfont\huge\@titlestyle}%
     [\rule{\textwidth}{\chapterrulewidth}]
-  \titleformat{\part}[display]%
-    {\centering\normalfont\LARGE\scshape}%
-    {Part~\thepart}%
-    {0.5em}%
-    {\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
+  \titleformat*{\section}{\normalfont\Large\@titlestyle}
+  \titleformat*{\subsection}{\normalfont\large\@titlestyle}
+  \titleformat*{\subsubsection}{\normalfont\@titlestyle}
+  \titleformat*{\paragraph}{\normalfont\@titlestyle}
+  \titleformat*{\subparagraph}{\normalfont\@titlestyle}
 \fi
 
 
@@ -158,7 +162,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{ragged2e}
-\RequirePackage[labelformat=simple, font=small]{subcaption}
+\RequirePackage[labelformat=simple]{subcaption}
 \RequirePackage{tabularx}
 \RequirePackage{tikz}
 \RequirePackage{thmtools}
