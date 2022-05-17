@@ -83,14 +83,13 @@
 \fi
 
 \newcommand{\@titlestyle}{\sffamily\bfseries}
-\newcommand{\@headerstyle}{\small}
+\newcommand{\@headerstyle}{\small\sffamily}
 \def\@definefonts{}
 \if@libertine
   \def\@definefonts{%
     \RequirePackage[tt=false]{libertine}
     \RequirePackage[varqu, scaled=0.95]{zi4}
     \RequirePackage[libertine]{newtxmath}}
-  \renewcommand{\@headerstyle}{\small\sffamily}
 \fi
 \if@charter
   \def\@definefonts{%
