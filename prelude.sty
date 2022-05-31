@@ -166,6 +166,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{microtype}
 \RequirePackage{ragged2e}
+\RequirePackage{refcount}
 \RequirePackage[labelformat=simple]{subcaption}
 \RequirePackage{tabularx}
 \RequirePackage{tikz}
@@ -637,6 +638,18 @@
 \def\theoremlist\begin#1{\@ifnextchar[{\theoremlist@aux@opts{#1}}{\theoremlist@aux@noopts{#1}}}
 \def\theoremlist@aux@opts#1[#2]{\leavevmode\begin{#1}[#2, beginpenalty=10000]}
 \def\theoremlist@aux@noopts#1{\leavevmode\begin{#1}[beginpenalty=10000]}
+
+% Reference just the item in a theorem enumerate, e.g. get (c) instead of 1.2(c)
+\def\itemref@aux@one#1{\itemref@aux@two#1}
+\def\itemref@aux@two#1.#2(#3){(#3)}
+\newrobustcmd{\itemref}[1]{%
+  {%
+    \refused{#1}%
+    \edef\itemref@tmp{\getrefbykeydefault{#1}{}{0.0(??)}}%
+    \show\itemref@tmp%
+    \expandafter\itemref@aux@one\itemref@tmp%
+  }%
+}
 
 \newcommand{\newtheoremenv}[4][theorem]{%
   \if@lipics\else
