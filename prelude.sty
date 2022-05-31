@@ -145,9 +145,14 @@
 \newcommand{\bmmax}{3}
 \newcommand{\hmmax}{2}
 
+\@ifclassloaded{book}{%
+  \newcommand{\@numberwithinlevel}{chapter}
+}{%
+  \newcommand{\@numberwithinlevel}{section}
+}
 
 \if@numberinsection
-  \RequirePackage[section]{algorithm}
+  \RequirePackage[\@numberwithinlevel]{algorithm}
 \else
   \RequirePackage{algorithm}
 \fi
@@ -380,11 +385,25 @@
 % We usually want the same names for \cref and \Cref.
 \newcommand{\cCrefname}[3]{\crefname{#1}{#2}{#3}\Crefname{#1}{#2}{#3}}
 
+% Short names for references (e.g. Thm. instead of Theorem).
+\newcommand{\crefShorten}{}
+\newcommand{\shortened}[4]{\appto{\crefShorten}{#1{#2}{#3}{#4}}}
+
+\shortened\cCrefname{chapter}{Ch.}{Chs.}
+\shortened\cCrefname{section}{\textsection}{\textsection\textsection}
+\shortened\cCrefname{subsection}{\textsection}{\textsection\textsection}
+\shortened\cCrefname{subsubsection}{\textsection}{\textsection\textsection}
+\shortened\cCrefname{paragraph}{\textparagraph}{\textparagraph\textparagraph}
+\shortened\cCrefname{subparagraph}{\textparagraph}{\textparagraph\textparagraph}
+
 \cCrefname{table}{Table}{Tables}
+\shortened\cCrefname{table}{Tab.}{Tabs.}
 \cCrefname{figure}{Figure}{Figures}
+\shortened\cCrefname{figure}{Fig.}{Figs.}
 
 \crefname{equation}{}{}
 \Crefname{equation}{Equation}{Equations}
+\shortened\Crefname{equation}{Eq.}{Eqs.}
 \crefname{enumi}{}{}
 \Crefname{enumi}{Item}{Items}
 
@@ -649,18 +668,22 @@
 
 \if@lipics\else
   \if@numberinsection
-    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{theorem}{Theorem}[\@numberwithinlevel]
   \else
     \newtheorem{theorem}{Theorem}
   \fi
 \fi
 \cCrefname{theorem}{Theorem}{Theorems}
+\shortened\cCrefname{theorem}{Thm.}{Thms.}
 \newrestatable{theorem}
 \newtheoremenumerate{theorem}
 
 \newtheoremenv{lemma}{Lemma}{Lemmas}
+\shortened\cCrefname{lemma}{Lem.}{Lems.}
 \newtheoremenv{proposition}{Proposition}{Propositions}
+\shortened\cCrefname{proposition}{Prop.}{Props.}
 \newtheoremenv{corollary}{Corollary}{Corollaries}
+\shortened\cCrefname{corollary}{Cor.}{Cors.}
 \newtheoremenv{conjecture}{Conjecture}{Conjectures}
 \newtheoremenv{claim}{Claim}{Claims}
 
@@ -686,15 +709,23 @@
 \fi
 
 \newtheoremenv{definition}{Definition}{Definitions}
+\shortened\cCrefname{definition}{Def.}{Defs.}
 \newtheoremenv{example}{Example}{Examples}
 \newtheoremenv{assumption}{Assumption}{Assumptions}
+\shortened\cCrefname{assumption}{Asm.}{Asms.}
 \newtheoremenv{condition}{Condition}{Conditions}
+\shortened\cCrefname{condition}{Cond.}{Conds.}
 \newtheoremenv{observation}{Observation}{Observations}
+\shortened\cCrefname{observation}{Obs.}{Obss.}
 
 \thmt@original@newtheorem*{genericobservation*}{\@theoremname}
 
 \if@lipics\else
-  \newtheorem{exercise}{Exercise}[section]
+  \if@numberinsection
+    \newtheorem{exercise}{Exercise}[\@numberwithinlevel]
+  \else
+    \newtheorem{exercise}{Exercise}
+  \fi
 \fi
 \cCrefname{exercise}{Exercise}{Exercises}
 \newrestatable{exercise}
@@ -707,6 +738,7 @@
   \theoremstyle{remark}
 \fi
 \newtheoremenv{remark}{Remark}{Remarks}
+\shortened\cCrefname{remark}{Rmk.}{Rmks.}
 
 \if@acm
   \newtheoremstyle{acmcase}
@@ -733,9 +765,9 @@
 \cCrefname{case}{Case}{Cases}
 
 \if@numberinsection
-  \numberwithin{equation}{section}
-  \numberwithin{figure}{section}
-  \numberwithin{table}{section}
+  \numberwithin{equation}{\@numberwithinlevel}
+  \numberwithin{figure}{\@numberwithinlevel}
+  \numberwithin{table}{\@numberwithinlevel}
 \fi
 
 % Resets case number every proof and restores ordinary QED symbol.
