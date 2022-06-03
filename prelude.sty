@@ -107,6 +107,7 @@
 \if@fancyhdr
   \RequirePackage{titlesec}
   \RequirePackage[labelfont=bf, labelsep=period]{caption}
+  \captionsetup[algorithm]{labelfont=bf, labelsep=period}
   \RequirePackage{fancyhdr, titling}
   \titleformat{\part}[display]%
     {\centering\normalfont\LARGE\scshape}%
@@ -262,7 +263,7 @@
   \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{\markboth{\if@mainmatter\chaptername~\thechapter\kern0.75em\fi#1}{}}
+    \renewcommand{\chaptermark}[1]{\markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}}
     \renewcommand{\sectionmark}[1]{\markright{\thesection\kern0.75em#1}}
     \fancyhead[CE]{\@headerstyle\nouppercase\leftmark}
     \fancyhead[CO]{\@headerstyle\nouppercase\rightmark}
