@@ -73,6 +73,9 @@
 \fi
 
 
+% Load first in case it affects anything downstream.
+\RequirePackage[T1]{fontenc}
+
 % AMS packages often need to be first for compatibility.
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
@@ -383,6 +386,11 @@
   \newcommand{\crefrangeconjunction}{--}
   \newcommand{\creflastconjunction}{, and~}
 \fi
+
+\newcommand{\nameof}[1]{\csuse{cref@#1@name}}
+\newcommand{\nameofs}[1]{\csuse{cref@#1@name@plural}}
+\newcommand{\Nameof}[1]{\csuse{Cref@#1@name}}
+\newcommand{\Nameofs}[1]{\csuse{Cref@#1@name@plural}}
 
 % We usually want the same names for \cref and \Cref.
 \newcommand{\cCrefname}[3]{\crefname{#1}{#2}{#3}\Crefname{#1}{#2}{#3}}
