@@ -17,6 +17,7 @@
 \newif\if@natbib\@natbibtrue
 \newif\if@amsalign\@amsaligntrue
 \newif\if@numberinsection\@numberinsectiontrue
+\newif\if@citecrefshorten\@citecrefshortentrue
 \DeclareOption{acm}{\@acmtrue}
 % acmold DOES NOT imply acm
 \DeclareOption{acmold}{\@acmoldtrue}
@@ -36,6 +37,8 @@
 \DeclareOption{preludealign}{\@amsalignfalse}
 \DeclareOption{numberinsection}{\@numberinsectiontrue}
 \DeclareOption{numberglobal}{\@numberinsectionfalse}
+\DeclareOption{citecrefshorten}{\@citecrefshortentrue}
+\DeclareOption{nocitecrefshorten}{\@citecrefshortenfalse}
 
 % Automatically invoke the acm option if the class is loaded.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
@@ -347,22 +350,26 @@
 \renewcommand{\citet}[2][]{%
   % \NAT@spacechar goes between the author name and citation number.
   {\IfSubStr{#2}{,}{}{\ifempty{#1}{\def\NAT@spacechar{~}}{}}%
+    \if@citecrefshorten\crefShorten\fi%
     \@oldcitet[#1]{#2}}}
 \let\@oldcitep\citep
 \renewcommand{\citep}[2][]{%
   % This assumes we always want a regular space before lone citation numbers.
   % To supress the space, give \empty as the optional argument.
   {\IfSubStr{#2}{,}{}{\ifempty{#1}{\unskip~}{}}%
+    \if@citecrefshorten\crefShorten\fi%
     \@oldcitep[#1]{#2}}}
 
 % Same for capitalized versions.
 \let\@oldCitet\Citet
 \renewcommand{\Citet}[2][]{%
   {\IfSubStr{#2}{,}{}{\ifempty{#1}{\def\NAT@spacechar{~}}{}}%
+    \if@citecrefshorten\crefShorten\fi%
     \@oldCitet[#1]{#2}}}
 \let\@oldCitep\Citep
 \renewcommand{\Citep}[2][]{%
   {\IfSubStr{#2}{,}{}{\ifempty{#1}{\unskip~}{}}%
+    \if@citecrefshorten\crefShorten\fi%
     \@oldCitep[#1]{#2}}}
 
 % Always use same font style for citations... by uncommenting the following.
@@ -405,6 +412,7 @@
 \shortened\cCrefname{subsubsection}{\textsection}{\textsection\textsection}
 \shortened\cCrefname{paragraph}{\textparagraph}{\textparagraph\textparagraph}
 \shortened\cCrefname{subparagraph}{\textparagraph}{\textparagraph\textparagraph}
+\shortened\cCrefname{appendix}{Appx.}{Appxs.}
 
 \cCrefname{table}{Table}{Tables}
 \shortened\cCrefname{table}{Tab.}{Tabs.}
