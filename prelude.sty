@@ -112,7 +112,8 @@
 
 \if@fancyhdr
   \RequirePackage{titlesec}
-  \RequirePackage[labelfont=bf, labelsep=period]{caption}
+  \RequirePackage[font=small, labelfont=bf, labelsep=period]{caption}
+  \RequirePackage[font=normalsize, labelformat=simple]{subcaption}
   \captionsetup[algorithm]{labelfont=bf, labelsep=period}
   \RequirePackage{fancyhdr, titling}
   \titleformat{\part}[display]%
@@ -174,7 +175,6 @@
 \RequirePackage{microtype}
 \RequirePackage{ragged2e}
 \RequirePackage{refcount}
-\RequirePackage[labelformat=simple]{subcaption}
 \RequirePackage{tabularx}
 \RequirePackage{tikz}
 \RequirePackage{thmtools}
