@@ -120,7 +120,7 @@
     {\centering\normalfont\LARGE\scshape}%
     {Part~\thepart}%
     {0.5em}%
-    {\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
+    {\microtypesetup{protrusion=false}\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
   \titlespacing*{\chapter}{0pt}{-50pt}{30pt}
   \newlength{\chapterrulewidth}
   \setlength{\chapterrulewidth}{\headrulewidth}
@@ -130,9 +130,9 @@
     {0.125em}%
     {\hyphenpenalty=10000\raggedright\normalfont\huge\@titlestyle}%
     [\rule{\textwidth}{\chapterrulewidth}]
-  \titleformat*{\section}{\normalfont\Large\@titlestyle}
-  \titleformat*{\subsection}{\normalfont\large\@titlestyle}
-  \titleformat*{\subsubsection}{\normalfont\@titlestyle}
+  \titleformat*{\section}{\hyphenpenalty=10000\raggedright\normalfont\Large\@titlestyle}
+  \titleformat*{\subsection}{\hyphenpenalty=10000\raggedright\normalfont\large\@titlestyle}
+  \titleformat*{\subsubsection}{\hyphenpenalty=10000\raggedright\normalfont\@titlestyle}
   \titleformat*{\paragraph}{\normalfont\@titlestyle}
   \titleformat*{\subparagraph}{\normalfont\@titlestyle}
 \fi
