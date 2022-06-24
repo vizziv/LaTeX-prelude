@@ -387,6 +387,12 @@
 \iftoggle{natbibpatch}{\xpatchcmd{\NAT@test}{\else \NAT@nm }{\else \NAT@nmfmt{\NAT@nm}}{}{}}{}
 
 
+% Footnotes.
+
+% Italic correction, e.g. for footnotes in theorems.
+\xpretocmd{\footnote}{\ifdefstring{\f@shape}{it}{\/}{}}{}{}
+
+
 % References.
 
 \if@lipics\else
@@ -1085,15 +1091,9 @@
 \newcommand{\ldelimVar}{[}
 \newcommand{\rdelimVar}{]}
 \undef\P
-\DeclarePairedDelimiterXPP{\P}[1]{\mathbf{P}}{\ldelimP}{\rdelimP}{}{%
-  \@resizegiven
-  #1}
-\DeclarePairedDelimiterXPP{\E}[1]{\mathbf{E}}{\ldelimE}{\rdelimE}{}{%
-  \@resizegiven
-  #1}
-\DeclarePairedDelimiterXPP{\Var}[1]{\mathbf{Var}}{\ldelimVar}{\rdelimVar}{}{%
-  \@resizegiven
-  #1}
+\DeclarePairedDelimiterXPP{\P}[1]{\mathbf{P}}{\ldelimP}{\rdelimP}{}{\@resizegiven#1}
+\DeclarePairedDelimiterXPP{\E}[1]{\mathbf{E}}{\ldelimE}{\rdelimE}{}{\@resizegiven#1}
+\DeclarePairedDelimiterXPP{\Var}[1]{\mathbf{Var}}{\ldelimVar}{\rdelimVar}{}{\@resizegiven#1}
 
 % Easier interface to restatable theorems.
 % Use \newrestatable{env} to make restatable versions, restatable:env and restatable*:env.
