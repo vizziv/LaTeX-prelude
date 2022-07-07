@@ -14,6 +14,7 @@
 \newif\if@charter\@charterfalse
 \newif\if@nofont\@nofontfalse
 \newif\if@fancyhdr\@fancyhdrfalse
+\newif\if@bookheaderside\@bookheadersidetrue
 \newif\if@natbib\@natbibtrue
 \newif\if@amsalign\@amsaligntrue
 \newif\if@numberinsection\@numberinsectiontrue
@@ -31,6 +32,8 @@
 \DeclareOption{nofont}{\@nofonttrue\@libertinefalse\@charterfalse}
 \DeclareOption{fancyhdr}{\@fancyhdrtrue}
 \DeclareOption{nofancyhdr}{\@fancyhdrfalse}
+\DeclareOption{bookheaderside}{\@bookheadersidetrue}
+\DeclareOption{bookheadercenter}{\@bookheadersidefalse}
 \DeclareOption{natbib}{\@natbibtrue}
 \DeclareOption{nonatbib}{\@natbibfalse}
 \DeclareOption{amsalign}{\@amsaligntrue}
@@ -269,10 +272,17 @@
   \setlength{\headheight}{\baselineskip}
   \fancyhf{}
   \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{\markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}}
-    \renewcommand{\sectionmark}[1]{\markright{\thesection\kern0.75em#1}}
-    \fancyhead[CE]{\@headerstyle\nouppercase\leftmark}
-    \fancyhead[CO]{\@headerstyle\nouppercase\rightmark}
+    \renewcommand{\chaptermark}[1]{%
+      \markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}}
+    \renewcommand{\sectionmark}[1]{%
+      \markright{\thesection\kern0.75em#1}}
+    \ifbool{@bookheaderside}{%
+      \fancyhead[RE]{\@headerstyle\nouppercase\leftmark}
+      \fancyhead[LO]{\@headerstyle\nouppercase\rightmark}%
+    }{
+      \fancyhead[CE]{\@headerstyle\nouppercase\leftmark}
+      \fancyhead[CO]{\@headerstyle\nouppercase\rightmark}%
+    }
     \fancyhead[LE, RO]{\@headerstyle\thepage}%
   }{%
     \fancyhead[L]{\@headerstyle\@thetitle}
