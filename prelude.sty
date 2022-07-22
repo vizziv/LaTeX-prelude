@@ -124,7 +124,7 @@
     {Part~\thepart}%
     {0.5em}%
     {\microtypesetup{protrusion=false}\hyphenpenalty=10000\centering\normalfont\HUGE\@titlestyle}%
-  \titlespacing*{\chapter}{0pt}{-50pt}{26pt plus 4pt minus 2pt}
+  \titlespacing*{\chapter}{0pt}{-50pt}{30pt plus 6pt minus 6pt}
   \newlength{\chapterrulewidth}
   \setlength{\chapterrulewidth}{\headrulewidth}
   \titleformat{\chapter}[display]%
@@ -269,7 +269,7 @@
       \renewcommand{\headrulewidth}{0pt}}%
   }
   \pagestyle{fancy}
-  \setlength{\headheight}{\baselineskip}
+  {\@headerstyle\global\setlength{\headheight}{\baselineskip}}
   \fancyhf{}
   \@ifclassloaded{book}{%
     \renewcommand{\chaptermark}[1]{%
