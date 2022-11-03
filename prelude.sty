@@ -1172,4 +1172,16 @@
 \catcode`\$=13 % active
 \def$#1${\(#1\)}
 
+\newcommand{\setpreludebib}{%
+  \patchcmd\thebibliography{\renewcommand\newblock{\hskip .11em \@plus.33em \@minus.07em}}{\renewcommand{\newblock}{\ignorespaces}}{}{}
+  \newcommand{\showURL}[1]{\unskip}
+  \newcommand{\showDOI}[1]{##1.}
+  \newcommand{\showeprint}[3]{\hrefeprint{##1}{##2}{##1:\texttt{##2}}.}
+  \newcommand{\hrefeprint}[3]{%
+    \IfEqCase{##1}{
+      {arXiv}{\href{https://arxiv.org/abs/##2}{##3}}
+    }[##3]%
+  }
+}
+
 \endinput

@@ -705,30 +705,38 @@ FUNCTION { output.note.check } % UTAH
   if$
 }
 
+% Changed by Ziv in 2022
+% - Use \showeprint
+% - Don't output if DOI is defined
 FUNCTION { output.eprint } %
 { % return with stack empty
-  eprint empty.or.unknown
-    { }
-    { "\showeprint"
-         archiveprefix empty.or.unknown
-           { eprinttype empty.or.unknown
-               { "{}" * }
-               { "{" eprinttype "}" * * * }
-             if$
-           }
-           { "{" archiveprefix "}" * * * }
-         if$
-	 "{" eprint "}" * * *
-         primaryclass empty.or.unknown
-           { eprintclass empty.or.unknown
-             { "{}" * }
-             { "{" eprintclass "}" * * * }
-             if$
-           }
-           { "{" primaryclass "}" * * * }
-         if$
-         writeln
-    }
+  doi empty.or.unknown
+  {
+    eprint empty.or.unknown
+      { }
+      { "\showeprint"
+          archiveprefix empty.or.unknown
+            { eprinttype empty.or.unknown
+                { "{}" * }
+                { "{" eprinttype "}" * * * }
+              if$
+            }
+            { "{" archiveprefix "}" * * * }
+          if$
+        "{" eprint "}" * * *
+          primaryclass empty.or.unknown
+            { eprintclass empty.or.unknown
+              { "{}" * }
+              { "{" eprintclass "}" * * * }
+              if$
+            }
+            { "{" primaryclass "}" * * * }
+          if$
+        writeln
+      }
+    if$
+  }
+  { }
   if$
 }
 
