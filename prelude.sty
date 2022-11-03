@@ -1087,16 +1087,16 @@
 \newcommand{\dd}[2][]{\frac{\d #1}{\d #2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
 
-\newcommand{\ldelimP}{[}
-\newcommand{\rdelimP}{]}
-\newcommand{\ldelimE}{[}
-\newcommand{\rdelimE}{]}
-\newcommand{\ldelimVar}{[}
-\newcommand{\rdelimVar}{]}
-\undef\P
-\DeclarePairedDelimiterXPP{\P}[1]{\mathbf{P}}{\ldelimP}{\rdelimP}{}{\@resizegiven#1}
-\DeclarePairedDelimiterXPP{\E}[1]{\mathbf{E}}{\ldelimE}{\rdelimE}{}{\@resizegiven#1}
-\DeclarePairedDelimiterXPP{\Var}[1]{\mathbf{Var}}{\ldelimVar}{\rdelimVar}{}{\@resizegiven#1}
+
+\def\@shiftScripts#1{%
+  \@ifnextchar_{\@shiftSub{#1}}{\@ifnextchar^{\@shiftSup{#1}}{#1}}}
+\def\@shiftSub#1_#2{_{#2}\@shiftScripts{#1}}
+\def\@shiftSup#1^#2{^{#2}\@shiftScripts{#1}}
+\newcommand{\probop}[2]{\mathop{}\!\mathbf{#1}\@shiftScripts{#2}}
+
+\renewcommand{\P}{\probop{P}{\sqgp}}
+\newcommand{\E}{\probop{E}{\sqgp}}
+\newcommand{\Var}{\probop{Var}{\sqgp}}
 
 % Easier interface to restatable theorems.
 % Use \newrestatable{env} to make restatable versions, restatable:env and restatable*:env.
