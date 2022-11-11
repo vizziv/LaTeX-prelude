@@ -305,8 +305,8 @@
   \setlength{\listtopsep}{\smallskipamount}
   \newlength{\listitemsep}
   \setlength{\listitemsep}{\smallskipamount}
-  \setlist{parsep=\parskip, topsep=\listtopsep, itemsep=\listitemsep}
-  \setlist[1]{topsep=\listitemsep}
+  \setlist{parsep=\parskip, topsep=\listitemsep, itemsep=\listitemsep}
+  \setlist[1]{topsep=\listtopsep}
 \fi
 
 \newcommand{\nodate}{%
@@ -1180,7 +1180,10 @@
 % Easy lists with \*.
 % Start list with \*, end with \*/.
 % Sublists with more stars, e.g. \***.
-% Can enumerate a (sub)list with parens, e.g. \**(1) or \*(A).
+% Optional argument has one of two effects:
+% - At beginning of a (sub)list, it sets the optional arguments for the list environment
+% - In the middle of a list, it sets the optional argumnent for the \item
+% - Using enumitem's shortlabels option, can do e.g. \*[1.] or \**[(a)] to enumerate sublists
 \let\@oldstar\*
 \newlist{bullet@env}{enumerate}{8}
 \setlist[bullet@env,1]{label=\labelitemi}
@@ -1194,15 +1197,19 @@
 \newcounter{bullet@prev}\setcounter{bullet@prev}{0}
 \newcounter{bullet@this}\setcounter{bullet@this}{1}
 \newcounter{bullet@diff}\setcounter{bullet@diff}{0}
-\newcounter{bullet@diff@debug}\setcounter{bullet@diff@debug}{0}
 \renewcommand{\*}{\@ifstar{\bullet@star}{\bullet@nostar}}
 \newcommand{\bullet@star}{\addtocounter{bullet@this}{1}\*}
 \newcommand{\bullet@nostar}{%
-  \def\bullet@type{{bullet@env}}
-  \@ifnextchar{(}{\bullet@settype}{\bullet@checkend}
+  \def\bullet@type{{bullet@env}}%
+  \ifthenelse{\value{bullet@this}>\value{bullet@prev}}{%
+    \@ifnextchar{[}{\bullet@settype}{\bullet@checkend}%
+  }{%
+    \bullet@checkend%
+  }
 }
-\def\bullet@settype(#1){%
-  \def\bullet@type{{bullet@env}[(#1)]}\bullet@checkend%
+\def\bullet@settype[#1]{%
+  \def\bullet@type{{bullet@env}[#1]}%
+  \bullet@checkend%
 }
 \newcommand{\bullet@checkend}{%
   \@ifnextchar{/}{%
@@ -1218,9 +1225,10 @@
 \newcommand{\bullet@go}{%
   \setcounter{bullet@diff}{\value{bullet@this}}%
   \addtocounter{bullet@diff}{-\value{bullet@prev}}%
-  \setcounter{bullet@diff@debug}{\value{bullet@diff}}%
   \ifthenelse{\value{bullet@diff}>1}{%
-    \PackageError{prelude}{easy lists cannot descend multiple levels at once}{}%
+    \addtocounter{bullet@diff}{-1}%
+    \expandafter\begin{bullet@env}%
+    \item
   }{}%
   \ifthenelse{\value{bullet@diff}=1}{%
     \addtocounter{bullet@diff}{-1}%
