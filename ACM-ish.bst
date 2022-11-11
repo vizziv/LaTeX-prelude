@@ -3038,7 +3038,8 @@ FUNCTION { begin.bib }
   %%         \newcommand{\showLCCN}[1]{LCCN #1.}
 
   "\ifx \showCODEN    \undefined \def \showCODEN     #1{\unskip}     \fi" writeln
-  "\ifx \showDOI      \undefined \def \showDOI       #1{#1}\fi" writeln
+  % \showDOI changed by Ziv (just to add a period)
+  "\ifx \showDOI      \undefined \def \showDOI       #1{#1.}\fi" writeln
   % ACM styles omit ISBNs, but they can be included by suitable definitions of
   % \showISBNx and \showISBNxiii before the .bbl file is read
   "\ifx \showISBNx    \undefined \def \showISBNx     #1{\unskip}     \fi" writeln
@@ -3047,13 +3048,20 @@ FUNCTION { begin.bib }
   "\ifx \showLCCN     \undefined \def \showLCCN      #1{\unskip}     \fi" writeln
   "\ifx \shownote     \undefined \def \shownote      #1{#1}          \fi" writeln % NB: final period supplied by add.period$ above
   "\ifx \showarticletitle \undefined \def \showarticletitle #1{#1}   \fi" writeln
-  "\ifx \showURL      \undefined \def \showURL       {\relax}        \fi" writeln
+  % \showURL changed by Ziv to \unskip
+  "\ifx \showURL      \undefined \def \showURL       #1{\unskip}     \fi" writeln
   "% The following commands are used for tagged output and should be " writeln
   "% invisible to TeX" writeln
   "\providecommand\bibfield[2]{#2}" writeln
   "\providecommand\bibinfo[2]{#2}" writeln
   "\providecommand\natexlab[1]{#1}" writeln
-  "\providecommand\showeprint[3]{#1:#2.}" writeln
+  % \showeprint changed by Ziv
+  "\providecommand\showeprint[3]{\hrefeprint{#1}{#2}{#1:\texttt{#2}}.}" writeln
+  "\prividecommand{\hrefeprint}[3]{%" writeln
+  "  \IfEqCase{#1}{" writeln
+  "    {arXiv}{\href{https://arxiv.org/abs/#2}{#3}}" writeln
+  "  }[#3]%" writeln
+  "}" writeln
   "\DeclareUrlCommand\doi{\urlstyle{same}\def\UrlLeft##1\UrlRight{\href{https://doi.org/##1}{doi:\texttt{##1}}}}" writeln
 }
 
