@@ -1177,4 +1177,63 @@
   \patchcmd\thebibliography{\renewcommand\newblock{\hskip .11em \@plus.33em \@minus.07em}}{\renewcommand{\newblock}{\ignorespaces}}{}{}%
 }
 
+% Easy lists with \*.
+% Start list with \*, end with \*/.
+% Sublists with more stars, e.g. \***.
+% Can enumerate a (sub)list with parens, e.g. \**(1) or \*(A).
+\let\@oldstar\*
+\newlist{bullet@env}{enumerate}{8}
+\setlist[bullet@env,1]{label=\labelitemi}
+\setlist[bullet@env,2]{label=\labelitemii}
+\setlist[bullet@env,3]{label=\labelitemiii}
+\setlist[bullet@env,4]{label=\labelitemiv}
+\setlist[bullet@env,5]{label=\labelitemi}
+\setlist[bullet@env,6]{label=\labelitemii}
+\setlist[bullet@env,7]{label=\labelitemiii}
+\setlist[bullet@env,8]{label=\labelitemiv}
+\newcounter{bullet@prev}\setcounter{bullet@prev}{0}
+\newcounter{bullet@this}\setcounter{bullet@this}{1}
+\newcounter{bullet@diff}\setcounter{bullet@diff}{0}
+\newcounter{bullet@diff@debug}\setcounter{bullet@diff@debug}{0}
+\renewcommand{\*}{\@ifstar{\bullet@star}{\bullet@nostar}}
+\newcommand{\bullet@star}{\addtocounter{bullet@this}{1}\*}
+\newcommand{\bullet@nostar}{%
+  \def\bullet@type{{bullet@env}}
+  \@ifnextchar{(}{\bullet@settype}{\bullet@checkend}
+}
+\def\bullet@settype(#1){%
+  \def\bullet@type{{bullet@env}[(#1)]}\bullet@checkend%
+}
+\newcommand{\bullet@checkend}{%
+  \@ifnextchar{/}{%
+    \ifthenelse{\value{bullet@this}>1}{%
+      \PackageError{prelude}{easy lists use only one star to end}{}%
+    }{}%
+    \setcounter{bullet@this}{0}%
+    \expandafter\bullet@go\@gobble%
+  }{%
+    \bullet@go%
+  }%
+}
+\newcommand{\bullet@go}{%
+  \setcounter{bullet@diff}{\value{bullet@this}}%
+  \addtocounter{bullet@diff}{-\value{bullet@prev}}%
+  \setcounter{bullet@diff@debug}{\value{bullet@diff}}%
+  \ifthenelse{\value{bullet@diff}>1}{%
+    \PackageError{prelude}{easy lists cannot descend multiple levels at once}{}%
+  }{}%
+  \ifthenelse{\value{bullet@diff}=1}{%
+    \addtocounter{bullet@diff}{-1}%
+    \expandafter\begin\bullet@type%
+  }{}%
+  \whiledo{\value{bullet@diff}<0}{%
+    \addtocounter{bullet@diff}{1}%
+    \expandafter\end{bullet@env}%
+  }%
+  \setcounter{bullet@prev}{\value{bullet@this}}%
+  \setcounter{bullet@this}{1}%
+  \ifthenelse{\value{bullet@prev}>0}{\item}{}%
+}
+
+
 \endinput
