@@ -1178,12 +1178,13 @@
 }
 
 % Easy lists with \*.
-% Start list with \*, end with \*/.
+% Start list with \* (possibly with optional argument), end with \*/.
 % Sublists with more stars, e.g. \***.
 % Optional argument has one of two effects:
 % - At beginning of a (sub)list, it sets the optional arguments for the list environment
-% - In the middle of a list, it sets the optional argumnent for the \item
-% - Using enumitem's shortlabels option, can do e.g. \*[1.] or \**[(a)] to enumerate sublists
+%   - Using enumitem's shortlabels option, can do e.g. \*[1.] or \**[(a)] to enumerate sublists
+% - For all itmes, it sets the optional argument for the \item
+% - The first item in a (sub)list can have both optional arguments: first environment, then \item
 \let\@oldstar\*
 \newlist{bullet@env}{enumerate}{8}
 \setlist[bullet@env,1]{label=\labelitemi}
