@@ -923,6 +923,8 @@
     \fi
     \endgroup}
 }
+% Whether defined above or in a package, make sure \widebar is robust.
+\robustify{\widebar}
 
 % Fix issue between thm-restate and cleveref
 \@ifpackageloaded{cleveref}{
@@ -1031,7 +1033,7 @@
 % If the note is in its own paragraph, print inline.
 % Otherwise, print in margin.
 % Optional argument can be alignment for margin case, e.g. \RaggedRight.
-\newcommand{\maybemarginpar}[2][]{%
+\newrobustcmd{\maybemarginpar}[2][]{%
   % Are we at the end of the paragraph?
   \@ifnextchar\par{%
     % Are we at the start of the paragraph?
@@ -1100,7 +1102,7 @@
   \@ifnextchar_{\@shiftSub{#1}}{\@ifnextchar^{\@shiftSup{#1}}{#1}}}
 \def\@shiftSub#1_#2{_{#2}\@shiftScripts{#1}}
 \def\@shiftSup#1^#2{^{#2}\@shiftScripts{#1}}
-\newcommand{\probop}[2]{\mathop{}\!\mathbf{#1}\@shiftScripts{#2}}
+\newrobustcmd{\probop}[2]{\mathop{}\!\mathbf{#1}\@shiftScripts{#2}}
 
 \renewcommand{\P}{\probop{P}{\sqgp}}
 \newcommand{\E}{\probop{E}{\sqgp}}
@@ -1198,7 +1200,7 @@
 \newcounter{bullet@prev}\setcounter{bullet@prev}{0}
 \newcounter{bullet@this}\setcounter{bullet@this}{1}
 \newcounter{bullet@diff}\setcounter{bullet@diff}{0}
-\renewcommand{\*}{\@ifstar{\bullet@star}{\bullet@nostar}}
+\renewrobustcmd{\*}{\@ifstar{\bullet@star}{\bullet@nostar}}
 \newcommand{\bullet@star}{\addtocounter{bullet@this}{1}\*}
 \newcommand{\bullet@nostar}{%
   \def\bullet@type{{bullet@env}}%
