@@ -1203,9 +1203,17 @@
 \catcode`\$=13 % active
 \def$#1${\(#1\)}
 
-\newcommand{\setpreludebib}{%
-  \patchcmd\thebibliography{\renewcommand\newblock{\hskip .11em \@plus.33em \@minus.07em}}{\renewcommand{\newblock}{\ignorespaces}}{}{}%
+\newcommand{\ignorenewblock}{%
+  \def\newblock{\ignorespaces}
+  \patchcmd\thebibliography{%
+    \renewcommand\newblock{\hskip .11em \@plus.33em \@minus.07em}%
+  }{%
+    \renewcommand{\newblock}{\ignorespaces}%
+  }{}{}%
 }
+\if@fancyhdr
+  \ignorenewblock
+\fi
 
 % Easy lists with \*.
 % Start list with \* (possibly with optional argument), end with \*/.
@@ -1273,6 +1281,37 @@
   \setcounter{easylist@this}{1}%
   \ifthenelse{\value{easylist@prev}>0}{\item}{}%
 }
+
+% Easy equations with \[ and \]
+% - Automatically chooses between equation, align, and gather
+% - Automatically numbers only labeled equations
+\let\@oldlabel\label
+\def\[#1\]{%
+  \begingroup%
+  \xpretocmd{\label@in@display}{\yestag}{}{}%
+  \easyeq@tryallowdisplaybreaks#1\easyeq@end%
+  \endgroup%
+  \ignorespaces%
+}
+\newcommand{\easyeq@tryallowdisplaybreaks}{%
+  \@ifnextchar{\allowdisplaybreaks}{%
+    \allowdisplaybreaks\expandafter\easyeq@go\@gobble%
+  }{%
+    \easyeq@go%
+  }%
+}
+\def\easyeq@go#1\easyeq@end{%
+  \noexpandarg\IfSubStr{#1}{&}{%
+    \begin{align*}#1\end{align*}%
+  }{%
+    \noexpandarg\IfSubStr{#1}{\\}{%
+      \begin{gather*}#1\end{gather*}%
+    }{%
+      \begin{equation*}#1\end{equation*}%
+    }%
+  }%
+}
+
 
 
 \endinput
