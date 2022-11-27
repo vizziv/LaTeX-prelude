@@ -176,6 +176,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage[shortcuts]{extdash}
 \RequirePackage{mathtools}
+\RequirePackage{marginnote}
 \RequirePackage{microtype}
 \RequirePackage{ragged2e}
 \RequirePackage{refcount}
@@ -959,10 +960,10 @@
 \def\@compose@arg#1#2#3#4{%
   \@compose@argTry{\numexpr #1 - 1 \relax}{#2}{#3{#4}}}
 
-% Reverse a toggle
 \newrobustcmd{\fliptoggle}[1]{%
-
-}
+    \iftoggle{#1}{\togglefalse{#1}}{\toggletrue{#1}}}
+\newrobustcmd{\gfliptoggle}[1]{%
+    \iftoggle{#1}{\global\togglefalse{#1}}{\global\toggletrue{#1}}}
 
 
 % Macros to actually use.
@@ -1063,7 +1064,9 @@
 % If the note is in its own paragraph, print inline.
 % Otherwise, print in margin.
 % Optional argument can be alignment for margin case, e.g. \RaggedRight.
-\newrobustcmd{\maybemarginpar}[2][]{%
+\newtoggle{maybemarginnote@reverse}
+\togglefalse{maybemarginnote@reverse}
+\newrobustcmd{\maybemarginnote}[2][]{%
   % Are we at the end of the paragraph?
   \@ifnextchar\par{%
     % Are we at the start of the paragraph?
@@ -1071,10 +1074,14 @@
       % Yes to both, so we are in our own paragraph.
       \leavevmode{#2\par}%
     }{%
-      \marginpar{#1{#2}}%
+      \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{}%
+      \unskip\marginnote{#1{#2}}%
+      \gfliptoggle{maybemarginnote@reverse} % intentional space
     }%
   }{%
-    \marginpar{#1{#2}}%
+    \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{}%
+    \unskip\marginnote{#1{#2}}%
+    \gfliptoggle{maybemarginnote@reverse} % intentional space
   }%
 }
 
