@@ -935,6 +935,31 @@
   \newcommand\gobbled@cleveref@label[2][]{}
 }{}
 
+
+% LaTeX function "composition"
+% - \@compose[n]\f\g{x1}{x2}...{xn} becomes \f{\g{x1}{x2}...{xn}}
+%   - Default is n = 1
+% - \f must be a macro (more precisely, \f must be a single token)
+% - \g will usually be a macro, but \@compose\f{not-a-macro-g} is allowed
+% - \@compose will pass a star * or optional argument [y] to \f
+%   - For example, \@compose[1]\f\g[y]{x} becomes \f[y]{\g{x}}
+
+\newrobustcmd{\@compose}[3][1]{%
+  \@compose@star@try{#1}{\expandafter\expandafter\expandafter#2}{#3}}
+\def\@compose@star@try#1#2#3{%
+  \@ifstar{\@compose@star{#1}{#2}{#3}}{\@compose@optTry{#1}{#2}{#3}}}
+\def\@compose@star#1#2#3{%
+  \@compose@optTry{#1}{#2\expandafter\expandafter\expandafter*}{#3}}
+\def\@compose@optTry#1#2#3{%
+  \@ifnextchar[{\@compose@opt{#1}{#2}{#3}}{\@compose@argTry{#1}{#2}{#3}}}
+\def\@compose@opt#1#2#3[#4]{%
+  \@compose@argTry{#1}{#2\expandafter\@firstofone{[#4]}}{#3}}
+\def\@compose@argTry#1#2#3{%
+  \ifnumcomp{#1}{>}{0}{\@compose@arg{#1}{#2}{#3}}{#2{#3}}}
+\def\@compose@arg#1#2#3#4{%
+  \@compose@argTry{\numexpr #1 - 1 \relax}{#2}{#3{#4}}}
+
+
 % Macros to actually use.
 
 % For use in align and alignat.
@@ -1098,11 +1123,14 @@
 \newcommand{\dd}[2][]{\frac{\d #1}{\d #2}}
 \newcommand{\pd}[2][]{\frac{\partial #1}{\partial #2}}
 
-\def\@shiftScripts#1{%
-  \@ifnextchar_{\@shiftSub{#1}}{\@ifnextchar^{\@shiftSup{#1}}{#1}}}
-\def\@shiftSub#1_#2{_{#2}\@shiftScripts{#1}}
-\def\@shiftSup#1^#2{^{#2}\@shiftScripts{#1}}
-\newrobustcmd{\probop}[2]{\mathop{}\!\mathbf{#1}\@shiftScripts{#2}}
+\newcommand{\@shiftScripts}[1]{%
+  \@ifnextchar_{\@shiftScripts@sub{#1}}{%
+    \@ifnextchar^{\@shiftScripts@sup{#1}}{%
+      #1}}}
+\def\@shiftScripts@sub#1_#2{_{#2}\@shiftScripts{#1}}
+\def\@shiftScripts@sup#1^#2{^{#2}\@shiftScripts{#1}}
+
+\newrobustcmd{\probop}[2]{\mathbf{#1}\@shiftScripts{#2}}
 
 \renewcommand{\P}{\probop{P}{\sqgp}}
 \newcommand{\E}{\probop{E}{\sqgp}}
@@ -1188,62 +1216,62 @@
 % - For all itmes, it sets the optional argument for the \item
 % - The first item in a (sub)list can have both optional arguments: first environment, then \item
 \let\@oldstar\*
-\newlist{bullet@env}{enumerate}{8}
-\setlist[bullet@env,1]{label=\labelitemi}
-\setlist[bullet@env,2]{label=\labelitemii}
-\setlist[bullet@env,3]{label=\labelitemiii}
-\setlist[bullet@env,4]{label=\labelitemiv}
-\setlist[bullet@env,5]{label=\labelitemi}
-\setlist[bullet@env,6]{label=\labelitemii}
-\setlist[bullet@env,7]{label=\labelitemiii}
-\setlist[bullet@env,8]{label=\labelitemiv}
-\newcounter{bullet@prev}\setcounter{bullet@prev}{0}
-\newcounter{bullet@this}\setcounter{bullet@this}{1}
-\newcounter{bullet@diff}\setcounter{bullet@diff}{0}
-\renewrobustcmd{\*}{\@ifstar{\bullet@star}{\bullet@nostar}}
-\newcommand{\bullet@star}{\addtocounter{bullet@this}{1}\*}
-\newcommand{\bullet@nostar}{%
-  \def\bullet@type{{bullet@env}}%
-  \ifthenelse{\value{bullet@this}>\value{bullet@prev}}{%
-    \@ifnextchar{[}{\bullet@settype}{\bullet@checkend}%
+\newlist{easylist@env}{enumerate}{8}
+\setlist[easylist@env,1]{label=\labelitemi}
+\setlist[easylist@env,2]{label=\labelitemii}
+\setlist[easylist@env,3]{label=\labelitemiii}
+\setlist[easylist@env,4]{label=\labelitemiv}
+\setlist[easylist@env,5]{label=\labelitemi}
+\setlist[easylist@env,6]{label=\labelitemii}
+\setlist[easylist@env,7]{label=\labelitemiii}
+\setlist[easylist@env,8]{label=\labelitemiv}
+\newcounter{easylist@prev}\setcounter{easylist@prev}{0}
+\newcounter{easylist@this}\setcounter{easylist@this}{1}
+\newcounter{easylist@diff}\setcounter{easylist@diff}{0}
+\renewrobustcmd{\*}{\@ifstar{\easylist@star}{\easylist@nostar}}
+\newcommand{\easylist@star}{\addtocounter{easylist@this}{1}\*}
+\newcommand{\easylist@nostar}{%
+  \def\easylist@type{{easylist@env}}%
+  \ifthenelse{\value{easylist@this}>\value{easylist@prev}}{%
+    \@ifnextchar{[}{\easylist@settype}{\easylist@checkend}%
   }{%
-    \bullet@checkend%
+    \easylist@checkend%
   }
 }
-\def\bullet@settype[#1]{%
-  \def\bullet@type{{bullet@env}[#1]}%
-  \bullet@checkend%
+\def\easylist@settype[#1]{%
+  \def\easylist@type{{easylist@env}[#1]}%
+  \easylist@checkend%
 }
-\newcommand{\bullet@checkend}{%
+\newcommand{\easylist@checkend}{%
   \@ifnextchar{/}{%
-    \ifthenelse{\value{bullet@this}>1}{%
+    \ifthenelse{\value{easylist@this}>1}{%
       \PackageError{prelude}{easy lists use only one star to end}{}%
     }{}%
-    \setcounter{bullet@this}{0}%
-    \expandafter\bullet@go\@gobble%
+    \setcounter{easylist@this}{0}%
+    \expandafter\easylist@go\@gobble%
   }{%
-    \bullet@go%
+    \easylist@go%
   }%
 }
-\newcommand{\bullet@go}{%
-  \setcounter{bullet@diff}{\value{bullet@this}}%
-  \addtocounter{bullet@diff}{-\value{bullet@prev}}%
-  \ifthenelse{\value{bullet@diff}>1}{%
-    \addtocounter{bullet@diff}{-1}%
-    \expandafter\begin{bullet@env}%
+\newcommand{\easylist@go}{%
+  \setcounter{easylist@diff}{\value{easylist@this}}%
+  \addtocounter{easylist@diff}{-\value{easylist@prev}}%
+  \ifthenelse{\value{easylist@diff}>1}{%
+    \addtocounter{easylist@diff}{-1}%
+    \begin{easylist@env}%
     \item
   }{}%
-  \ifthenelse{\value{bullet@diff}=1}{%
-    \addtocounter{bullet@diff}{-1}%
-    \expandafter\begin\bullet@type%
+  \ifthenelse{\value{easylist@diff}=1}{%
+    \addtocounter{easylist@diff}{-1}%
+    \expandafter\begin\easylist@type%
   }{}%
-  \whiledo{\value{bullet@diff}<0}{%
-    \addtocounter{bullet@diff}{1}%
-    \expandafter\end{bullet@env}%
+  \whiledo{\value{easylist@diff}<0}{%
+    \addtocounter{easylist@diff}{1}%
+    \end{easylist@env}%
   }%
-  \setcounter{bullet@prev}{\value{bullet@this}}%
-  \setcounter{bullet@this}{1}%
-  \ifthenelse{\value{bullet@prev}>0}{\item}{}%
+  \setcounter{easylist@prev}{\value{easylist@this}}%
+  \setcounter{easylist@this}{1}%
+  \ifthenelse{\value{easylist@prev}>0}{\item}{}%
 }
 
 
