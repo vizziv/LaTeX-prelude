@@ -959,6 +959,11 @@
 \def\@compose@arg#1#2#3#4{%
   \@compose@argTry{\numexpr #1 - 1 \relax}{#2}{#3{#4}}}
 
+% Reverse a toggle
+\newrobustcmd{\fliptoggle}[1]{%
+
+}
+
 
 % Macros to actually use.
 
@@ -1285,31 +1290,15 @@
 % Easy equations with \[ and \]
 % - Automatically chooses between equation, align, and gather
 % - Automatically numbers only labeled equations
-\let\@oldlabel\label
 \def\[#1\]{%
   \begingroup%
   \xpretocmd{\label@in@display}{\yestag}{}{}%
-  \easyeq@tryallowdisplaybreaks#1\easyeq@end%
+  \noexpandarg\IfSubStr{#1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
+  \noexpandarg\IfSubStr{#1}{&}{\begin{align*}#1\end{align*}}{%
+    \noexpandarg\IfSubStr{#1}{\\}{\begin{gather*}#1\end{gather*}}{%
+      \begin{equation*}#1\end{equation*}}}%
   \endgroup%
   \ignorespaces%
-}
-\newcommand{\easyeq@tryallowdisplaybreaks}{%
-  \@ifnextchar{\allowdisplaybreaks}{%
-    \allowdisplaybreaks\expandafter\easyeq@go\@gobble%
-  }{%
-    \easyeq@go%
-  }%
-}
-\def\easyeq@go#1\easyeq@end{%
-  \noexpandarg\IfSubStr{#1}{&}{%
-    \begin{align*}#1\end{align*}%
-  }{%
-    \noexpandarg\IfSubStr{#1}{\\}{%
-      \begin{gather*}#1\end{gather*}%
-    }{%
-      \begin{equation*}#1\end{equation*}%
-    }%
-  }%
 }
 
 
