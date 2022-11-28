@@ -1061,7 +1061,8 @@
   \setlength\marginparwidth{0.52in}
   \setlength\marginparsep{0.08in}
 \fi
-% If the note is in its own paragraph, print inline.
+
+% \maybemarginnote: if the note is in its own paragraph, print inline.
 % Otherwise, print in margin.
 % Optional argument can be alignment for margin case, e.g. \RaggedRight.
 \newtoggle{maybemarginnote@reverse}
@@ -1080,16 +1081,22 @@
         \leavevmode{#2}%
       }{%
         % We are not in our own paragraph.
-        \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{}%
-        \unskip\marginnote{#1{#2}}%
+        \unskip%
+        {%
+          \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
+          \marginnote{#1{#2}}%
+        }%
         \gfliptoggle{maybemarginnote@reverse} % intentional space
       }%
     }%
   }{%
     % We are not in our own paragraph.
-    \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{}%
-    \unskip\marginnote{#1{#2}}%
-    \gfliptoggle{maybemarginnote@reverse} % intentional space
+    \unskip%
+    {%
+      \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
+      \marginnote{#1{#2}}%
+    }%
+    \gfliptoggle{maybemarginnote@reverse} % intentional spac}e
   }%
 }
 
