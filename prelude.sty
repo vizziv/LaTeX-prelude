@@ -1,3 +1,76 @@
+%%%%%%%%%%%%%%%%%% TUTORIAL %%%%%%%%%%%%%%%%%%
+
+
+%%%%%% Typical math stuff
+
+% Sets of numbers with \mathbb: \N, \Q, \R, \Z
+% Indicator with \mathbb: \1
+
+% \argmin, \argmax: operators for arg min, arg max
+
+% \P, \E, \Var: probability, expectation, variance
+% - Takes same optional * or [size] as \gp (see below)
+% - Use \given within for a vertical bar (also see below)
+
+% \d: roman d for use in integrals, e.g. \int_a^b f(x) \d x
+% \dd[y]{x}: short for \frac{\d y}{\d x}, where y is optional
+% \pd[y]{x}: short for \frac{\partioal y}{\partial x}, where y is optional
+
+% \mc: short for \mathcal
+% \tl: short for \tilde
+
+% Theorem-like environments defined
+% - Usual suspects: theorem, lemma, proposition, corollary, definition, ...
+% - Some less typical ones: observation, assumption, ...
+% - One special one: case, which is numbered separately within each proof and whose optional argument is formatted a bit differently
+
+
+%%%%%% Parentheses
+
+% \gp: parentheses () with different sizes
+% - \gp*{x}: automatic sizing with \left/\right
+% - \gp[size]{x}: manual size of \big, \Big, \bigg, \Bigg
+% - \gp{x}: just normal size
+
+% Variants of \gp:
+% - \sqgp: like \gp, but [] instead of ()
+% - \curlgp: like \gp, but \{\} instead of ()
+% - Others: \vert, \Vert, \angle, \floor, \ceil
+
+% \given: vertical bar that resizes appropriately within \gp or similar
+% - Mostly useful within \P and \E, or with \curlgp for defining sets
+
+
+%%%%%% Easy lists and equations
+
+% \[eq\]: easy equations
+% - Automatically chooses between equation, align, and gather
+% - Only numbers lines that have a \label
+
+% \*: easy list macro, used as follows
+%
+% \* hello
+% \* world
+% \** use multiple * for sublists
+% \** like this
+% \* back to top level
+% \* use a / to end the list
+% \*/
+%
+% Can also use an optional argument to use numbers/letters, e.g.
+%
+% \*[(a)] labeled (a)
+% \* labeled (b)
+% \** no label in this sublist
+% \* labeled (c)
+% \**[(i)] labeled (i)
+% \** labeled (ii)
+% \*/
+
+
+%%%%%%%%%%%%%%%% END TUTORIAL %%%%%%%%%%%%%%%%
+
+
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{prelude}[2017/01/06 Ziv's Prelude]
 
