@@ -513,8 +513,15 @@
 \crefname{equation}{\@gobble}{\@gobble}
 \Crefname{equation}{Equation}{Equations}
 \shortened\Crefname{equation}{Eq.}{Eqs.}
-\crefname{enumi}{}{}
-\Crefname{enumi}{Item}{Items}
+
+\newcommand{\enumcCrefname}[1]{%
+  \crefname{#1}{}{}
+  \Crefname{#1}{Item}{Items}}
+
+\enumcCrefname{enumi}
+\enumcCrefname{enumii}
+\enumcCrefname{enumiii}
+\enumcCrefname{enumiv}
 
 % Some styles abbreviate "Figure" to "Fig.",
 % but we should still use "Figure" at the start of a sentence.
@@ -1356,6 +1363,15 @@
   \setcounter{easylist@this}{1}%
   \ifthenelse{\value{easylist@prev}>0}{\item}{}%
 }
+
+\enumcCrefname{easylist@envi}
+\enumcCrefname{easylist@envii}
+\enumcCrefname{easylist@enviii}
+\enumcCrefname{easylist@enviv}
+\enumcCrefname{easylist@envv}
+\enumcCrefname{easylist@envvi}
+\enumcCrefname{easylist@envvii}
+\enumcCrefname{easylist@envviii}
 
 % Easy equations with \[ and \]
 % - Automatically chooses between equation, align, and gather
