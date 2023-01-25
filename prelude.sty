@@ -1128,15 +1128,17 @@
     % Are we at the end of the paragraph?
     \@ifnextchar\par{%
       % We are in our own paragraph.
-      \leavevmode{#2}%
+      \leavevmode%
+      {#2}%
     }{%
       % ... or at the end of an environment?
       \@ifnextchar\end{%
         % We are in our own paragraph.
-        \leavevmode{#2}%
+        \leavevmode%
+        {#2}%
       }{%
         % We are not in our own paragraph.
-        \unskip%
+        % (No \unskip here because we're in vertical mode.)
         {%
           \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
           \marginnote{#1{#2}}%
@@ -1151,7 +1153,7 @@
       \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
       \marginnote{#1{#2}}%
     }%
-    \gfliptoggle{maybemarginnote@reverse} % intentional spac}e
+    \gfliptoggle{maybemarginnote@reverse} % intentional space
   }%
 }
 
@@ -1363,7 +1365,6 @@
   \setcounter{easylist@this}{1}%
   \ifthenelse{\value{easylist@prev}>0}{\item}{}%
 }
-
 \enumcCrefname{easylist@envi}
 \enumcCrefname{easylist@envii}
 \enumcCrefname{easylist@enviii}
