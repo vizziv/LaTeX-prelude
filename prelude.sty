@@ -217,6 +217,9 @@
 
 \if@acm
   \AtBeginDocument{\setcitestyle{numbers,sort&compress,square}}
+  % Sorta match algorithm captions with theorem formatting.
+  \DeclareCaptionLabelSeparator{period}{.\hspace{0.5em}}
+  \captionsetup[algorithm]{labelfont=sc, labelsep=period}
 \else
   \if@natbib
     \RequirePackage[numbers, sort&compress, square]{natbib}
@@ -1159,6 +1162,8 @@
 
 % Math macros.
 
+\let\badepsilon\epsilon
+\let\badphi\phi
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
 \let\varemptyset\emptyset
