@@ -116,13 +116,14 @@
 \DeclareOption{citecrefshorten}{\@citecrefshortentrue}
 \DeclareOption{nocitecrefshorten}{\@citecrefshortenfalse}
 
-% Automatically invoke the acm option if the class is loaded.
+% Automatically invoke options based on the document class.
 \@ifclassloaded{acmart}{\ExecuteOptions{acm, nofont}}{%
-  \@ifclassloaded{sig-alternate}{\ExecuteOptions{acmold, nofont}}{%
-    \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont, numberglobal}}{%
-      \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont, numberglobal}}{%
-        \@ifclassloaded{informs3}{\ExecuteOptions{informs, nofont}}{
-          \ExecuteOptions{libertine, fancyhdr}}}}}
+  \@ifclassloaded{sig-alternate-per}{\ExecuteOptions{acmold, nofont}}{%
+    \@ifclassloaded{sig-alternate-fixed}{\ExecuteOptions{acmold, nofont}}{%
+      \@ifclassloaded{IEEEtran}{\ExecuteOptions{ieee, nofont, numberglobal}}{%
+        \@ifclassloaded{ieeeconf}{\ExecuteOptions{ieeeold, nofont, numberglobal}}{%
+          \@ifclassloaded{informs3}{\ExecuteOptions{informs, nofont}}{
+            \ExecuteOptions{libertine, fancyhdr}}}}}}
   % Need this to not mess up a nested conditional later.
   \newif\if@ACM@authorversion}
 
