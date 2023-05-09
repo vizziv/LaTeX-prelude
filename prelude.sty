@@ -46,6 +46,7 @@
 % \[eq\]: easy equations
 % - Automatically chooses between equation, align, and gather
 % - Only numbers lines that have a \label
+% - If using \tag, put it right after \label, as in \label{...} \tag{...}
 
 % \*: easy list macro, used as follows
 %
@@ -1387,13 +1388,20 @@
 % - Automatically numbers only labeled equations
 \def\[#1\]{%
   \begingroup%
-  \xpretocmd{\label@in@display}{\yestag}{}{}%
+  \let\cref@old@label@in@display\easyeq@label@in@display%
   \noexpandarg\IfSubStr{#1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
   \noexpandarg\IfSubStr{#1}{&}{\begin{align*}#1\end{align*}}{%
     \noexpandarg\IfSubStr{#1}{\\}{\begin{gather*}#1\end{gather*}}{%
       \begin{equation*}#1\end{equation*}}}%
   \endgroup%
   \ignorespaces%
+}
+\AtBeginDocument{%
+  \let\old@label@in@display\cref@old@label@in@display%
+}
+\def\easyeq@label@in@display#1{%
+  \old@label@in@display{#1}%
+  \@ifnextchar{\tag}{}{\yestag}%
 }
 
 
