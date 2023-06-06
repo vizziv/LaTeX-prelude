@@ -1356,7 +1356,8 @@
 \newcommand{\easylist@go}{%
   \setcounter{easylist@diff}{\value{easylist@this}}%
   \addtocounter{easylist@diff}{-\value{easylist@prev}}%
-  \ifthenelse{\value{easylist@diff}>0 \AND \boolean{vmode}}{\leavevmode}{}%
+  % I think I don't like this in the end....
+  % \ifthenelse{\value{easylist@diff}>0 \AND \boolean{vmode}}{\leavevmode}{}%
   \whiledo{\value{easylist@diff}>1}{%
     \addtocounter{easylist@diff}{-1}%
     \begin{easylist@env}%
