@@ -3061,6 +3061,7 @@ FUNCTION { begin.bib }
   "\providecommand\hrefeprint[3]{%" writeln
   "  \IfEqCase{#1}{%" writeln
   "    {arXiv}{\href{https://arxiv.org/abs/#2}{#3}}%" writeln
+  "    {arxiv}{\href{https://arxiv.org/abs/#2}{#3}}%" writeln
   "  }[#3]%" writeln
   "}" writeln
   "\DeclareUrlCommand\doi{\urlstyle{same}%" writeln
