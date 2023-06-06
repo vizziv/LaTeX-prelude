@@ -3055,14 +3055,16 @@ FUNCTION { begin.bib }
   "\providecommand\bibfield[2]{#2}" writeln
   "\providecommand\bibinfo[2]{#2}" writeln
   "\providecommand\natexlab[1]{#1}" writeln
+  "" writeln
   % \showeprint changed by Ziv
   "\providecommand\showeprint[3]{\hrefeprint{#1}{#2}{#1:\texttt{#2}}.}" writeln
-  "\providecommand{\hrefeprint}[3]{%" writeln
-  "  \IfEqCase{#1}{" writeln
-  "    {arXiv}{\href{https://arxiv.org/abs/#2}{#3}}" writeln
+  "\providecommand\hrefeprint[3]{%" writeln
+  "  \IfEqCase{#1}{%" writeln
+  "    {arXiv}{\href{https://arxiv.org/abs/#2}{#3}}%" writeln
   "  }[#3]%" writeln
   "}" writeln
-  "\DeclareUrlCommand\doi{\urlstyle{same}\def\UrlLeft##1\UrlRight{\href{https://doi.org/##1}{doi:\texttt{##1}}}}" writeln
+  "\DeclareUrlCommand\doi{\urlstyle{same}%" writeln
+  "  \def\UrlLeft##1\UrlRight{\href{https://doi.org/##1}{doi:\texttt{##1}}}}" writeln
 }
 
 EXECUTE {begin.bib}
