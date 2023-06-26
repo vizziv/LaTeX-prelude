@@ -1144,22 +1144,22 @@
         {#2}%
       }{%
         % We are not in our own paragraph.
-        % (No \unskip here because we're in vertical mode.)
         {%
           \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
           \marginnote{#1{#2}}%
+          \ignorespaces%
         }%
-        \gfliptoggle{maybemarginnote@reverse} % intentional space
+        \gfliptoggle{maybemarginnote@reverse}%
       }%
     }%
   }{%
     % We are not in our own paragraph.
-    \unskip%
     {%
       \iftoggle{maybemarginnote@reverse}{\reversemarginpar}{\normalmarginpar}%
       \marginnote{#1{#2}}%
+      \ignorespaces%
     }%
-    \gfliptoggle{maybemarginnote@reverse} % intentional space
+    \gfliptoggle{maybemarginnote@reverse}%
   }%
 }
 
