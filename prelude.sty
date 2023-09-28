@@ -325,19 +325,19 @@
   \postdate{\par\end{center}}
   \let\@oldmaketitle\maketitle
   \newcommand{\inittitleauthor}{%
-    % Usual "if empty" hack. Could maybe use \ifempty.
-    \if\relax\@shorttitle\relax
-      \def\@titlenonewlines{\nonewlines{\@title}}
-      \let\@thetitle\@titlenonewlines
-    \else
-      \let\@thetitle\@shorttitle
-    \fi
-    \if\relax\@shortauthor\relax
-      \def\@authornonewlines{\nonewlines{\@author}}
-      \let\@theauthor\@authornonewlines
-    \else
-      \let\@theauthor\@shortauthor
-    \fi}
+    \ifdefempty{\@shorttitle}{%
+      \def\@titlenonewlines{\nonewlines{\@title}}%
+      \let\@thetitle\@titlenonewlines%
+    }{%
+      \let\@thetitle\@shorttitle%
+    }%
+    \ifdefempty{\@shortauthor}{%
+      \def\@authornonewlines{\nonewlines{\@author}}%
+      \let\@theauthor\@authornonewlines%
+    }{%
+      \let\@theauthor\@shortauthor%
+    }%
+  }
   \renewcommand{\maketitle}{%
     \inittitleauthor
     \@oldmaketitle
