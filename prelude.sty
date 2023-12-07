@@ -1341,16 +1341,16 @@
 }
 \newcommand{\easylist@checkend}{%
   \@ifnextchar{/}{%
-    \ifthenelse{\value{easylist@this}>1}{%
-      \PackageError{prelude}{easy lists use only one star to end}{}%
+    \ifthenelse{\value{easylist@this}>\value{easylist@prev}}{%
+      \PackageError{prelude}{attempted to end easy list at too high a level}{}%
     }{}%
-    \setcounter{easylist@this}{0}%
-    \expandafter\easylist@go\@gobble%
+    \addtocounter{easylist@this}{-1}%
+    \expandafter\easylist@go{}\@gobble%
   }{%
-    \easylist@go%
+    \easylist@go{\item}%
   }%
 }
-\newcommand{\easylist@go}{%
+\newcommand{\easylist@go}[1]{%
   \setcounter{easylist@diff}{\value{easylist@this}}%
   \addtocounter{easylist@diff}{-\value{easylist@prev}}%
   % I think I don't like this in the end....
@@ -1370,7 +1370,7 @@
   }%
   \setcounter{easylist@prev}{\value{easylist@this}}%
   \setcounter{easylist@this}{1}%
-  \ifthenelse{\value{easylist@prev}>0}{\item}{}%
+  \ifthenelse{\value{easylist@prev}>0}{#1}{}%
 }
 \enumcCrefname{easylist@envi}
 \enumcCrefname{easylist@envii}
