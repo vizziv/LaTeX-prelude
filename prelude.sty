@@ -67,6 +67,30 @@
 % \**[(i)] labeled (i)
 % \** labeled (ii)
 % \*/
+%
+% More generally, use [] to pass any options the enumitem package supports.
+%
+% Optional feature: explicit start/end:
+%
+% - Explicit start: use \*[...], \**[...], etc. with no text after.
+%   - Should be followed by another \*, \**, etc.
+%   - This is mostly useful if you want to pass options in a separate line
+% - Explicit end: use \**/, \***/, etc.
+%   - This lets you have a sublist in the middle of an item
+%
+% Example:
+%
+% \*[(a), beginpenalty=10000]
+% \* this is the first item, labeled (a)
+% \** the list options got their own line
+% \* this one is (b), and there's a sublist
+% \**[beginpenalty=10000]
+% \** with
+% \** some
+% \** stuff
+% \**/ but now we resume item (b) from the outer list
+% \* before finally going to (c)
+% \*/
 
 
 %%%%%%%%%%%%%%%% END TUTORIAL %%%%%%%%%%%%%%%%
@@ -1337,7 +1361,14 @@
 }
 \def\easylist@settype[#1]{%
   \def\easylist@type{{easylist@env}[#1]}%
-  \easylist@checkend%
+  \easylist@checkempty%
+}
+\newcommand{\easylist@checkempty}{%
+  \@ifnextchar{\*}{%
+    \easylist@go{}%
+  }{%
+    \easylist@go{\item}%
+  }%
 }
 \newcommand{\easylist@checkend}{%
   \@ifnextchar{/}{%
