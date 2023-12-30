@@ -1,4 +1,4 @@
-%%% Tutorial
+%%% Guide
 
 % This package provides a single macro, \*, for making lists.
 %
@@ -57,14 +57,13 @@
 % \*/
 
 
+%%% Package setup and options
 
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{ezlist}[2023/12/28 Easy Lists]
+\ProvidesPackage{ezlist}[2023/12/29 Easy Lists]
 
-%%% Options and packages
-
-\RequirePackage{kvoptions}
 \RequirePackage{etoolbox}
+\RequirePackage{kvoptions}
 
 % If enumitem is not already loaded, load it with or without shortlabels?
 \DeclareBoolOption[true]{shortlabels}
@@ -75,15 +74,16 @@
 
 \ProcessLocalKeyvalOptions*
 
-\ifbool{ezlist@cleveref}{
-  \RequirePackage{cleveref}
-}{}
+
+%%% Required packages
 
 \ifbool{ezlist@shortlabels}{
   \PassOptionsToPackage{shortlabels}{enumitem}
 }{}
 \RequirePackage{enumitem}
-
+\ifbool{ezlist@cleveref}{
+  \RequirePackage{cleveref}
+}{}
 
 %%% Implementation of \*
 
@@ -225,6 +225,9 @@
   \setcounter{ezlist@this}{1}%
   \togglefalse{ezlist@prevempty}%
 }
+
+
+% Cleveref names
 
 \ifbool{ezlist@cleveref}{
   \newcommand{\ezlist@cCrefname}[1]{%
