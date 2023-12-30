@@ -27,15 +27,15 @@
 
 %%%%%% Parentheses
 
-% \gp: parentheses () with different sizes
+% \gp or \pgp: parentheses () with different sizes
 % - \gp*{x}: automatic sizing with \left/\right
 % - \gp[size]{x}: manual size of \big, \Big, \bigg, \Bigg
 % - \gp{x}: just normal size
 
 % Variants of \gp:
-% - \sqgp: like \gp, but [] instead of ()
-% - \curlgp: like \gp, but \{\} instead of ()
-% - Others: \vert, \Vert, \angle, \floor, \ceil
+% - \sqgp or \bgp: like \gp, but [] instead of ()
+% - \curlgp or \Bgp: like \gp, but \{\} instead of ()
+% - Others: \vgp, \Vgp, \agp, \floor, \ceil
 
 % \given: vertical bar that resizes appropriately within \gp or similar
 % - Mostly useful within \P and \E, or with \curlgp for defining sets
@@ -275,7 +275,7 @@
 \RequirePackage{bm}
 \RequirePackage{booktabs}
 \RequirePackage{dsfont}
-\RequirePackage[inline, shortlabels]{enumitem}
+\RequirePackage[shortlabels]{enumitem}
 \RequirePackage{etoolbox}
 \RequirePackage[shortcuts]{extdash}
 \RequirePackage{mathtools}
@@ -1217,20 +1217,28 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
-\let\mvert|
-\newcommand{\given}{\nonscript\;\mvert\nonscript\;\mathopen{}}
-\newcommand{\@resizegiven}{%
-  \renewcommand{\given}{\nonscript\;\delimsize\mvert\nonscript\;\mathopen{}}}
+% \let\mvert\vert
+% \newcommand{\given}{\nonscript\;\mvert\nonscript\;\mathopen{}}
+% \newcommand{\@resizegiven}{%
+%   \renewcommand{\given}{\nonscript\;\delimsize\mvert\nonscript\;\mathopen{}}}
+\def\delimsize{}
+\newcommand{\given}{\nonscript\;\delimsize\mvert\nonscript\;\mathopen{}}
 \renewcommand{\mid}{\given}
-\DeclarePairedDelimiterX\angp[1]\langle\rangle{\@resizegiven #1}
-\DeclarePairedDelimiterX\vgp[1]\lvert\rvert{\@resizegiven #1}
-\DeclarePairedDelimiterX\Vgp[1]\lVert\rVert{\@resizegiven #1}
-\DeclarePairedDelimiterX\floor[1]\lfloor\rfloor{\@resizegiven #1}
-\DeclarePairedDelimiterX\ceil[1]\lceil\rceil{\@resizegiven #1}
 % "gp" for "group"
-\DeclarePairedDelimiterX\gp[1](){\@resizegiven #1}
-\DeclarePairedDelimiterX\sqgp[1][]{\@resizegiven #1}
-\DeclarePairedDelimiterX\curlgp[1]\{\}{\@resizegiven #1}
+\DeclarePairedDelimiterX\gp[1](){#1}
+\let\pgp\gp
+\DeclarePairedDelimiterX\sqgp[1][]{#1}
+\let\bgp\sqgp
+\DeclarePairedDelimiterX\curlgp[1]\{\}{#1}
+\let\Bgp\curlgp
+\DeclarePairedDelimiterX\pbgp[1](]{#1}
+\DeclarePairedDelimiterX\bpgp[1][){#1}
+\DeclarePairedDelimiterX\agp[1]\langle\rangle{#1}
+\DeclarePairedDelimiterX\vgp[1]\lvert\rvert{#1}
+\DeclarePairedDelimiterX\Vgp[1]\lVert\rVert{#1}
+\DeclarePairedDelimiterX\floor[1]\lfloor\rfloor{#1}
+\DeclarePairedDelimiterX\ceil[1]\lceil\rceil{#1}
+
 
 \renewcommand{\d}{\mathop{}\!\mathrm{d}}
 \newcommand{\dd}[2][]{\frac{\d #1}{\d #2}}
@@ -1336,7 +1344,8 @@
 %   - Using enumitem's shortlabels option, can do e.g. \*[1.] or \**[(a)] to enumerate sublists
 % - For all itmes, it sets the optional argument for the \item
 % - The first item in a (sub)list can have both optional arguments: first environment, then \item
-\let\@oldstar\*
+\let\easylist@oldstar\*
+\renewrobustcmd{\*}{\ifbool{mmode}{\easylist@oldstar}{\easylist@item}}
 \newlist{easylist@env}{enumerate}{8}
 \setlist[easylist@env,1]{label=\labelitemi}
 \setlist[easylist@env,2]{label=\labelitemii}
@@ -1349,8 +1358,8 @@
 \newcounter{easylist@prev}\setcounter{easylist@prev}{0}
 \newcounter{easylist@this}\setcounter{easylist@this}{1}
 \newcounter{easylist@diff}\setcounter{easylist@diff}{0}
-\renewrobustcmd{\*}{\@ifstar{\easylist@star}{\easylist@nostar}}
-\newcommand{\easylist@star}{\addtocounter{easylist@this}{1}\*}
+\newcommand{\easylist@item}{\@ifstar{\easylist@star}{\easylist@nostar}}
+\newcommand{\easylist@star}{\addtocounter{easylist@this}{1}\easylist@item}
 \newcommand{\easylist@nostar}{%
   \def\easylist@type{{easylist@env}}%
   \ifthenelse{\value{easylist@this}>\value{easylist@prev}}{%
