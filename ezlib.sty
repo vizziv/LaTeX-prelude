@@ -1,0 +1,648 @@
+%%% Guide
+
+% Each of the features below can be enabled or disabled with an option
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezlist %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% Provides a single macro, \*, for making lists
+%
+% Example usage:
+%
+%   \* hello
+%   \* world
+%   \** use multiple * for sublists
+%   \** like this
+%   \* back to top level
+%   \* use a / to end the list
+%   \*/
+%
+% Can also use an optional argument to use numbers/letters, e.g.
+%
+%   \*[(a)] labeled (a)
+%   \* labeled (b)
+%   \** no label in this sublist
+%   \* labeled (c)
+%   \**[(i)] labeled (i)
+%   \** labeled (ii)
+%   \*/
+%
+% More generally, use [] to pass any options the enumitem package supports
+%
+% Optional feature: explicit start/end:
+%
+% - Explicit start: use \*[...], \**[...], etc. with no text after.
+%   - Should be followed by another \*, \**, etc.
+%   - This is useful if you want to pass options in a separate line
+% - Explicit end: use \**/, \***/, etc.
+%   - This lets you have a sublist in the middle of an item
+%
+% Example:
+%
+%   \*[(a), beginpenalty=10000]
+%   \* this is the first item, labeled (a)
+%   \** the list options got their own line
+%   \* this one is (b), and there's a sublist
+%   \**[beginpenalty=10000]
+%   \** with
+%   \** some
+%   \** stuff
+%   \**/ but now we resume item (b) from the outer list
+%   \* before finally going to (c)
+%   \* more details about explicit begin
+%   \** you need to pass options with [] for an explicit begin
+%   \***
+%   \*** so the line immediately above this appears
+%   \** but passing an empty list of options counts as passing options, so
+%   \***[]
+%   \*** so the line immediately above this is omitted
+%   \** edge case: when an explicit begin is immediately followed by an explicit end\dots
+%   \***[]
+%   \***/ \dots\ the list has a single empty item
+%   \*/
+%
+% Additional notes:
+%
+% - The environment \* uses is called "ezlist"
+%   - Can be modified with \setlist from enumitem, etc.
+% - Use option "cleveref" for compatibility with cleveref package
+%   - Default: \cref name is blank, \Cref name is "Item"/"Items"
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezeq %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+% Makes \[ and \] a (slightly) smarter equation interface
+%
+% - Automatically chooses between equation, align, and gather
+%   - Conservative choice based on seeing whether & or \\ appears in the text
+% - Automatically numbers only labeled equations, if desired
+% - If using \tag, put it right after \label, as in \label{...} \tag{...}
+% - Enables \allowdisplaybreaks inside the \[ \]
+%   - If it appears anywhere in the \[ \], it applies to the whole thing
+%   - It is local to the \[ \] in which it appears
+%   - The optional argument of \allowdisplaybreaks is not supported
+%   - Remember that LaTeX provies \\* for non-breakable newlines
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: restate %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Simple interface for thmtools's restatable theorems
+%
+% - \restatably or \restatably*: makes any theorem/lemma/etc. restatable
+%   - Usage: \restatably \begin{theorem} \label{lbl} ... \end{theorem}
+%     - Spaces are okay
+%   - The theorem/lemma/etc. must start with a \label
+% - \restate*: restates a \restatably stated theorem/lemma/etc.
+%   - Usage: \restate*{lbl} or \restate*\ref{lbl}
+%     - The \ref syntax is for convenient autocomplete, e.g. on Overleaf
+%   - Can be used multiple times
+%
+% Starred vs. not starred
+%
+% - Both \restatably and \restate can be starred (followed by "*") or unstarred
+%   - Unstarred indicates the "main version", on which the numbering is based
+%   - Starred indicates that numbers should be copied from the main version
+% - Each label should appear once unstarred, and otherwise starred
+%   - Either the \restatably or a \restate can be the starred one
+% - The star always appears immediately after the macro
+%   - E.g. \restatably* \begin{...} or \restate* \ref{...}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: delimiters %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Provides different "group" macros for sizing parentheses and similar
+%
+% - \gp{x}: normal size
+% - \gp*{x}: automatically sized using \left/\right
+% - \gp[size]{x}: manually sized, where size is one of \big, \Big, \bigg, or \Bigg
+%
+% Variants of \gp:
+%
+% - \gp or \pgp: ()
+% - \sqgp or \bgp: []
+% - \curlgp or \Bgp: \{\}
+% - \pbgp (]
+% - \bpgp [)
+% - \vgp: ||
+% - \Vgp: \|\|
+% - \agp: \langle\ranlge
+% - \floor: \lfloor\rfloor
+% - \ceil: \lceil\rceil
+%
+% Separators that automatically scale:
+%
+% - \mid: |
+% - \Mid: \|
+%
+% Generic version:
+%
+% - \lr: takes two delimiters, then acts like a \gp variant with those delimiters
+%   - Limitation: doesn't support manual sizing
+% - Examples:
+%   - \lr[) is like \bpgp
+%   - \lr\|\|* is like \Vgp*
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: notation %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Various math notation shortcuts and conventions
+%
+% Caligraphic and blackboard bold shortcuts:
+%
+% - \bbA, ..., \bbZ: short for \mathbb{A}, ..., \mathbb{Z}
+% - \calA, ..., \calZ: short for \mathcal{A}, ..., \mathcal{Z}
+%
+% Probability: (requires delimiters feature, too)
+%
+% - \P, \E, and \Var: have interface like delimiters
+%   - But they also support subscripts/superscripts and primes
+% - \given: synonym for \mid
+% - Example: \E_{X \sim \pi}*{\frac{1}{2} X^2 \given X > 3}
+% - Change appearance with the following two options
+%   - probability font (default: probability font=bf)
+%     - Also supported: bb, rm, sf, and any X where a \mathX command exists
+%   - probability delim (default: probability delim=sq)
+%     - Also supported: p, curl, and any X where an \Xgp command exists
+%
+% Other:
+%
+% - \1: indicator function \mathbb{1}
+% - \d: differential symbol, use as \d x (or as \d{x})
+% - \epsilon and \phi: now refer to \varepsilon and \varphi
+%   - Use \LaTeXepsilon and \LaTeXphi for old versions
+% - \argmin, \argmax, \liminf, \limsup: math operators
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Package setup and options %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{ezlib}[2023/12/30 Ziv's LaTeX Library]
+
+\RequirePackage{etoolbox}
+\RequirePackage{kvoptions}
+
+% Options for activating features
+\DeclareVoidOption{all}{
+  \ezlib@ezlisttrue
+  \ezlib@ezeqtrue
+  \ezlib@clevereftrue
+  \ezlib@restate
+  \ezlib@delimiterstrue
+  \ezlib@notationtrue
+}
+\DeclareBoolOption[false]{ezlist}
+\DeclareBoolOption[false]{ezeq}
+\DeclareBoolOption[false]{delimiters}
+\DeclareBoolOption[false]{notation}
+\DeclareBoolOption[false]{cleveref}
+
+% Options for ezeq
+\DeclareBoolOption[true]{ezeqnumberlabeled}
+\DeclareComplementaryOption{ezeqnumberall}{ezeqnumberlabeled}
+
+% Options for ezlist
+\DeclareBoolOption[true]{shortlabels}
+
+% Options for notation
+\DeclareStringOption[sq]{probabilitydelimiter}
+\DeclareStringOption[bf]{probabilityfont}
+
+\ProcessLocalKeyvalOptions*
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Required packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{hyperref}
+
+\ifbool{ezlib@shortlabels}{
+  \PassOptionsToPackage{shortlabels}{enumitem}
+}{}
+\ifbool{ezlib@ezlist}{
+  \RequirePackage{enumitem}
+}{}
+
+\ifbool{ezlib@cleveref}{
+  \RequirePackage{cleveref}
+}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezlist %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifbool{ezlib@ezlist}{
+
+
+%%% Implementation of \*
+
+% Keep \* as it is in math mode
+\let\ezlib@ezlist@oldstar\*
+\protected\def\*{\ifbool{mmode}{\ezlib@ezlist@oldstar}{\ezlib@ezlist@item}}
+
+\newlist{ezlist}{enumerate}{8}
+\setlist[ezlist,1]{label=\labelitemi}
+\setlist[ezlist,2]{label=\labelitemii}
+\setlist[ezlist,3]{label=\labelitemiii}
+\setlist[ezlist,4]{label=\labelitemiv}
+\setlist[ezlist,5]{label=\labelitemi}
+\setlist[ezlist,6]{label=\labelitemii}
+\setlist[ezlist,7]{label=\labelitemiii}
+\setlist[ezlist,8]{label=\labelitemiv}
+
+\newcounter{ezlib@ezlist@prev}
+\setcounter{ezlib@ezlist@prev}{0}
+
+\newcounter{ezlib@ezlist@this}
+\setcounter{ezlib@ezlist@this}{1}
+
+\newcounter{ezlib@ezlist@diff}
+\setcounter{ezlib@ezlist@diff}{0}
+
+\newtoggle{ezlib@ezlist@prevempty}
+\togglefalse{ezlib@ezlist@prevempty}
+
+% Main entry point called directly by \*
+% Starts by counting "*"s
+\newrobustcmd{\ezlib@ezlist@item}{%
+  \@ifstar{\ezlib@ezlist@star}{\ezlib@ezlist@nostar}%
+}
+
+\newrobustcmd{\ezlib@ezlist@star}{%
+  \addtocounter{ezlib@ezlist@this}{1}%
+  \ezlib@ezlist@item%
+}
+
+\newrobustcmd{\ezlib@ezlist@nostar}{%
+  \def\ezlib@ezlist@type{{ezlist}}%
+  \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
+    \@ifnextchar{[}{%
+      % This a new sublist with parameters, so store them in \ezlib@ezlist@type
+      \ezlib@ezlist@settype
+    }{%
+      % This a new sublist, but without parameters
+      \ezlib@ezlist@checkend%
+    }%
+  }{%
+    % This not a new sublist
+    \ezlib@ezlist@checkend%
+  }%
+}
+
+% Start a new sublist with parameters
+\def\ezlib@ezlist@settype[#1]{%
+  \def\ezlib@ezlist@type{{ezlist}[#1]}%
+  \ezlib@ezlist@checkempty{}%
+}
+
+% Check if the first line of a new sublist with parameters is empty
+% If it is, then we omit the \item
+% #1 is either blank or \par
+\newrobustcmd{\ezlib@ezlist@checkempty}[1]{%
+  \@ifnextchar{\par}{%
+    \ezlib@ezlist@checkemptypar{#1}%
+  }{%
+    \@ifnextchar{\*}{%
+      \ezlib@ezlist@go{\toggletrue{ezlib@ezlist@prevempty}}{}{#1}%
+    }{%
+      \ezlib@ezlist@go{}{\item}{#1}%
+    }%
+  }%
+}
+
+\def\ezlib@ezlist@checkemptypar#1\par{%
+  \ezlib@ezlist@checkempty{#1\par}%
+}
+
+% Check for /, which indicates the end of a list
+\newrobustcmd{\ezlib@ezlist@checkend}{%
+  \@ifnextchar{/}{%
+    % We want to end a list, but is there actually a list to end?
+    \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
+      % There is not, so issue a warning and ignore this line
+      \PackageError{ezlist}{attempted to end easy list at too high a level}{}%
+      \setcounter{ezlib@ezlist@this}{1}%
+      \@gobble%
+    }{%
+      % There is, so end the list without adding an \item
+      \addtocounter{ezlib@ezlist@this}{-1}%
+      \ezlib@ezlist@go{}{}{\@gobble}%
+    }
+  }{%
+    % We're not ending a list
+    \ezlib@ezlist@go{}{\item}{}%
+  }%
+}
+
+% #1 goes before the potential \item
+% #2 is the potential \item: it's either blank or \item
+% #3 goes after the potential \item
+\newrobustcmd{\ezlib@ezlist@go}[3]{%
+  \defcounter{ezlib@ezlist@diff}{\value{ezlib@ezlist@this} - \value{ezlib@ezlist@prev}}%
+  \ifboolexpr{%
+    togl{ezlib@ezlist@prevempty}
+    and not test{\ifnumcomp{\value{ezlib@ezlist@diff}}{=}{0}}
+  }{%
+    % We're about to end a list without any \item, so add one
+    \item%
+  }{}
+  % Begin any necessary lists
+  \whileboolexpr{ test{\ifnumcomp{\value{ezlib@ezlist@diff}}{>}{1}} }{%
+    \addtocounter{ezlib@ezlist@diff}{-1}%
+    \begin{ezlist}%
+    \item%
+  }%
+  % Apply any parameters to the innermost new list
+  \ifnumcomp{\value{ezlib@ezlist@diff}}{=}{1}{%
+    \addtocounter{ezlib@ezlist@diff}{-1}%
+    \expandafter\begin\ezlib@ezlist@type%
+  }{}%
+  % End any necessary lists
+  \whileboolexpr{ test{\ifnumcomp{\value{ezlib@ezlist@diff}}{<}{0}} }{%
+    \addtocounter{ezlib@ezlist@diff}{1}%
+    \end{ezlist}%
+  }%
+  \ifnumcomp{\value{ezlib@ezlist@this}}{=}{0}{%
+    \ezlib@ezlist@cleanup#1#3%
+  }{%
+    \ezlib@ezlist@cleanup#1#2#3%
+  }%
+}
+
+\newrobustcmd{\ezlib@ezlist@cleanup}{%
+  \setcounter{ezlib@ezlist@prev}{\value{ezlib@ezlist@this}}%
+  \setcounter{ezlib@ezlist@this}{1}%
+  \togglefalse{ezlib@ezlist@prevempty}%
+}
+
+
+%%%% Cleveref names
+
+\ifbool{ezlib@cleveref}{
+  \newrobustcmd{\ezlib@ezlist@cCrefname}[1]{%
+    \crefname{#1}{}{}%
+    \Crefname{#1}{Item}{Items}%
+  }
+  \ezlib@ezlist@cCrefname{ezlisti}
+  \ezlib@ezlist@cCrefname{ezlistii}
+  \ezlib@ezlist@cCrefname{ezlistiii}
+  \ezlib@ezlist@cCrefname{ezlistiv}
+  \ezlib@ezlist@cCrefname{ezlistv}
+  \ezlib@ezlist@cCrefname{ezlistvi}
+  \ezlib@ezlist@cCrefname{ezlistvii}
+  \ezlib@ezlist@cCrefname{ezlistviii}
+}{}
+
+
+}{} % \ifbool{ezlib@ezlist}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezeq %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+\ifbool{ezlib@ezeq}{
+
+
+%%% Implementation of \[ \] numbering all
+
+\newrobustcmd{\ezeqSetNumberAll}{%
+  \def\[##1\]{%
+    \begingroup%
+    \saveexpandmode\noexpandarg
+    \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
+    \IfSubStr{##1}{&}{\restoreexpandmode\begin{align}##1\end{align}}{%
+      \IfSubStr{##1}{\\}{\restoreexpandmode\begin{gather}##1\end{gather}}{%
+        \restoreexpandmode\begin{equation}##1\end{equation}}}%
+    \endgroup%
+    \ignorespaces%
+  }
+}
+
+
+%%% Implementation of \[ \] when numbering labeled
+
+\ifbool{ezlib@cleveref}{
+  \RequirePackage{cleveref}
+  \newcommand{\ezlib@label@macro}{cref@old@label@in@display}
+}{
+  \newcommand{\ezlib@label@macro}{label@in@display}
+}
+
+\AtBeginDocument{%
+  \letcs\ezlib@old@label@in@display{\ezlib@label@macro}%
+}
+
+\newrobustcmd{\ezlib@label@in@display}[1]{%
+  \ezlib@old@label@in@display{#1}%
+  \@ifnextchar{\tag}{}{\yesnumber}%
+}
+
+\newrobustcmd{\ezeqSetNumberLabeled}{%
+  \def\[##1\]{%
+    \begingroup%
+    \cslet{\ezlib@label@macro}\ezlib@label@in@display%
+    \saveexpandmode\noexpandarg
+    \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
+    \IfSubStr{##1}{&}{\restoreexpandmode\begin{align*}##1\end{align*}}{%
+      \IfSubStr{##1}{\\}{\restoreexpandmode\begin{gather*}##1\end{gather*}}{%
+        \restoreexpandmode\begin{equation*}##1\end{equation*}}}%
+    \endgroup%
+    \ignorespaces%
+  }
+}
+
+
+%%% Choosing the right implementation
+
+\ifbool{ezlib@ezeqnumberlabeled}{
+  \ezeqSetNumberLabeled
+}{
+  \ezeqSetNumberAll
+}
+
+
+%%% Implement \yesnumber without cleveref compatibility
+
+\newrobustcmd{\ezlib@yesnumber@nocleveref}{%
+  \refstepcounter{equation}%
+  \tag{\theequation}%
+}
+
+
+%%% Implement \yesnumber with cleveref compatibility
+
+% See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command
+
+\ifdefempty{\ezlib@numberwithin}{
+  \newrobustcmd{\ezlib@cref@format}{%
+    [equation][\theequation][]%
+  }
+}{
+  \numberwithin{equation}{\ezlib@numberwithin}
+  \newrobustcmd{\ezlib@cref@format}{%
+    [equation][\arabic{equation}][\csuse{the\ezlib@numberwithin}]%
+  }
+}
+
+\newrobustcmd*{\ezlib@make@df@tag@@}[1]{%
+  \cref@old@make@df@tag@@{#1}%
+  \let\ezlib@old@df@tag\df@tag
+  \expandafter\gdef\expandafter\df@tag\expandafter{%
+    \ezlib@old@df@tag
+    \def\cref@currentlabel{\ezlib@cref@format#1}%
+  }%
+}
+
+\newrobustcmd*{\ezlib@make@df@tag@@@}[1]{%
+  \cref@old@make@df@tag@@@{#1}%
+  \let\ezlib@old@df@tag\df@tag
+  \expandafter\gdef\expandafter\df@tag\expandafter{%
+    \ezlib@old@df@tag
+    \toks@\@xp{\p@equation{#1}}%
+    \edef\cref@currentlabel{\ezlib@cref@format\the\toks@}%
+  }%
+}
+
+\newrobustcmd{\ezlib@yesnumber@cleveref}{%
+  \refstepcounter{equation}%
+  \begingroup%
+    \let\make@df@tag@@\ezlib@make@df@tag@@
+    \let\make@df@tag@@@\ezlib@make@df@tag@@@
+  \tag{\theequation}%
+  \endgroup%
+}
+
+\ifbool{ezlib@cleveref}{
+  \let\yesnumber\ezlib@yesnumber@cleveref
+}{
+  \let\yesnumber\ezlib@yesnumber@nocleveref
+}
+
+
+}{} % \ifbool{ezlib@ezeq}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: delimiters %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Main delimiter macros
+
+\ifbool{ezlib@delimiters}{
+  \RequirePackage{mathtools}
+  \DeclarePairedDelimiterX{\pgp}[1](){#1}
+  \DeclarePairedDelimiterX{\bgp}[1][]{#1}
+  \DeclarePairedDelimiterX{\Bgp}[1]\{\}{#1}
+  \DeclarePairedDelimiterX{\pbgp}[1](]{#1}
+  \DeclarePairedDelimiterX{\bpgp}[1][){#1}
+  \DeclarePairedDelimiterX{\agp}[1]\langle\rangle{#1}
+  \DeclarePairedDelimiterX{\vgp}[1]\lvert\rvert{#1}
+  \DeclarePairedDelimiterX{\Vgp}[1]\lVert\rVert{#1}
+  \DeclarePairedDelimiterX{\floor}[1]\lfloor\rfloor{#1}
+  \DeclarePairedDelimiterX{\ceil}[1]\lceil\rceil{#1}
+  \let\gp\pgp
+  \let\sqgp\bgp
+  \let\curlgp\Bgp
+}{} % \ifbool{ezlib@delimiters}
+
+
+%%% Generic version that only supports default and automatic sizing
+
+\ifboolexpr{ bool{ezlib@delimiters} or bool{ezlib@notation} }{
+  \newcommand{\delimsize}{}
+  \renewrobustcmd{\mid}{\nonscript\;\delimsize\vert\nonscript\;\mathopen{}}
+  \renewrobustcmd{\Mid}{\nonscript\;\delimsize\Vert\nonscript\;\mathopen{}}
+  \newrobustcmd{\lr}[2]{%
+    \@ifstar{\ezlib@lr@star{#1}{#2}}{\ezlib@lr@nostar{#1}{#2}}%
+  }
+  \newrobustcmd{\ezlib@lr@star}[3]{%
+    \mathopen{}\mathclose\bgroup #1
+    \renewcommand{\delimsize}{\middle} #3
+    \aftergroup\egroup #2
+  }
+  \newrobustcmd{\ezlib@lr@nostar}[3]{%
+    \mathopen #1
+    #3
+    \mathclose #2
+  }
+}{} % \ifboolexpr{ bool{ezlib@delimiters} or bool{ezlib@notation} }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: notation %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifbool{ezlib@notation}{
+
+\RequirePackage{mathcommand}
+
+
+%%% Shortcuts for \mathbb and \mathcal, e.g. \calP and \bbQ
+
+\LoopCommands{\lettersUppercase}[bb#1]{
+  \newmathcommand{#2}{\mathbb{#1}}
+}
+
+\LoopCommands{\lettersUppercase}[cal#1]{
+  \newmathcommand{#2}{\mathcal{#1}}
+}
+
+
+%%% Probability
+
+\let\ezlib@probability@gp@macro{\ezlib@probabilitydelim gp}
+\ifcsdef{\ezlib@probabilitydelim gp}{
+  \letcs\ezlib@probability@gp{\ezlib@probabilitydelim gp}
+}{
+  \ifdefstring{\ezlib@probabilitydelim}{sq}{%
+    \renewcommand{\ezlib@probabilitydelim}{[]}
+  }{}
+  \edef\ezlib@probability@gp@macro{\expandafter\lr\ezlib@probabilitydelim}
+}
+
+\newcommand{\ezlib@declareProbability}[2]{
+  \declaremathcommandPIE{#1}{%
+    \ezlib@probability@mathfont{P}##1##2##3\ezlib@probability@gp%
+  }
+}
+
+\ezlib@declareProbability{\P}{P}
+\ezlib@declareProbability{\E}{E}
+\ezlib@declareProbability{\Var}{Var}
+
+
+%%% Other
+
+\declarecommand{\epsilon}{\varepsilon}
+\declarecommand{\phi}{\varphi}
+
+\newmathcommand{\1}{\mathbb{1}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\limsup}{lim\,sup}
+\DeclareMathOperator*{\liminf}{lim\,inf}
+
+\declaremathcommand{\d}{\mathop{}\!\mathrm{d}}
+
+
+}{} % \ifbool{ezlib@notation}
