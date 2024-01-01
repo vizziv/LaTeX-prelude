@@ -32,10 +32,16 @@
 % - \gp[size]{x}: manual size of \big, \Big, \bigg, \Bigg
 % - \gp{x}: just normal size
 
-% Variants of \gp:
-% - \sqgp or \bgp: like \gp, but [] instead of ()
-% - \curlgp or \Bgp: like \gp, but \{\} instead of ()
-% - Others: \vgp, \Vgp, \agp, \floor, \ceil
+% Variants of \gp that replace () with something else:
+% - \sqgp or \bgp: []
+% - \curlgp or \Bgp: \{\}
+% - \pbgp (]
+% - \bpgp [)
+% - \vgp: ||
+% - \Vgp: \|\|
+% - \agp: \langle\ranlge
+% - \floor: \lfloor\rfloor
+% - \ceil: \lceil\rceil
 
 % \given: vertical bar that resizes appropriately within \gp or similar
 % - Mostly useful within \P and \E, or with \curlgp for defining sets
