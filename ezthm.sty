@@ -1,0 +1,99 @@
+
+
+
+%%% Declaring restatables
+
+\newtoks\ezthm@collect@toks
+
+% Variant of \thmt@collect@body
+% \thmt@collect@body@of{env} collects until \end{env} instead of the end of the current environment
+\long\def\ezthm@collect@body@of#1#2#3\end#4{%
+  \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks #3}%
+  \ifstrequal{#1}{#4}{%
+    \expandafter#2\expandafter{\the\ezthm@collect@toks}%
+  }{%
+    \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks\end{#4}}%
+    \ezthm@collect@body@of{#1}{#2}%
+  }%
+}
+
+\ifdef{\restatably}{%
+  \PackageError{ezthm}{%
+    Command \textbackslash restatably already defined, being overwritten%
+  }{}%
+}{}
+
+\newrobustcmd{\restatably}{%
+  \@ifstar{%
+    \ezthm@restatably@checkopt*%
+  }{%
+    \ezthm@restatably@checkopt{}%
+  }%
+  % \@ifstar{%
+  %   \ezthm@restatably@checkopt*%
+  %   \ignorespaces%
+  % }{%
+  %   \ezthm@restatably@checkopt\relax%
+  %   \ignorespaces%
+  % }%
+}
+
+% #1 is * or {}
+% #2 should be only spaces
+\def\ezthm@restatably@checkopt#1#2\begin#3{%
+  \@ifnextchar[{%
+    \ezthm@restatably@go{#1}{#3}%
+  }{%
+    \ezthm@restatably@go{#1}{#3}[]%
+  }%
+}
+
+\def\ezthm@restatably@go#1#2[#3]#4#5{%
+  \ifdefequal{#4}{\label}{%
+    \ezthm@collect@toks{}%
+    \ifblank{#3}{%
+      \def\ezthm@collect@cont##1{%
+        \begin{restatable#1}{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      }%
+    }{%
+      \def\ezthm@collect@cont##1{%
+        \begin{restatable#1}[#3]{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      }%
+    }%
+    \ezthm@collect@body@of{#2}\ezthm@collect@cont%
+  }{%
+    \PackageError{ezthm}{%
+      Environment after \textbackslash restatably must start with a \textbackslash label%
+    }{}%
+  }%
+}
+
+
+%%% Restating restatables
+
+\newrobustcmd{\restate}{%
+  \@ifstar{%
+    \ezthm@restate@checkref*%
+  }{%
+    \ezthm@restate@checkref{}%
+  }%
+}
+
+\newrobustcmd{\ezthm@restate@checkref}[1]{%
+  \@ifnextchar\ref{%
+    \ezthm@restate@go#1%
+  }{%
+    \ezthm@restate@go#1\ref%
+  }%
+}
+
+% #1 is empty or *
+% #2 is the label we want to restate
+\def\ezthm@restate@go#1\ref#2{%
+  \typeout{restate(#1,#2)}%
+  \ifcsdef{ezthm@restate #2}{%
+    \csuse{ezthm@restate #2}#1%
+  }{%
+    \PackageError{prelude}{Attempted to restate undeclared theorem with label #2}{}%
+  }%
+}
