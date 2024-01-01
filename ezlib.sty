@@ -1,6 +1,9 @@
-%%% Guide
+%-- guide --%
 
 % Each of the features below can be enabled or disabled with an option
+%
+% - The option always has the same name as the feature
+% - Some features have further options
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -66,9 +69,10 @@
 % Additional notes:
 %
 % - The environment \* uses is called "ezlist"
-%   - Can be modified with \setlist from enumitem, etc.
-% - Use option "cleveref" for compatibility with cleveref package
-%   - Default: \cref name is blank, \Cref name is "Item"/"Items"
+%   - For modifying options with \setlist, cleveref name, etc.
+% - If you want to load enumitem without shortlabels, do one of the following:
+%   - Pass the option shortlabels=false to this package
+%   - Load enumitem (without shortlabels) before loading package
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -88,9 +92,9 @@
 %   - Remember that LaTeX provies \\* for non-breakable newlines
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: restate %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Simple interface for thmtools's restatable theorems
 %
@@ -144,11 +148,19 @@
 %
 % Generic version:
 %
-% - \lr: takes two delimiters, then acts like a \gp variant with those delimiters
-%   - Limitation: doesn't support manual sizing
+% - \lr: like \gp, but after the optional *, takes delimiters as input
+% - \lrStarAfter: like \lr, but takes the delimiters first, then checks for *
+% - Limitation: neither \lr nor \lrStarAfter supports manual sizing
 % - Examples:
-%   - \lr[) is like \bpgp
-%   - \lr\|\|* is like \Vgp*
+%   - \lr(){...} is like \gp{...}
+%   - \lr*(){...} is like \gp*{...}
+%   - \lrStarAfter(){...} is like \gp{...}
+%   - \lrStarAfter()*{...} is like \gp*{...}
+%   - Delimiters need not be the same, e.g. \lr*[){...} is like \bpgp*{...}
+% - Intended usage
+%   - \lr is for direct usage in equations
+%   - \lrStarAfter is useful as the end of a macro definition
+%     - But the \gp family is even better, because it supports manual sizing
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,15 +169,18 @@
 
 % Various math notation shortcuts and conventions
 %
+% Provides \lr and \lrStarAfter from delimiters above (but not the others)
+%
 % Caligraphic and blackboard bold shortcuts:
 %
 % - \bbA, ..., \bbZ: short for \mathbb{A}, ..., \mathbb{Z}
 % - \calA, ..., \calZ: short for \mathcal{A}, ..., \mathcal{Z}
 %
-% Probability: (requires delimiters feature, too)
+% Probability (best with delimiters option on, too):
 %
 % - \P, \E, and \Var: have interface like delimiters
 %   - But they also support subscripts/superscripts and primes
+%   - If delimiters option isn't on, then manual sizing doesn't work
 % - \given: synonym for \mid
 % - Example: \E_{X \sim \pi}*{\frac{1}{2} X^2 \given X > 3}
 % - Change appearance with the following two options
@@ -173,6 +188,9 @@
 %     - Also supported: bb, rm, sf, and any X where a \mathX command exists
 %   - probability delim (default: probability delim=sq)
 %     - Also supported: p, curl, and any X where an \Xgp command exists
+%       - Without delimiters loaded, supports p, sq/b, and curl/B
+%     - Also supported: [], (), and any valid followup to \lrStarAfter
+%       - Limitation: manual sizing won't work
 %
 % Other:
 %
@@ -183,6 +201,10 @@
 % - \argmin, \argmax, \liminf, \limsup: math operators
 
 
+%-- end guide --%
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Package setup and options %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -190,20 +212,20 @@
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{ezlib}[2023/12/30 Ziv's LaTeX Library]
 
-\RequirePackage{etoolbox}
 \RequirePackage{kvoptions}
 
 % Options for activating features
 \DeclareVoidOption{all}{
   \ezlib@ezlisttrue
   \ezlib@ezeqtrue
-  \ezlib@clevereftrue
-  \ezlib@restate
+  \ezlib@restatetrue
   \ezlib@delimiterstrue
   \ezlib@notationtrue
+  \ezlib@clevereftrue
 }
 \DeclareBoolOption[false]{ezlist}
 \DeclareBoolOption[false]{ezeq}
+\DeclareBoolOption[false]{restate}
 \DeclareBoolOption[false]{delimiters}
 \DeclareBoolOption[false]{notation}
 \DeclareBoolOption[false]{cleveref}
@@ -212,24 +234,26 @@
 \DeclareBoolOption[true]{ezeqnumberlabeled}
 \DeclareComplementaryOption{ezeqnumberall}{ezeqnumberlabeled}
 
-% Options for ezlist
-\DeclareBoolOption[true]{shortlabels}
-
 % Options for notation
 \DeclareStringOption[sq]{probabilitydelimiter}
 \DeclareStringOption[bf]{probabilityfont}
 
+% Other options
+\DeclareStringOption[default]{numberwithin}
+\DeclareBoolOption[true]{shortlabels}
+
 \ProcessLocalKeyvalOptions*
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Required packages %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Required packages and general setup %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
 \RequirePackage{amsfonts}
 \RequirePackage{amssymb}
+\RequirePackage{etoolbox}
 \RequirePackage{hyperref}
 
 \ifbool{ezlib@shortlabels}{
@@ -239,16 +263,49 @@
   \RequirePackage{enumitem}
 }{}
 
+\ifbool{ezlib@ezeq}{
+  \RequirePackage{xstring}
+}{}
+
+\ifbool{ezlib@restate}{
+  \RequirePackage{thm-restate}
+}{}
+
 \ifbool{ezlib@cleveref}{
   \RequirePackage{cleveref}
 }{}
+
+\ifbool{ezlib@notation}{
+  \RequirePackage{mathcommand}
+}{}
+
+
+%%% Number within chapter/section/etc.
+
+\ifdefstring{\ezlib@numberwithin}{default}{
+  \ifdef{\chapter}{
+    \renewcommand{\ezlib@numberwithin}{chapter}
+  }{
+    \renewcommand{\ezlib@numberwithin}{section}
+  }
+}{}
+
+\ifdefstring{\ezlib@numberwithin}{none}{
+  \renewcommand{\ezlib@numberwithin}{}
+}{}
+
+\ifdefempty{\ezlib@numberwithin}{}{
+  \numberwithin{equation}{\ezlib@numberwithin}
+  \numberwithin{figure}{\ezlib@numberwithin}
+  \numberwithin{table}{\ezlib@numberwithin}
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-\ifbool{ezlib@ezlist}{
+\ifezlib@ezlist
 
 
 %%% Implementation of \*
@@ -411,14 +468,14 @@
 }{}
 
 
-}{} % \ifbool{ezlib@ezlist}
+\fi % \ifezlib@ezlist
 
 
 %%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezeq %%%
 %%%%%%%%%%%%%%%%%%%%%
 
-\ifbool{ezlib@ezeq}{
+\ifezlib@ezeq
 
 
 %%% Implementation of \[ \] numbering all
@@ -537,7 +594,121 @@
 }
 
 
-}{} % \ifbool{ezlib@ezeq}
+\fi % \ifezlib@ezeq
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: restate %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifezlib@restate
+
+
+%%% Declaring restatables
+
+\newtoks\ezthm@collect@toks
+
+% Variant of \thmt@collect@body
+% \thmt@collect@body@of{env} collects until \end{env} instead of the end of the current environment
+\long\def\ezthm@collect@body@of#1#2#3\end#4{%
+  \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks #3}%
+  \ifstrequal{#1}{#4}{%
+    \expandafter#2\expandafter{\the\ezthm@collect@toks}%
+  }{%
+    \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks\end{#4}}%
+    \ezthm@collect@body@of{#1}{#2}%
+  }%
+}
+
+\ifdef{\restatably}{%
+  \PackageError{ezthm}{%
+    Command \textbackslash restatably already defined, being overwritten%
+  }{}%
+}{}
+
+\newrobustcmd{\restatably}{%
+  \@ifstar{%
+    \ezthm@restatably@checkopt*%
+  }{%
+    \ezthm@restatably@checkopt{}%
+  }%
+  % \@ifstar{%
+  %   \ezthm@restatably@checkopt*%
+  %   \ignorespaces%
+  % }{%
+  %   \ezthm@restatably@checkopt\relax%
+  %   \ignorespaces%
+  % }%
+}
+
+% #1 is * or {}
+% #2 should be only spaces
+\def\ezthm@restatably@checkopt#1#2\begin#3{%
+  \@ifnextchar[{%
+    \ezthm@restatably@go{#1}{#3}%
+  }{%
+    \ezthm@restatably@go{#1}{#3}[]%
+  }%
+}
+
+\def\ezthm@restatably@go#1#2[#3]#4#5{%
+  \ifdefequal{#4}{\label}{%
+    \ezthm@collect@toks{}%
+    \ifstrempty{#3}{%
+      \def\ezthm@collect@cont##1{%
+        \begin{restatable#1}{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      }%
+    }{%
+      \def\ezthm@collect@cont##1{%
+        \begin{restatable#1}[#3]{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      }%
+    }%
+    \ezthm@collect@body@of{#2}\ezthm@collect@cont%
+  }{%
+    \PackageError{ezthm}{%
+      Environment after \textbackslash restatably must start with a \textbackslash label%
+    }{}%
+  }%
+}
+
+
+%%% Restating restatables
+
+\newrobustcmd{\restate}{%
+  \@ifstar{%
+    \ezthm@restate@checkref*%
+  }{%
+    \ezthm@restate@checkref{}%
+  }%
+}
+
+\newrobustcmd{\ezthm@restate@checkref}[1]{%
+  \@ifnextchar\ref{%
+    \ezthm@restate@go#1%
+  }{%
+    \ezthm@restate@go#1\ref%
+  }%
+}
+
+% #1 is empty or *
+% #2 is the label we want to restate
+\def\ezthm@restate@go#1\ref#2{%
+  \typeout{restate(#1,#2)}%
+  \ifcsdef{ezthm@restate #2}{%
+    \csuse{ezthm@restate #2}#1%
+  }{%
+    \PackageError{prelude}{Attempted to restate undeclared theorem with label #2}{}%
+  }%
+}
+
+
+%%% Fixing a spacing bug in restatable environment
+
+\pretocmd{\thmt@rst@storecounters}{\Hy@SaveLastskip}{}{}
+\apptocmd{\thmt@rst@storecounters}{\Hy@RestoreLastskip}{}{}
+
+
+\fi % \ifezlib@restate
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -562,7 +733,7 @@
   \let\gp\pgp
   \let\sqgp\bgp
   \let\curlgp\Bgp
-}{} % \ifbool{ezlib@delimiters}
+}{}
 
 
 %%% Generic version that only supports default and automatic sizing
@@ -570,28 +741,31 @@
 \ifboolexpr{ bool{ezlib@delimiters} or bool{ezlib@notation} }{
   \newcommand{\delimsize}{}
   \renewrobustcmd{\mid}{\nonscript\;\delimsize\vert\nonscript\;\mathopen{}}
-  \renewrobustcmd{\Mid}{\nonscript\;\delimsize\Vert\nonscript\;\mathopen{}}
-  \newrobustcmd{\lr}[2]{%
+  \newrobustcmd{\Mid}{\nonscript\;\delimsize\Vert\nonscript\;\mathopen{}}
+  \newrobustcmd{\lr}{%
+    \@ifstar{\ezlib@lr@star}{\ezlib@lr@nostar}%
+  }
+  \newrobustcmd{\lrStarAfter}[2]{%
     \@ifstar{\ezlib@lr@star{#1}{#2}}{\ezlib@lr@nostar{#1}{#2}}%
   }
   \newrobustcmd{\ezlib@lr@star}[3]{%
-    \mathopen{}\mathclose\bgroup #1
+    \mathopen{}\mathclose\bgroup\left #1
     \renewcommand{\delimsize}{\middle} #3
-    \aftergroup\egroup #2
+    \aftergroup\egroup\right #2
   }
   \newrobustcmd{\ezlib@lr@nostar}[3]{%
     \mathopen #1
     #3
     \mathclose #2
   }
-}{} % \ifboolexpr{ bool{ezlib@delimiters} or bool{ezlib@notation} }
+}{}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: notation %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-\ifbool{ezlib@notation}{
+\ifezlib@notation
 
 \RequirePackage{mathcommand}
 
@@ -609,25 +783,40 @@
 
 %%% Probability
 
-\let\ezlib@probability@gp@macro{\ezlib@probabilitydelim gp}
-\ifcsdef{\ezlib@probabilitydelim gp}{
-  \letcs\ezlib@probability@gp{\ezlib@probabilitydelim gp}
+\letcs\ezlib@probability@mathfont{math\ezlib@probabilityfont}
+
+\ifcsdef{\ezlib@probabilitydelimiter gp}{
+  \letcs\ezlib@probability@gp{\ezlib@probabilitydelimiter gp}
 }{
-  \ifdefstring{\ezlib@probabilitydelim}{sq}{%
-    \renewcommand{\ezlib@probabilitydelim}{[]}
+  \ifdefstring{\ezlib@probabilitydelimiter}{p}{
+    \renewcommand{\ezlib@probabilitydelimiter}{()}
   }{}
-  \edef\ezlib@probability@gp@macro{\expandafter\lr\ezlib@probabilitydelim}
+  \ifdefstring{\ezlib@probabilitydelimiter}{b}{
+    \renewcommand{\ezlib@probabilitydelimiter}{[]}
+  }{}
+  \ifdefstring{\ezlib@probabilitydelimiter}{B}{
+    \renewcommand{\ezlib@probabilitydelimiter}{\{\}}
+  }{}
+  \ifdefstring{\ezlib@probabilitydelimiter}{sq}{
+    \renewcommand{\ezlib@probabilitydelimiter}{[]}
+  }{}
+  \ifdefstring{\ezlib@probabilitydelimiter}{curl}{
+    \renewcommand{\ezlib@probabilitydelimiter}{\{\}}
+  }{}
+  \edef\ezlib@probability@gp{\noexpand\lrStarAfter\ezlib@probabilitydelimiter}
 }
 
-\newcommand{\ezlib@declareProbability}[2]{
+\newcommand{\ezlib@declareProbabilityCommand}[2]{
   \declaremathcommandPIE{#1}{%
     \ezlib@probability@mathfont{P}##1##2##3\ezlib@probability@gp%
   }
 }
 
-\ezlib@declareProbability{\P}{P}
-\ezlib@declareProbability{\E}{E}
-\ezlib@declareProbability{\Var}{Var}
+\ezlib@declareProbabilityCommand{\P}{P}
+\ezlib@declareProbabilityCommand{\E}{E}
+\ezlib@declareProbabilityCommand{\Var}{Var}
+
+\let\given\mid
 
 
 %%% Other
@@ -639,10 +828,8 @@
 
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\limsup}{lim\,sup}
-\DeclareMathOperator*{\liminf}{lim\,inf}
 
 \declaremathcommand{\d}{\mathop{}\!\mathrm{d}}
 
 
-}{} % \ifbool{ezlib@notation}
+\fi % \ifbool{ezlib@notation}
