@@ -55,6 +55,13 @@
 % \***[]
 % \***/ \dots\ the list has a single empty item
 % \*/
+%
+% Additional notes:
+%
+% - The environment \* uses is called "ezlist"
+%   - Can be modified with \setlist from enumitem, etc.
+% - Use option "cleveref" for compatibility with cleveref package
+%   - Default: \cref name is blank, \Cref name is "Item"/"Items"
 
 
 %%% Package setup and options
@@ -91,15 +98,15 @@
 \let\ezlist@oldstar\*
 \protected\def\*{\ifbool{mmode}{\ezlist@oldstar}{\ezlist@item}}
 
-\newlist{ezlist@env}{enumerate}{8}
-\setlist[ezlist@env,1]{label=\labelitemi}
-\setlist[ezlist@env,2]{label=\labelitemii}
-\setlist[ezlist@env,3]{label=\labelitemiii}
-\setlist[ezlist@env,4]{label=\labelitemiv}
-\setlist[ezlist@env,5]{label=\labelitemi}
-\setlist[ezlist@env,6]{label=\labelitemii}
-\setlist[ezlist@env,7]{label=\labelitemiii}
-\setlist[ezlist@env,8]{label=\labelitemiv}
+\newlist{ezlist}{enumerate}{8}
+\setlist[ezlist,1]{label=\labelitemi}
+\setlist[ezlist,2]{label=\labelitemii}
+\setlist[ezlist,3]{label=\labelitemiii}
+\setlist[ezlist,4]{label=\labelitemiv}
+\setlist[ezlist,5]{label=\labelitemi}
+\setlist[ezlist,6]{label=\labelitemii}
+\setlist[ezlist,7]{label=\labelitemiii}
+\setlist[ezlist,8]{label=\labelitemiv}
 
 \newcounter{ezlist@prev}
 \setcounter{ezlist@prev}{0}
@@ -125,7 +132,7 @@
 }
 
 \newcommand{\ezlist@nostar}{%
-  \def\ezlist@type{{ezlist@env}}%
+  \def\ezlist@type{{ezlist}}%
   \ifnumcomp{\value{ezlist@this}}{>}{\value{ezlist@prev}}{%
     \@ifnextchar{[}{%
       % This a new sublist with parameters, so store them in \ezlist@type
@@ -142,7 +149,7 @@
 
 % Start a new sublist with parameters
 \def\ezlist@settype[#1]{%
-  \def\ezlist@type{{ezlist@env}[#1]}%
+  \def\ezlist@type{{ezlist}[#1]}%
   \ezlist@checkempty{}%
 }
 
@@ -171,7 +178,7 @@
     % We want to end a list, but is there actually a list to end?
     \ifnumcomp{\value{ezlist@this}}{>}{\value{ezlist@prev}}{%
       % There is not, so issue a warning and ignore this line
-      \PackageWarning{ezlist}{attempted to end easy list at too high a level}{}%
+      \PackageError{ezlist}{attempted to end easy list at too high a level}{}%
       \setcounter{ezlist@this}{1}%
       \@gobble%
     }{%
@@ -191,16 +198,16 @@
 \newcommand{\ezlist@go}[3]{%
   \defcounter{ezlist@diff}{\value{ezlist@this} - \value{ezlist@prev}}%
   \ifboolexpr{%
-    togl {ezlist@prevempty}
-    and not test {\ifnumcomp{\value{ezlist@diff}}{=}{0}}
+    togl{ezlist@prevempty}
+    and not test{\ifnumcomp{\value{ezlist@diff}}{=}{0}}
   }{%
     % We're about to end a list without any \item, so add one
     \item%
   }{}
   % Begin any necessary lists
-  \whileboolexpr{ test {\ifnumcomp{\value{ezlist@diff}}{>}{1}} }{%
+  \whileboolexpr{ test{\ifnumcomp{\value{ezlist@diff}}{>}{1}} }{%
     \addtocounter{ezlist@diff}{-1}%
-    \begin{ezlist@env}%
+    \begin{ezlist}%
     \item%
   }%
   % Apply any parameters to the innermost new list
@@ -209,9 +216,9 @@
     \expandafter\begin\ezlist@type%
   }{}%
   % End any necessary lists
-  \whileboolexpr{ test {\ifnumcomp{\value{ezlist@diff}}{<}{0}} }{%
+  \whileboolexpr{ test{\ifnumcomp{\value{ezlist@diff}}{<}{0}} }{%
     \addtocounter{ezlist@diff}{1}%
-    \end{ezlist@env}%
+    \end{ezlist}%
   }%
   \ifnumcomp{\value{ezlist@this}}{=}{0}{%
     \ezlist@cleanup#1#3%
@@ -234,12 +241,12 @@
     \crefname{#1}{}{}%
     \Crefname{#1}{Item}{Items}%
   }
-  \ezlist@cCrefname{ezlist@envi}
-  \ezlist@cCrefname{ezlist@envii}
-  \ezlist@cCrefname{ezlist@enviii}
-  \ezlist@cCrefname{ezlist@enviv}
-  \ezlist@cCrefname{ezlist@envv}
-  \ezlist@cCrefname{ezlist@envvi}
-  \ezlist@cCrefname{ezlist@envvii}
-  \ezlist@cCrefname{ezlist@envviii}
+  \ezlist@cCrefname{ezlisti}
+  \ezlist@cCrefname{ezlistii}
+  \ezlist@cCrefname{ezlistiii}
+  \ezlist@cCrefname{ezlistiv}
+  \ezlist@cCrefname{ezlistv}
+  \ezlist@cCrefname{ezlistvi}
+  \ezlist@cCrefname{ezlistvii}
+  \ezlist@cCrefname{ezlistviii}
 }{}
