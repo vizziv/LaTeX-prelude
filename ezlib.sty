@@ -33,6 +33,7 @@
 % - microtype
 % - font
 % - number within
+% - floats
 % - headings
 
 
@@ -294,6 +295,15 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: floats %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Formats float labels nicely and loads some useful packages, e.g. subcaption
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: natbib %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -373,6 +383,8 @@
 %%% Feature: headings %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Non-boolean feature (interaction with "enable by default" described below)
+%
 % Formats section titles, headers, and more
 %
 % Valid options:
@@ -418,6 +430,7 @@
   \ezlib@notationtrue
   \ezlib@clevereftrue
   \ezlib@theoremstrue
+  \ezlib@floatstrue
   \ezlib@natbibtrue
   \ezlib@algorithmtrue
   \ezlib@microtypetrue
@@ -432,6 +445,7 @@
 \DeclareBoolOption[false]{notation}
 \DeclareBoolOption[false]{cleveref}
 \DeclareBoolOption[false]{theorems}
+\DeclareBoolOption[false]{floats}
 \DeclareBoolOption[false]{natbib}
 \DeclareBoolOption[false]{algorithm}
 \DeclareBoolOption[false]{microtype}
@@ -467,13 +481,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Important packages that should be loaded first
-\RequirePackage[T1]{fontenc}
+\PassOptionsToPackage{T1}{fontspec}
+\RequirePackage{fontenc}
 \RequirePackage{amsmath}
-\RequirePackage{amsfonts}
-\RequirePackage{amssymb}
 \RequirePackage{amsthm}
 \RequirePackage{etoolbox}
-\RequirePackage[hidelinks]{hyperref}
+\PassOptionsToPackage{hidelinks}{hyperref}
+\RequirePackage{hyperref}
+
+%-- compatibility: acmart --%
+\@ifclassloaded{acmart}{}{%
+  \RequirePackage{amsfonts}
+  \RequirePackage{amssymb}
+}
+%-- end compatibility --%
 
 \ifbool{ezlib@ezlist}{
   \ifbool{ezlib@enumitemoptions}{
@@ -1241,7 +1262,8 @@
 \newcommand{\ezlibRemark}{remark}
 \newcommand{\ezlib@Case}{remark}
 
-\@ifclassloaded{acm}{
+%-- compatibility: acmart --%
+\@ifclassloaded{acmart}{
   \renewcommand{\ezlibPlain}{acmplain}
   \renewcommand{\ezlibDefinition}{acmdefinition}
   \renewcommand{\ezlibRemark}{acmdefinition}
@@ -1256,6 +1278,7 @@
     {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
   \renewcommand{\ezlib@Case}{acmcase}
 }{}
+%-- end compatibility --%
 
 \theoremstyle{\ezlibPlain}
 \newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
@@ -1305,6 +1328,27 @@
 \fi % \ifezlib@theorems
 
 
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: floats %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifezlib@floats
+
+
+\PassOptionsToPackage{font=small, labelfont=bf, labelsep=period}{caption}
+\RequirePackage{caption}
+\PassOptionsToPackage{font=small, labelformat=simple}{subcaption}
+\RequirePackage{subcaption}
+
+
+\def\thesubfigure{(\alph{subfigure})}
+
+
+
+\fi % \ifezlib@floats
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: headings %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1314,140 +1358,132 @@
   or test{\ifdefstring{\ezlib@headings}{inline}}
 }{
 
+\PassOptionsToPackage{\ezlib@titlestyleoptions, raggedright}{titlesec}
+\RequirePackage{titlesec}
 
-  \newcommand{\ezlib@titlestyle}{\bfseries}
-  \newcommand{\ezlib@titlestyleoptions}{bf}
-  \newcommand{\ezlib@headerstyle}{\footnotesize}
-  \ifbool{ezlib@headings@sf}{
-    \renewcommand{\ezlib@titlestyle}{\sffamily\bfseries}
-    \renewcommand{\ezlib@titlestyleoptions}{sf,bf}
-    \renewcommand{\ezlib@headerstyle}{\footnotesize\sffamily}
-  }{}
+\newcommand{\ezlib@titlestyle}{\bfseries}
+\newcommand{\ezlib@titlestyleoptions}{bf}
+\newcommand{\ezlib@headerstyle}{\footnotesize}
+\ifbool{ezlib@headings@sf}{
+  \renewcommand{\ezlib@titlestyle}{\sffamily\bfseries}
+  \renewcommand{\ezlib@titlestyleoptions}{sf,bf}
+  \renewcommand{\ezlib@headerstyle}{\footnotesize\sffamily}
+}{}
 
-  \RequirePackage{fancyhdr}
-  \RequirePackage{titling}
-  \RequirePackage[\ezlib@titlestyleoptions, raggedright]{titlesec}
-  \RequirePackage[font=small, labelfont=bf, labelsep=period]{caption}
-  \RequirePackage[font=small, labelformat=simple]{subcaption}
+\RequirePackage{fancyhdr}
+\RequirePackage{titling}
 
-  \def\thesubfigure{(\alph{subfigure})}
+\newcommand{\ezlib@nonewlines}[1]{{\def\\{\ignorespaces}#1}}
 
-  \newcommand{\ezlib@nonewlines}[1]{{\def\\{\ignorespaces}#1}}
+\AtBeginDocument{\patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{}}
 
-  \AtBeginDocument{\patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{}}
+\@ifpackageloaded{microtype}{
+  \newrobustcmd{\ezlib@noMicrotypeProtrusion}{\microtypesetup{protrusion=false}}
+}{
+  \newrobustcmd{\ezlib@noMicrotypeProtrusion}{}
+}
 
-  \@ifpackageloaded{microtype}{
-    \newrobustcmd{\ezlib@noMicrotypeProtrusion}{\microtypesetup{protrusion=false}}
-  }{
-    \newrobustcmd{\ezlib@noMicrotypeProtrusion}{}
-  }
+\titleformat{\part}[display]%
+  {\centering\normalfont\LARGE\scshape}%
+  {Part~\thepart}%
+  {0.5em}%
+  {\ezlib@noMicrotypeProtrusion\hyphenpenalty=10000\centering\normalfont\HUGE\ezlib@titlestyle}%
 
-  \titleformat{\part}[display]%
-    {\centering\normalfont\LARGE\scshape}%
-    {Part~\thepart}%
-    {0.5em}%
-    {\ezlib@noMicrotypeProtrusion\hyphenpenalty=10000\centering\normalfont\HUGE\ezlib@titlestyle}%
+\titlespacing*{\chapter}{0pt}{-4.25em}{2em plus 0.5em minus 0.5em}
+\newlength{\chapterrulewidth}
+\setlength{\chapterrulewidth}{\headrulewidth}
+\titleformat{\chapter}[display]%
+  {\normalfont\Large\scshape}%
+  {\chaptername~\thechapter}%
+  {0.125em}%
+  {\hyphenpenalty=10000\raggedright\normalfont\huge\ezlib@titlestyle}%
+  [\rule{\textwidth}{\chapterrulewidth}]
 
-  \titlespacing*{\chapter}{0pt}{-4.25em}{2em plus 0.5em minus 0.5em}
-  \newlength{\chapterrulewidth}
-  \setlength{\chapterrulewidth}{\headrulewidth}
-  \titleformat{\chapter}[display]%
-    {\normalfont\Large\scshape}%
-    {\chaptername~\thechapter}%
-    {0.125em}%
-    {\hyphenpenalty=10000\raggedright\normalfont\huge\ezlib@titlestyle}%
-    [\rule{\textwidth}{\chapterrulewidth}]
+\@ifclassloaded{book}{%
+  \newcommand{\ezlib@titlesize}{\huge}%
+}{%
+  \newcommand{\ezlib@titlesize}{\LARGE}%
+}
 
-  \@ifclassloaded{book}{%
-    \newcommand{\ezlib@titlesize}{\huge}%
+\newcommand{\ezlib@shorttitle}{}
+\let\ezlib@old@title\title
+\renewcommand{\title}[2][]{%
+  \renewcommand{\ezlib@shorttitle}{#1}%
+  \ezlib@old@title{#2}}
+
+\newcommand{\ezlib@shortauthor}{}
+\let\ezlib@old@author\author
+\renewcommand{\author}[2][]{%
+  \renewcommand{\ezlib@shortauthor}{#1}%
+  \ezlib@old@author{#2}}
+
+\pretitle{%
+  \vspace{-3.75\baselineskip}%
+  \begin{center}
+    % Protrusion can mess up centering slightly on first line of title.
+    \ezlib@noMicrotypeProtrusion%
+    \hyphenpenalty=10000%
+    \ezlib@titlestyle\ezlib@titlesize%
+}
+\posttitle{\par\end{center}}
+\preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
+\postauthor{\end{tabular}\par\end{center}}
+\predate{\begin{center}}
+\date{}
+\postdate{\ifdefempty{\thedate}{\vspace{-1.75\baselineskip}}{}\par\end{center}}
+
+\let\ezlib@old@maketitle\maketitle
+\def\ezlib@thetitle{}
+\def\ezlib@theauthor{}
+
+\newcommand{\inittitleauthor}{%
+  \ifdefempty{\ezlib@shorttitle}{%
+    \def\ezlib@titlenonewlines{\ezlib@nonewlines{\@title}}%
+    \global\let\ezlib@thetitle\ezlib@titlenonewlines%
   }{%
-    \newcommand{\ezlib@titlesize}{\LARGE}%
-  }
-
-  \newcommand{\ezlib@shorttitle}{}
-  \let\ezlib@old@title\title
-  \renewcommand{\title}[2][]{%
-    \renewcommand{\ezlib@shorttitle}{#1}%
-    \ezlib@old@title{#2}}
-
-  \newcommand{\ezlib@shortauthor}{}
-  \let\ezlib@old@author\author
-  \renewcommand{\author}[2][]{%
-    \renewcommand{\ezlib@shortauthor}{#1}%
-    \ezlib@old@author{#2}}
-
-  \pretitle{%
-    \vspace{-3.75\baselineskip}%
-    \begin{center}
-      % Protrusion can mess up centering slightly on first line of title.
-      \ezlib@noMicrotypeProtrusion%
-      \hyphenpenalty=10000%
-      \ezlib@titlestyle\ezlib@titlesize%
-  }
-  \posttitle{\par\end{center}}
-  \preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
-  \postauthor{\end{tabular}\par\end{center}}
-  \predate{\begin{center}}
-  \date{}
-  \postdate{\ifdefempty{\thedate}{\vspace{-1.75\baselineskip}}{}\par\end{center}}
-
-  \let\ezlib@old@maketitle\maketitle
-  \def\ezlib@thetitle{}
-  \def\ezlib@theauthor{}
-
-  \newcommand{\inittitleauthor}{%
-    \ifdefempty{\ezlib@shorttitle}{%
-      \def\ezlib@titlenonewlines{\ezlib@nonewlines{\@title}}%
-      \global\let\ezlib@thetitle\ezlib@titlenonewlines%
-    }{%
-      \global\let\ezlib@thetitle\ezlib@shorttitle%
-    }%
-    \ifdefempty{\ezlib@shortauthor}{%
-      \def\ezlib@authornonewlines{\ezlib@nonewlines{\@author}}%
-      \global\let\ezlib@theauthor\ezlib@authornonewlines%
-    }{%
-      \global\let\ezlib@theauthor\ezlib@shortauthor%
-    }%
-  }
-
-  \renewcommand{\maketitle}{%
-    \inittitleauthor%
-    \ezlib@old@maketitle%
-    \def\and{\unskip, }%
-    \thispagestyle{plain}%
-    \vspace{-2\baselineskip}%
-  }
-
-  \fancypagestyle{plain}{%
-    \fancyhf{}%
-    \fancyfoot[C]{\ezlib@headerstyle\thepage}%
-    \renewcommand{\headrulewidth}{0pt}%
-  }
-
-  \pagestyle{fancy}
-  {\ezlib@headerstyle\global\setlength{\headheight}{\baselineskip}}
-  \fancyhf{}
-
-  \@ifclassloaded{book}{%
-    \renewcommand{\chaptermark}[1]{%
-      \markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}%
-    }
-    \renewcommand{\sectionmark}[1]{%
-      \markright{\thesection\kern0.75em#1}%
-    }
-    \ifbool{@bookheaderside}{%
-      \fancyhead[RE]{\ezlib@headerstyle\nouppercase\leftmark}%
-      \fancyhead[LO]{\ezlib@headerstyle\nouppercase\rightmark}%
-    }{
-      \fancyhead[CE]{\ezlib@headerstyle\nouppercase\leftmark}%
-      \fancyhead[CO]{\ezlib@headerstyle\nouppercase\rightmark}%
-    }
-    \fancyhead[LE, RO]{\ezlib@headerstyle\thepage}%
+    \global\let\ezlib@thetitle\ezlib@shorttitle%
+  }%
+  \ifdefempty{\ezlib@shortauthor}{%
+    \def\ezlib@authornonewlines{\ezlib@nonewlines{\@author}}%
+    \global\let\ezlib@theauthor\ezlib@authornonewlines%
   }{%
-    \fancyhead[L]{\ezlib@headerstyle\ezlib@thetitle}%
-    \fancyhead[R]{\ezlib@headerstyle\ezlib@theauthor}%
-    \fancyfoot[C]{\ezlib@headerstyle\thepage}%
+    \global\let\ezlib@theauthor\ezlib@shortauthor%
+  }%
+}
+
+\renewcommand{\maketitle}{%
+  \inittitleauthor%
+  \ezlib@old@maketitle%
+  \def\and{\unskip, }%
+  \thispagestyle{plain}%
+  \vspace{-2\baselineskip}%
+}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\ezlib@headerstyle\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+}
+
+\pagestyle{fancy}
+{\ezlib@headerstyle\global\setlength{\headheight}{\baselineskip}}
+\fancyhf{}
+
+\@ifclassloaded{book}{%
+  \renewcommand{\chaptermark}[1]{%
+    \markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}%
   }
+  \renewcommand{\sectionmark}[1]{%
+    \markright{\thesection\kern0.75em#1}%
+  }
+  \fancyhead[RE]{\ezlib@headerstyle\nouppercase\leftmark}%
+  \fancyhead[LO]{\ezlib@headerstyle\nouppercase\rightmark}%
+  \fancyhead[LE, RO]{\ezlib@headerstyle\thepage}%
+}{%
+  \fancyhead[L]{\ezlib@headerstyle\ezlib@thetitle}%
+  \fancyhead[R]{\ezlib@headerstyle\ezlib@theauthor}%
+  \fancyfoot[C]{\ezlib@headerstyle\thepage}%
+}
 
 
 }{} % \ifboolexpr{
@@ -1457,43 +1493,45 @@
 
 
 \ifdefstring{\ezlib@headings}{inline}{
-  \RequirePackage{noindentafter}
 
-  \newcommand{\@gobblespace}{\@ifnextchar\nobreakspace\@gobble\relax}
-  \crefname{section}{\S\@gobblespace}{\S\S\@gobblespace}
-  \crefname{subsection}{\S\@gobblespace}{\S\S\@gobblespace}
-  \crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
 
-  \fancypagestyle{firstpage}{%
-    \fancyhead[L]{}%
-    \fancyhead[R]{}%
-  }
+\RequirePackage{noindentafter}
 
-  \pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
-  \posttitle{\endgroup\\[\medskipamount]}
-  \preauthor{\begingroup\large\sffamily}
-  \postauthor{\endgroup\\}
-  \predate{}
-  \date{}
-  \postdate{\thispagestyle{firstpage}}
+\newcommand{\@gobblespace}{\@ifnextchar\nobreakspace\@gobble\relax}
+\crefname{section}{\S\@gobblespace}{\S\S\@gobblespace}
+\crefname{subsection}{\S\@gobblespace}{\S\S\@gobblespace}
+\crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
 
-  \renewcommand{\maketitle}{%
-    \inittitleauthor
-    \noindent
-    {\LARGE\textsf{\textbf{\thetitle}}}\\[\medskipamount]
-    {\large\textsf{\theauthor}}\\
-    \thispagestyle{firstpage}
-    \NoIndentAfterThis
-  }
+\fancypagestyle{firstpage}{%
+  \fancyhead[L]{}%
+  \fancyhead[R]{}%
+}
 
-  \titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
-  \titlespacing*{\section}{0pt}{\medskipamount}{0.8\medskipamount}
-  \titleformat{\subsection}[runin]{\normalfont\sffamily\bfseries}{\thesubsection}{2em/3}{}
-  \titlespacing*{\subsection}{0pt}{0.8\medskipamount}{1em}
-  \titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
-  \titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
+\pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
+\posttitle{\endgroup\\[\medskipamount]}
+\preauthor{\begingroup\large\sffamily}
+\postauthor{\endgroup\\}
+\predate{}
+\date{}
+\postdate{\thispagestyle{firstpage}}
 
-  \date{}
+\renewcommand{\maketitle}{%
+  \inittitleauthor
+  \noindent
+  {\LARGE\textsf{\textbf{\thetitle}}}\\[\medskipamount]
+  {\large\textsf{\theauthor}}\\
+  \thispagestyle{firstpage}
+  \NoIndentAfterThis
+}
+
+\titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
+\titlespacing*{\section}{0pt}{\medskipamount}{0.8\medskipamount}
+\titleformat{\subsection}[runin]{\normalfont\sffamily\bfseries}{\thesubsection}{2em/3}{}
+\titlespacing*{\subsection}{0pt}{0.8\medskipamount}{1em}
+\titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
+\titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
+
+\date{}
 
 
 }{} % \ifdefstring{\ezlib@headings}{inline}
@@ -1503,23 +1541,27 @@
 %%% Feature: algorithm %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Not sure why, but there's an error if we use \ifezlib@algorithm ... \fi
+% Workaround is to use \ifbool from etoolbox
 \ifbool{ezlib@algorithm}{
 
 
-\ifdefempty{\@numberwithinlevel}{
-  \RequirePackage{algorithm}
+\ifdefempty{\ezlib@numberwithin}{
 }{
-  \RequirePackage[\ezlib@numberwithin]{algorithm}
+  \PassOptionsToPackage{\ezlib@numberwithin}{algorithm}
 }
+\RequirePackage{algorithm}
 
 \@ifpackageloaded{caption}{
+  \captionsetup[algorithm]{labelfont=bf, labelsep=period}
+
+  %-- compatibility: acmart --%
   \@ifclassloaded{acmart}{
     % Sorta match algorithm captions with theorem formatting
     \DeclareCaptionLabelSeparator{periodspace}{.\hspace{0.5em}}
     \captionsetup[algorithm]{labelfont=sc, labelsep=periodspace}
-  }{
-    \captionsetup[algorithm]{labelfont=bf, labelsep=period}
-  }
+  }{}
+  %-- end compatibility --%
 }{}
 
 % Make rules in algorithm environment match those of booktabs tables
