@@ -483,18 +483,29 @@
 % Important packages that should be loaded first
 \PassOptionsToPackage{T1}{fontspec}
 \RequirePackage{fontenc}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
 \RequirePackage{etoolbox}
-\PassOptionsToPackage{hidelinks}{hyperref}
-\RequirePackage{hyperref}
 
-%-- compatibility: acmart --%
-\@ifclassloaded{acmart}{}{%
-  \RequirePackage{amsfonts}
-  \RequirePackage{amssymb}
-}
-%-- end compatibility --%
+\ifboolexpr{
+  bool{ezlib@ezeq}
+  or bool{ezlib@ezrestate}
+  or bool{ezlib@delimiters}
+  or bool{ezlib@notation}
+  or bool{ezlib@notation}
+  or bool{ezlib@cleveref}
+  or bool{ezlib@theorems}
+}{
+  \RequirePackage{amsmath}
+  \RequirePackage{amsthm}
+  \PassOptionsToPackage{hidelinks}{hyperref}
+  \RequirePackage{hyperref}
+
+  % -- compatibility: acmart --%
+  \@ifclassloaded{acmart}{}{%
+    \RequirePackage{amsfonts}
+    \RequirePackage{amssymb}
+  }
+  % -- end compatibility --%
+}{}
 
 \ifbool{ezlib@ezlist}{
   \ifbool{ezlib@enumitemoptions}{
