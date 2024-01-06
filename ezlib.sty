@@ -1,15 +1,47 @@
 %-- guide --%
 
+
 % Each of the features below can be enabled or disabled with an option
 %
 % - The option always has the same name as the feature
-% - Some features have further options
+% - How to enable/disable a boolean feature
+%   - Enable xyz: pass "xyz" or "xyz=true" to this package
+%   - Disable xyz: pass "xyz=false" to this package
+% - How to enable/disable a non-boolean feature
+%   - Enable xyz: pass "xyz=default", or pass another value
+%   - Disable xyz: pass "xyz=none"
+% - A few features are not boolean
+%   - Exception: a few features require values other than true or false
+% - How to enable/disable many features at once
+%   - By default, all features are disabled
+%   - Pass the "enable by default" option to enable by default instead
+%     - Can still disable with "xyz=false" or "xyz=none"
+% - Some features have further options associated with them
+%   - See details below
+%
+% Full feature list:
+%
+% - ezlist
+% - ezeq
+% - ezrestate
+% - delimiters
+% - notation
+% - cleveref
+% - theorems
+% - natbib
+% - algorithm
+% - microtype
+% - font
+% - number within
+% - headings
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
+% Boolean feature (enabled by "enable by default")
+%
 % Provides a single macro, \*, for making lists
 %
 % Example usage:
@@ -70,15 +102,24 @@
 %
 % - The environment \* uses is called "ezlist"
 %   - For modifying options with \setlist, cleveref name, etc.
-% - If you want to load enumitem without shortlabels, do one of the following:
-%   - Pass the option shortlabels=false to this package
-%   - Load enumitem (without shortlabels) before loading package
+% - This package loads enumitem with shortlabels and does some other formatting
+%   - To disalbe this, pass "enumitem options=false"
+%
+% Also introduces enumitem key "subenv"
+%
+% - This is for referring to parts of theorems as theorems, not items
+% - Use \*[subenv] inside a theorem/lemma/definition/etc., then use \label within items
+% - Using \cref for those labels yields a nice "subtheorem" reference, e.g. "Theorem 1.2(c)"
+%   - Use new macro \itemref to get e.g. just "(c)"
+% - Should work with any environment whose name is also a counter name
 
 
 %%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezeq %%%
 %%%%%%%%%%%%%%%%%%%%%
 
+% Boolean feature (enabled by "enable by default")
+%
 % Makes \[ and \] a (slightly) smarter equation interface
 %
 % - Automatically chooses between equation, align, and gather
@@ -92,10 +133,12 @@
 %   - Remember that LaTeX provies \\* for non-breakable newlines
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: restate %%%
-%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezrestate %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Boolean feature (enabled by "enable by default")
+%
 % Simple interface for thmtools's restatable theorems
 %
 % - \restatably or \restatably*: makes any theorem/lemma/etc. restatable
@@ -122,6 +165,8 @@
 %%% Feature: delimiters %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Boolean feature (enabled by "enable by default")
+%
 % Provides different "group" macros for sizing parentheses and similar
 %
 % - \gp{x}: normal size
@@ -167,6 +212,8 @@
 %%% Feature: notation %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Boolean feature (enabled by "default enable")
+%
 % Various math notation shortcuts and conventions
 %
 % Provides \lr and \lrStarAfter from delimiters above (but not the others)
@@ -201,6 +248,154 @@
 % - \argmin, \argmax, \liminf, \limsup: math operators
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: cleveref %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Loads the cleveref package and a bit more
+%
+% - Uses capitalize option by default
+%   - Can turn off by doing either of the following
+%     - Pass "cleveref options=false"
+%     - Load cleveref beforehand
+% - \cCrefname: simultaneous \crefname and \Crefname
+% - Allows spaces in comma-separated list of labels in \cref and \Cref
+%
+% Mechanism for registering alternate versions of names
+%
+% - \shortened: put before \crefname or similar to register a shortened version
+%   - Works with \crefname, \Crefname, \cCrefname, or any three-argument macro
+%   - Example: \shortened\cCrefname{theorem}{Thm.}{Thms.}
+% - \crefShorten: redefine all names using the shortened versions
+%   - Redefinitions are local to any enclosing group
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: theorems %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Declares a default set of theorem environments
+%
+% Theorem style synonyms, with support for class-specific analogues
+%
+% - \ezlibPlain: plain or class-specific analogue (e.g. acmplain for acmart)
+% - \ezlibDefinition: definition or analogue
+% - \ezlibRemark: remark or analogue
+%   - For some classes, e.g. acmart, this is the same as \ezlibDefinition
+%
+% Other definitions
+%
+% - \begin{case}[...] ... \end{case}: cases in a proof
+% - \noqed: suppress the QED at the end of a proof
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: natbib %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Loads the natbib package with options "square, numbers, sort&compress"
+%
+% - To load natbib with a different set of options, do one of the following:
+%   - Pass "enumitem options=false"
+%   - Load natbib (with different options) before this package
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: algorithm %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Loads the alrogithm package and slightly tweaks algorithm formatting
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: microtype %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "enable by default")
+%
+% Loads the microtype package
+%
+% - To load it with options, simply load microtype before this package
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: font %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+% Non-boolean feature (interaction with "enable by default" described below)
+%
+% Changes fonts used throughout the document
+%
+% Valid options:
+%
+% - "font=none": don't change any fonts
+% - "font=libertine": use font set based around Libertine and Biolinum
+% - "font=charter": use font set based around Charter and Vera Sans
+% - "font=palatino": use font set based around Palatino
+%
+% Behavior with "enable by default"
+%
+% - If a known built-in LaTeX class is loaded, default to "font=libertine"
+%   - These are: article, report, book
+% - Otherwise, conservatively default to "font=none"
+%   - This avoids conflicts with journal/conference class files
+% - Either way, can be manually overridden by setting font explicitly
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: number within %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Non-boolean feature (interaction with "enable by default" described below)
+%
+% Selects what level numbering of theorems/equations/figures/etc. occurs within
+%
+% Valid options:
+%
+% - "number within=none": use global numbering
+%   - Default without "enable by default"
+% - "number within=default": number within chapters or sections
+%   - Uses chapter if book or report class is loaded, uses section otherwise
+%   - Default with "enable by default"
+% - Any other setting: number within the given environment
+%   - E.g. "number within=section", "number within=subsection", etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: headings %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Formats section titles, headers, and more
+%
+% Valid options:
+%
+% - "headings=none": leave LaTeX defaults
+%   - Default without "enable by default"
+% - "headings=default": choose between full and none
+%   - If a known built-in LaTeX class is loaded, use full
+%   - Otherwise, use none
+%   - Default with "enable by default"
+% - "headings=fancy": reformat section titles and headers
+%   - Section titles are styled in sans if the font has a nice sans pairing
+%   - Headers choose between two styles depending on if \chapter is defined
+%   - E.g. "number within=section", "number within=subsection", etc.
+% - "headings=inline": use inline section titles
+%   - E.g. for short documents with a strict page limit
+%
+% Other configuriation
+%
+% - Set "headings sf=true" or "headings sf=false" to change style of headings
+%   - Defaults to true if the font has a nice sans pairing, false otherwise
+
+
 %-- end guide --%
 
 
@@ -214,21 +409,38 @@
 
 \RequirePackage{kvoptions}
 
-% Options for activating features
-\DeclareVoidOption{all}{
+% Options for main features
+\DeclareVoidOption{enablebydefault}{
   \ezlib@ezlisttrue
   \ezlib@ezeqtrue
-  \ezlib@restatetrue
+  \ezlib@ezrestatetrue
   \ezlib@delimiterstrue
   \ezlib@notationtrue
   \ezlib@clevereftrue
+  \ezlib@theoremstrue
+  \ezlib@natbibtrue
+  \ezlib@algorithmtrue
+  \ezlib@microtypetrue
+  \renewcommand{\ezlib@font}{default}
+  \renewcommand{\ezlib@numberwithin}{default}
+  \renewcommand{\ezlib@headings}{default}
 }
 \DeclareBoolOption[false]{ezlist}
 \DeclareBoolOption[false]{ezeq}
-\DeclareBoolOption[false]{restate}
+\DeclareBoolOption[false]{ezrestate}
 \DeclareBoolOption[false]{delimiters}
 \DeclareBoolOption[false]{notation}
 \DeclareBoolOption[false]{cleveref}
+\DeclareBoolOption[false]{theorems}
+\DeclareBoolOption[false]{natbib}
+\DeclareBoolOption[false]{algorithm}
+\DeclareBoolOption[false]{microtype}
+\DeclareStringOption[none]{font}
+\DeclareStringOption[none]{numberwithin}
+\DeclareStringOption[none]{headings}
+
+% Options for ezlist
+\DeclareBoolOption[true]{enumitemoptions}
 
 % Options for ezeq
 \DeclareBoolOption[true]{ezeqnumberlabeled}
@@ -236,11 +448,16 @@
 
 % Options for notation
 \DeclareStringOption[sq]{probabilitydelimiter}
-\DeclareStringOption[bf]{probabilityfont}
+\DeclareStringOption[bf]{probabilitystyle}
 
-% Other options
-\DeclareStringOption[default]{numberwithin}
-\DeclareBoolOption[true]{shortlabels}
+% Options for cleveref
+\DeclareBoolOption[true]{cleverefcapitalize}
+
+% Options for natbib
+\DeclareBoolOption[true]{natbiboptions}
+
+% Options for headings
+\DeclareStringOption[default]{headingssf}
 
 \ProcessLocalKeyvalOptions*
 
@@ -249,17 +466,19 @@
 %%% Required packages and general setup %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Important packages that should be loaded first
+\RequirePackage[T1]{fontenc}
 \RequirePackage{amsmath}
-\RequirePackage{amsthm}
 \RequirePackage{amsfonts}
 \RequirePackage{amssymb}
+\RequirePackage{amsthm}
 \RequirePackage{etoolbox}
-\RequirePackage{hyperref}
+\RequirePackage[hidelinks]{hyperref}
 
-\ifbool{ezlib@shortlabels}{
-  \PassOptionsToPackage{shortlabels}{enumitem}
-}{}
 \ifbool{ezlib@ezlist}{
+  \ifbool{ezlib@enumitemoptions}{
+    \PassOptionsToPackage{shortlabels}{enumitem}
+  }{}
   \RequirePackage{enumitem}
 }{}
 
@@ -267,23 +486,91 @@
   \RequirePackage{xstring}
 }{}
 
-\ifbool{ezlib@restate}{
-  \RequirePackage{thm-restate}
+\ifbool{ezlib@cleveref}{
+  \ifbool{ezlib@cleverefcapitalize}{
+    \PassOptionsToPackage{capitalize}{enumitem}
+  }{}
+  \RequirePackage{cleveref}
 }{}
 
-\ifbool{ezlib@cleveref}{
-  \RequirePackage{cleveref}
+\ifbool{ezlib@ezrestate}{
+  \RequirePackage{thm-restate}
 }{}
 
 \ifbool{ezlib@notation}{
   \RequirePackage{mathcommand}
 }{}
 
+\ifbool{ezlib@microtype}{
+  \RequirePackage{microtype}
+}{}
 
-%%% Number within chapter/section/etc.
+\ifbool{ezlib@natbib}{
+  \ifbool{ezlib@natbiboptions}{
+    \PassOptionsToPackage{square, numbers, sort&compress}{natbib}
+  }{}
+  \RequirePackage{natbib}
+}{}
+
+% Packages and miscellaneous options that can be loaded after other things
+\RequirePackage{booktabs}
+
+\frenchspacing
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: font %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+% Deciding which font to use
+\ifdefstring{\ezlib@font}{default}{
+  \ifboolexpr{
+    test{\@ifclassloaded{article}}
+    or test{\@ifclassloaded{book}}
+    or test{\@ifclassloaded{report}}
+  }{
+    \renewcommand{\ezlib@font}{libertine}
+  }{
+    \renewcommand{\ezlib@font}{none}
+  }
+}{}
+
+% Use sans in titles? (For headings feature)
+\newbool{ezlib@headings@sf}
+\boolfalse{ezlib@headings@sf}
+
+% Loading the fonts
+\ifdefstring{\ezlib@font}{libertine}{
+  \RequirePackage[tt=false]{libertine}
+  \RequirePackage[varqu, scaled=0.95]{zi4}
+  \RequirePackage[libertine]{newtxmath}
+  \booltrue{ezlib@headings@sf}
+}{}
+\ifdefstring{\ezlib@font}{charter}{
+  \RequirePackage[charter, cal=cmcal]{mathdesign}
+  \RequirePackage[varqu]{zi4}
+  \RequirePackage{berasans}
+  \booltrue{ezlib@headings@sf}
+}{}
+\ifdefstring{\ezlib@font}{palatino}{
+  \RequirePackage{mathpazo}
+  \RequirePackage[varqu]{zi4}
+}{}
+
+\ifboolexpr{
+  test{\ifdefstring{\ezlib@headingssf}{true}}
+  or test{\ifdefstring{\ezlib@headingssf}{false}}
+}{
+  \setbool{ezlib@headings@sf}{\ezlib@headingssf}
+}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: number within %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ifdefstring{\ezlib@numberwithin}{default}{
-  \ifdef{\chapter}{
+  \ifboolexpr{ test{\@ifclassloaded{book}} or test{\@ifclassloaded{report}} }{
     \renewcommand{\ezlib@numberwithin}{chapter}
   }{
     \renewcommand{\ezlib@numberwithin}{section}
@@ -295,9 +582,11 @@
 }{}
 
 \ifdefempty{\ezlib@numberwithin}{}{
-  \numberwithin{equation}{\ezlib@numberwithin}
-  \numberwithin{figure}{\ezlib@numberwithin}
-  \numberwithin{table}{\ezlib@numberwithin}
+  \AtBeginDocument{%
+    \numberwithin{equation}{\ezlib@numberwithin}%
+    \numberwithin{figure}{\ezlib@numberwithin}%
+    \numberwithin{table}{\ezlib@numberwithin}%
+  }
 }
 
 
@@ -419,7 +708,11 @@
   }{%
     % We're about to end a list without any \item, so add one
     \item%
-  }{}
+  }{}%
+  % Set the outer current environment (see cleveref labels below)
+  \ifnumcomp{\value{ezlib@ezlist@prev}}{=}{0}{%
+    \let\ezlib@ezlist@currenvir\@currenvir%
+  }{}%
   % Begin any necessary lists
   \whileboolexpr{ test{\ifnumcomp{\value{ezlib@ezlist@diff}}{>}{1}} }{%
     \addtocounter{ezlib@ezlist@diff}{-1}%
@@ -450,22 +743,48 @@
 }
 
 
-%%%% Cleveref names
+% Use enumitem key "subenv" for smarter labels with cleveref
 
+\newcommand{\ezlib@ezlist@currenvir}{document}
+\newcommand{\ezlib@ezlist@label@prefix}{item@}
+\AtBeginDocument{\let\ezlib@ezlist@old@label\label}
 \ifbool{ezlib@cleveref}{
-  \newrobustcmd{\ezlib@ezlist@cCrefname}[1]{%
-    \crefname{#1}{}{}%
-    \Crefname{#1}{Item}{Items}%
+  % Holds current environment outside easylist
+  \newrobustcmd{\ezlib@ezlist@label}[2][]{%
+    \ifstrempty{#1}{%
+      \ezlib@ezlist@old@label[\ezlib@ezlist@currenvir]{#2}%
+    }{%
+      \ezlib@ezlist@old@label[#1]{#2}%
+    }%
   }
-  \ezlib@ezlist@cCrefname{ezlisti}
-  \ezlib@ezlist@cCrefname{ezlistii}
-  \ezlib@ezlist@cCrefname{ezlistiii}
-  \ezlib@ezlist@cCrefname{ezlistiv}
-  \ezlib@ezlist@cCrefname{ezlistv}
-  \ezlib@ezlist@cCrefname{ezlistvi}
-  \ezlib@ezlist@cCrefname{ezlistvii}
-  \ezlib@ezlist@cCrefname{ezlistviii}
-}{}
+}{
+  \newrobustcmd{\ezlib@ezlist@label}{\ezlib@ezlist@old@label}
+}
+
+\newcommand{\ezlib@ezlist@subenvLabel}{(\alph*)}
+\SetEnumitemKey{subenv}{
+  label=\ezlib@ezlist@subenvLabel,
+  ref=\csuse{the\ezlib@ezlist@currenvir}\ezlib@ezlist@subenvLabel,
+  before*=\renewcommand{\label}{\ezlib@ezlist@label}%
+}
+
+% Reference just the item in a subenv, e.g. get (c) instead of 1.2(c)
+\newrobustcmd{\itemref}[1]{%
+  {%
+    \refused{#1}%
+    \edef\ezlib@itemref@tmp{\getrefbykeydefault{#1}{}{0.0(??)}}%
+    \hyperref[#1]{\expandafter\ezlib@itemref@aux@one\ezlib@itemref@tmp}%
+  }%
+}
+\newcommand{\ezlib@itemref@aux@one}[1]{\ezlib@itemref@aux@two#1}
+\def\ezlib@itemref@aux@two#1.#2(#3){(#3)}
+
+
+% General list settings
+
+\setlist{nosep}
+\setlist[description]{font=\normalfont\scshape, labelsep=0.75em}
+\setlist[0]{nosep}
 
 
 \fi % \ifezlib@ezlist
@@ -486,18 +805,21 @@
     \saveexpandmode\noexpandarg
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
     \IfSubStr{##1}{&}{\restoreexpandmode\begin{align}##1\end{align}}{%
-      \IfSubStr{##1}{\\}{\restoreexpandmode\begin{gather}##1\end{gather}}{%
-        \restoreexpandmode\begin{equation}##1\end{equation}}}%
+      \IfSubStr{##1}{\\}{%
+        \restoreexpandmode\begin{gather}##1\end{gather}%
+      }{%
+        \restoreexpandmode\begin{equation}##1\end{equation}%
+      }%
+    }%
     \endgroup%
     \ignorespaces%
-  }
+  }%
 }
 
 
 %%% Implementation of \[ \] when numbering labeled
 
 \ifbool{ezlib@cleveref}{
-  \RequirePackage{cleveref}
   \newcommand{\ezlib@label@macro}{cref@old@label@in@display}
 }{
   \newcommand{\ezlib@label@macro}{label@in@display}
@@ -519,15 +841,19 @@
     \saveexpandmode\noexpandarg
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
     \IfSubStr{##1}{&}{\restoreexpandmode\begin{align*}##1\end{align*}}{%
-      \IfSubStr{##1}{\\}{\restoreexpandmode\begin{gather*}##1\end{gather*}}{%
-        \restoreexpandmode\begin{equation*}##1\end{equation*}}}%
+      \IfSubStr{##1}{\\}{%
+        \restoreexpandmode\begin{gather*}##1\end{gather*}%
+      }{%
+        \restoreexpandmode\begin{equation*}##1\end{equation*}%
+      }%
+    }%
     \endgroup%
     \ignorespaces%
-  }
+  }%
 }
 
 
-%%% Choosing the right implementation
+%%% Choosing whether to number labeled or all
 
 \ifbool{ezlib@ezeqnumberlabeled}{
   \ezeqSetNumberLabeled
@@ -549,12 +875,12 @@
 % See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command
 
 \ifdefempty{\ezlib@numberwithin}{
-  \newrobustcmd{\ezlib@cref@format}{%
+  \newcommand{\ezlib@cref@format}{%
     [equation][\theequation][]%
   }
 }{
   \numberwithin{equation}{\ezlib@numberwithin}
-  \newrobustcmd{\ezlib@cref@format}{%
+  \newcommand{\ezlib@cref@format}{%
     [equation][\arabic{equation}][\csuse{the\ezlib@numberwithin}]%
   }
 }
@@ -588,9 +914,9 @@
 }
 
 \ifbool{ezlib@cleveref}{
-  \let\yesnumber\ezlib@yesnumber@cleveref
+  \newrobustcmd{\yesnumber}{\ezlib@yesnumber@cleveref}
 }{
-  \let\yesnumber\ezlib@yesnumber@nocleveref
+  \newrobustcmd{\yesnumber}{\ezlib@yesnumber@nocleveref}
 }
 
 
@@ -601,71 +927,71 @@
 %%% Feature: restate %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-\ifezlib@restate
+\ifezlib@ezrestate
 
 
 %%% Declaring restatables
 
-\newtoks\ezthm@collect@toks
+\newtoks\ezlib@ezrestate@collect@toks
 
 % Variant of \thmt@collect@body
 % \thmt@collect@body@of{env} collects until \end{env} instead of the end of the current environment
-\long\def\ezthm@collect@body@of#1#2#3\end#4{%
-  \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks #3}%
+\long\def\ezlib@ezrestate@collect@body@of#1#2#3\end#4{%
+  \expandafter\ezlib@ezrestate@collect@toks\expandafter{\the\ezlib@ezrestate@collect@toks #3}%
   \ifstrequal{#1}{#4}{%
-    \expandafter#2\expandafter{\the\ezthm@collect@toks}%
+    \expandafter#2\expandafter{\the\ezlib@ezrestate@collect@toks}%
   }{%
-    \expandafter\ezthm@collect@toks\expandafter{\the\ezthm@collect@toks\end{#4}}%
-    \ezthm@collect@body@of{#1}{#2}%
+    \expandafter\ezlib@ezrestate@collect@toks\expandafter{\the\ezlib@ezrestate@collect@toks\end{#4}}%
+    \ezlib@ezrestate@collect@body@of{#1}{#2}%
   }%
 }
 
 \ifdef{\restatably}{%
-  \PackageError{ezthm}{%
+  \PackageError{ezlib}{%
     Command \textbackslash restatably already defined, being overwritten%
   }{}%
 }{}
 
 \newrobustcmd{\restatably}{%
   \@ifstar{%
-    \ezthm@restatably@checkopt*%
+    \ezlib@restatably@checkopt*%
   }{%
-    \ezthm@restatably@checkopt{}%
+    \ezlib@restatably@checkopt{}%
   }%
   % \@ifstar{%
-  %   \ezthm@restatably@checkopt*%
+  %   \ezlib@restatably@checkopt*%
   %   \ignorespaces%
   % }{%
-  %   \ezthm@restatably@checkopt\relax%
+  %   \ezlib@restatably@checkopt\relax%
   %   \ignorespaces%
   % }%
 }
 
 % #1 is * or {}
 % #2 should be only spaces
-\def\ezthm@restatably@checkopt#1#2\begin#3{%
+\def\ezlib@restatably@checkopt#1#2\begin#3{%
   \@ifnextchar[{%
-    \ezthm@restatably@go{#1}{#3}%
+    \ezlib@restatably@go{#1}{#3}%
   }{%
-    \ezthm@restatably@go{#1}{#3}[]%
+    \ezlib@restatably@go{#1}{#3}[]%
   }%
 }
 
-\def\ezthm@restatably@go#1#2[#3]#4#5{%
+\def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
-    \ezthm@collect@toks{}%
+    \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
-      \def\ezthm@collect@cont##1{%
-        \begin{restatable#1}{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      \def\ezlib@ezrestate@collect@cont##1{%
+        \begin{restatable#1}{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
       }%
     }{%
-      \def\ezthm@collect@cont##1{%
-        \begin{restatable#1}[#3]{#2}{ezthm@restate #5}\label{#5}##1\end{restatable#1}%
+      \def\ezlib@ezrestate@collect@cont##1{%
+        \begin{restatable#1}[#3]{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
       }%
     }%
-    \ezthm@collect@body@of{#2}\ezthm@collect@cont%
+    \ezlib@ezrestate@collect@body@of{#2}\ezlib@ezrestate@collect@cont%
   }{%
-    \PackageError{ezthm}{%
+    \PackageError{ezlib}{%
       Environment after \textbackslash restatably must start with a \textbackslash label%
     }{}%
   }%
@@ -676,28 +1002,29 @@
 
 \newrobustcmd{\restate}{%
   \@ifstar{%
-    \ezthm@restate@checkref*%
+    \ezlib@restate@checkref*%
   }{%
-    \ezthm@restate@checkref{}%
+    \ezlib@restate@checkref{}%
   }%
 }
 
-\newrobustcmd{\ezthm@restate@checkref}[1]{%
+\newrobustcmd{\ezlib@restate@checkref}[1]{%
   \@ifnextchar\ref{%
-    \ezthm@restate@go#1%
+    \ezlib@restate@go#1%
   }{%
-    \ezthm@restate@go#1\ref%
+    \ezlib@restate@go#1\ref%
   }%
 }
 
 % #1 is empty or *
 % #2 is the label we want to restate
-\def\ezthm@restate@go#1\ref#2{%
-  \typeout{restate(#1,#2)}%
-  \ifcsdef{ezthm@restate #2}{%
-    \csuse{ezthm@restate #2}#1%
+\def\ezlib@restate@go#1\ref#2{%
+  \ifcsdef{ezlib@restate #2}{%
+    \csuse{ezlib@restate #2}#1%
   }{%
-    \PackageError{prelude}{Attempted to restate undeclared theorem with label #2}{}%
+    \PackageError{ezlib}{%
+      Attempted to restate undeclared theorem with label #2%
+    }{}%
   }%
 }
 
@@ -708,7 +1035,7 @@
 \apptocmd{\thmt@rst@storecounters}{\Hy@RestoreLastskip}{}{}
 
 
-\fi % \ifezlib@restate
+\fi % \ifezlib@ezrestate
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -767,8 +1094,6 @@
 
 \ifezlib@notation
 
-\RequirePackage{mathcommand}
-
 
 %%% Shortcuts for \mathbb and \mathcal, e.g. \calP and \bbQ
 
@@ -783,7 +1108,7 @@
 
 %%% Probability
 
-\letcs\ezlib@probability@mathfont{math\ezlib@probabilityfont}
+\letcs\ezlib@probability@mathfont{math\ezlib@probabilitystyle}
 
 \ifcsdef{\ezlib@probabilitydelimiter gp}{
   \letcs\ezlib@probability@gp{\ezlib@probabilitydelimiter gp}
@@ -832,4 +1157,388 @@
 \declaremathcommand{\d}{\mathop{}\!\mathrm{d}}
 
 
-\fi % \ifbool{ezlib@notation}
+\fi % \ifezlib@notation
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: cleveref %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifezlib@cleveref
+
+
+%%% Patches
+
+% TODO: find out if we need this
+% \patchcmd{\thmt@restatable}
+%   {\let\label=\@gobble}
+%   {\let\label=\gobbled@cleveref@label}
+%   {}{}
+% \newcommand\gobbled@cleveref@label[2][]{}
+
+% Allow spaces between labels in \cref and \Cref
+% (This is an egreg stackexchange answer)
+\ExplSyntaxOn
+\cs_set_eq:Nc \bers_cref:nn { @cref }
+\cs_generate_variant:Nn \bers_cref:nn { nx }
+\cs_set_protected:cpn { @cref } #1 #2
+ {
+  \seq_set_split:Nnn \l_bers_cref_seq { , } { #2 }
+  \bers_cref:nx { #1 } { \seq_use:Nn \l_bers_cref_seq { , } }
+ }
+\seq_new:N \l_bers_cref_seq
+\ExplSyntaxOff
+
+% Short names for references (e.g. Thm. instead of Theorem).
+\newcommand{\crefShorten}{}
+\newrobustcmd{\shortened}[4]{\appto{\crefShorten}{#1{#2}{#3}{#4}}}
+
+
+%%% Typical names
+
+\crefname{equation}{}{}
+\Crefname{equation}{Equation}{Equations}
+\shortened\Crefname{equation}{Eq.}{Eqs.}
+
+\newrobustcmd{\ezlib@enum@cCrefname}[1]{%
+  \crefname{#1}{}{}%
+  \Crefname{#1}{Item}{Items}%
+}
+
+\ezlib@enum@cCrefname{enumi}
+\ezlib@enum@cCrefname{enumii}
+\ezlib@enum@cCrefname{enumiii}
+\ezlib@enum@cCrefname{enumiv}
+\ezlib@enum@cCrefname{enumv}
+\ezlib@enum@cCrefname{enumvi}
+\ezlib@enum@cCrefname{enumvii}
+\ezlib@enum@cCrefname{enumviii}
+
+\ifbool{ezlib@ezlist}{
+  \ezlib@enum@cCrefname{ezlisti}
+  \ezlib@enum@cCrefname{ezlistii}
+  \ezlib@enum@cCrefname{ezlistiii}
+  \ezlib@enum@cCrefname{ezlistiv}
+  \ezlib@enum@cCrefname{ezlistv}
+  \ezlib@enum@cCrefname{ezlistvi}
+  \ezlib@enum@cCrefname{ezlistvii}
+  \ezlib@enum@cCrefname{ezlistviii}
+}
+
+
+\fi % \ifezlib@cleveref
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: theorems %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifezlib@theorems
+
+
+\newcommand{\ezlibPlain}{plain}
+\newcommand{\ezlibDefinition}{definition}
+\newcommand{\ezlibRemark}{remark}
+\newcommand{\ezlib@Case}{remark}
+
+\@ifclassloaded{acm}{
+  \renewcommand{\ezlibPlain}{acmplain}
+  \renewcommand{\ezlibDefinition}{acmdefinition}
+  \renewcommand{\ezlibRemark}{acmdefinition}
+  \newtheoremstyle{acmcase}
+    {.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}
+    {.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}
+    {\@acmdefinitionbodyfont}
+    {\@acmdefinitionindent}
+    {\@acmdefinitionheadfont}
+    {.}
+    {.5em}
+    {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
+  \renewcommand{\ezlib@Case}{acmcase}
+}{}
+
+\theoremstyle{\ezlibPlain}
+\newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
+% \shortened\cCrefname{theorem}{Thm.}{Thms.}
+\newtheorem{lemma}[theorem]{Lemma}
+% \shortened\cCrefname{lemma}{Lem.}{Lems.}
+\newtheorem{corollary}[theorem]{Corollary}
+% \shortened\cCrefname{corollary}{Cor.}{Cors.}
+\newtheorem{proposition}[theorem]{Proposition}
+% \shortened\cCrefname{proposition}{Prop.}{Props.}
+
+\theoremstyle{\ezlibDefinition}
+\newtheorem{definition}[theorem]{Definition}
+% \shortened\cCrefname{definition}{Def.}{Defs.}
+\newtheorem{example}[theorem]{Example}
+% \shortened\cCrefname{example}{Ex.}{Exs.}
+\newtheorem{result}[theorem]{Result}
+\newtheorem{observation}[theorem]{Observation}
+% \shortened\cCrefname{observation}{Obs.}{Obss.}
+\newtheorem{assumption}[theorem]{Assumption}
+% \shortened\cCrefname{assumption}{Asm.}{Asms.}
+
+\theoremstyle{\ezlibRemark}
+\newtheorem{remark}[theorem]{Remark}
+% \shortened\cCrefname{remark}{Rmk.}{Rmks.}
+\newtheorem{note}[theorem]{Note}
+
+\theoremstyle{\ezlib@Case}
+\newtheorem{case}{Case}
+% Use a colon instead of parentheses for names of cases.
+\newcommand{\ezlib@thmhead@case}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
+\pretocmd{\case}{\let\thmhead\ezlib@thmhead@case\@oldcase}{}{}
+
+% Reset to default style
+\theoremstyle{\ezlibPlain}
+
+\let\ezlib@qed\qed
+\newcommand{\noqed}{\renewcommand{\qed}{}}
+
+% Reset case counter and QED symbol at start of each proof
+\pretocmd{\proof}{%
+  \setcounter{case}{0}%
+  \renewcommand{\qed}{\ezlib@qed}%
+}{}{}
+
+
+\fi % \ifezlib@theorems
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: headings %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifboolexpr{
+  test{\ifdefstring{\ezlib@headings}{fancy}}
+  or test{\ifdefstring{\ezlib@headings}{inline}}
+}{
+
+
+  \newcommand{\ezlib@titlestyle}{\bfseries}
+  \newcommand{\ezlib@titlestyleoptions}{bf}
+  \newcommand{\ezlib@headerstyle}{\footnotesize}
+  \ifbool{ezlib@headings@sf}{
+    \renewcommand{\ezlib@titlestyle}{\sffamily\bfseries}
+    \renewcommand{\ezlib@titlestyleoptions}{sf,bf}
+    \renewcommand{\ezlib@headerstyle}{\footnotesize\sffamily}
+  }{}
+
+  \RequirePackage{fancyhdr}
+  \RequirePackage{titling}
+  \RequirePackage[\ezlib@titlestyleoptions, raggedright]{titlesec}
+  \RequirePackage[font=small, labelfont=bf, labelsep=period]{caption}
+  \RequirePackage[font=small, labelformat=simple]{subcaption}
+
+  \def\thesubfigure{(\alph{subfigure})}
+
+  \newcommand{\ezlib@nonewlines}[1]{{\def\\{\ignorespaces}#1}}
+
+  \AtBeginDocument{\patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{}}
+
+  \@ifpackageloaded{microtype}{
+    \newrobustcmd{\ezlib@noMicrotypeProtrusion}{\microtypesetup{protrusion=false}}
+  }{
+    \newrobustcmd{\ezlib@noMicrotypeProtrusion}{}
+  }
+
+  \titleformat{\part}[display]%
+    {\centering\normalfont\LARGE\scshape}%
+    {Part~\thepart}%
+    {0.5em}%
+    {\ezlib@noMicrotypeProtrusion\hyphenpenalty=10000\centering\normalfont\HUGE\ezlib@titlestyle}%
+
+  \titlespacing*{\chapter}{0pt}{-4.25em}{2em plus 0.5em minus 0.5em}
+  \newlength{\chapterrulewidth}
+  \setlength{\chapterrulewidth}{\headrulewidth}
+  \titleformat{\chapter}[display]%
+    {\normalfont\Large\scshape}%
+    {\chaptername~\thechapter}%
+    {0.125em}%
+    {\hyphenpenalty=10000\raggedright\normalfont\huge\ezlib@titlestyle}%
+    [\rule{\textwidth}{\chapterrulewidth}]
+
+  \@ifclassloaded{book}{%
+    \newcommand{\ezlib@titlesize}{\huge}%
+  }{%
+    \newcommand{\ezlib@titlesize}{\LARGE}%
+  }
+
+  \newcommand{\ezlib@shorttitle}{}
+  \let\ezlib@old@title\title
+  \renewcommand{\title}[2][]{%
+    \renewcommand{\ezlib@shorttitle}{#1}%
+    \ezlib@old@title{#2}}
+
+  \newcommand{\ezlib@shortauthor}{}
+  \let\ezlib@old@author\author
+  \renewcommand{\author}[2][]{%
+    \renewcommand{\ezlib@shortauthor}{#1}%
+    \ezlib@old@author{#2}}
+
+  \pretitle{%
+    \vspace{-3.75\baselineskip}%
+    \begin{center}
+      % Protrusion can mess up centering slightly on first line of title.
+      \ezlib@noMicrotypeProtrusion%
+      \hyphenpenalty=10000%
+      \ezlib@titlestyle\ezlib@titlesize%
+  }
+  \posttitle{\par\end{center}}
+  \preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
+  \postauthor{\end{tabular}\par\end{center}}
+  \predate{\begin{center}}
+  \date{}
+  \postdate{\ifdefempty{\thedate}{\vspace{-1.75\baselineskip}}{}\par\end{center}}
+
+  \let\ezlib@old@maketitle\maketitle
+  \def\ezlib@thetitle{}
+  \def\ezlib@theauthor{}
+
+  \newcommand{\inittitleauthor}{%
+    \ifdefempty{\ezlib@shorttitle}{%
+      \def\ezlib@titlenonewlines{\ezlib@nonewlines{\@title}}%
+      \global\let\ezlib@thetitle\ezlib@titlenonewlines%
+    }{%
+      \global\let\ezlib@thetitle\ezlib@shorttitle%
+    }%
+    \ifdefempty{\ezlib@shortauthor}{%
+      \def\ezlib@authornonewlines{\ezlib@nonewlines{\@author}}%
+      \global\let\ezlib@theauthor\ezlib@authornonewlines%
+    }{%
+      \global\let\ezlib@theauthor\ezlib@shortauthor%
+    }%
+  }
+
+  \renewcommand{\maketitle}{%
+    \inittitleauthor%
+    \ezlib@old@maketitle%
+    \def\and{\unskip, }%
+    \thispagestyle{plain}%
+    \vspace{-2\baselineskip}%
+  }
+
+  \fancypagestyle{plain}{%
+    \fancyhf{}%
+    \fancyfoot[C]{\ezlib@headerstyle\thepage}%
+    \renewcommand{\headrulewidth}{0pt}%
+  }
+
+  \pagestyle{fancy}
+  {\ezlib@headerstyle\global\setlength{\headheight}{\baselineskip}}
+  \fancyhf{}
+
+  \@ifclassloaded{book}{%
+    \renewcommand{\chaptermark}[1]{%
+      \markboth{\ifbool{@mainmatter}{\chaptername~\thechapter\kern0.75em}{}#1}{}%
+    }
+    \renewcommand{\sectionmark}[1]{%
+      \markright{\thesection\kern0.75em#1}%
+    }
+    \ifbool{@bookheaderside}{%
+      \fancyhead[RE]{\ezlib@headerstyle\nouppercase\leftmark}%
+      \fancyhead[LO]{\ezlib@headerstyle\nouppercase\rightmark}%
+    }{
+      \fancyhead[CE]{\ezlib@headerstyle\nouppercase\leftmark}%
+      \fancyhead[CO]{\ezlib@headerstyle\nouppercase\rightmark}%
+    }
+    \fancyhead[LE, RO]{\ezlib@headerstyle\thepage}%
+  }{%
+    \fancyhead[L]{\ezlib@headerstyle\ezlib@thetitle}%
+    \fancyhead[R]{\ezlib@headerstyle\ezlib@theauthor}%
+    \fancyfoot[C]{\ezlib@headerstyle\thepage}%
+  }
+
+
+}{} % \ifboolexpr{
+%   test{\ifdefstring{\ezlib@headings}{fancy}}
+%   or test{\ifdefstring{\ezlib@headings}{inline}}
+% }
+
+
+\ifdefstring{\ezlib@headings}{inline}{
+  \RequirePackage{noindentafter}
+
+  \newcommand{\@gobblespace}{\@ifnextchar\nobreakspace\@gobble\relax}
+  \crefname{section}{\S\@gobblespace}{\S\S\@gobblespace}
+  \crefname{subsection}{\S\@gobblespace}{\S\S\@gobblespace}
+  \crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
+
+  \fancypagestyle{firstpage}{%
+    \fancyhead[L]{}%
+    \fancyhead[R]{}%
+  }
+
+  \pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
+  \posttitle{\endgroup\\[\medskipamount]}
+  \preauthor{\begingroup\large\sffamily}
+  \postauthor{\endgroup\\}
+  \predate{}
+  \date{}
+  \postdate{\thispagestyle{firstpage}}
+
+  \renewcommand{\maketitle}{%
+    \inittitleauthor
+    \noindent
+    {\LARGE\textsf{\textbf{\thetitle}}}\\[\medskipamount]
+    {\large\textsf{\theauthor}}\\
+    \thispagestyle{firstpage}
+    \NoIndentAfterThis
+  }
+
+  \titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
+  \titlespacing*{\section}{0pt}{\medskipamount}{0.8\medskipamount}
+  \titleformat{\subsection}[runin]{\normalfont\sffamily\bfseries}{\thesubsection}{2em/3}{}
+  \titlespacing*{\subsection}{0pt}{0.8\medskipamount}{1em}
+  \titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
+  \titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
+
+  \date{}
+
+
+}{} % \ifdefstring{\ezlib@headings}{inline}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: algorithm %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifbool{ezlib@algorithm}{
+
+
+\ifdefempty{\@numberwithinlevel}{
+  \RequirePackage{algorithm}
+}{
+  \RequirePackage[\ezlib@numberwithin]{algorithm}
+}
+
+\@ifpackageloaded{caption}{
+  \@ifclassloaded{acmart}{
+    % Sorta match algorithm captions with theorem formatting
+    \DeclareCaptionLabelSeparator{periodspace}{.\hspace{0.5em}}
+    \captionsetup[algorithm]{labelfont=sc, labelsep=periodspace}
+  }{
+    \captionsetup[algorithm]{labelfont=bf, labelsep=period}
+  }
+}{}
+
+% Make rules in algorithm environment match those of booktabs tables
+\renewcommand{\fs@ruled}{%
+  \def\@fs@cfont{\bfseries}\let\@fs@capt\floatc@ruled
+  \def\@fs@pre{%
+    \vspace{\abovetopsep}%
+    \hrule height\heavyrulewidth \kern2pt%
+    \vspace{\belowrulesep}}%
+  \def\@fs@post{%
+    \vspace{\aboverulesep}%
+    \kern2pt\hrule height\heavyrulewidth \relax%
+    \vspace{\belowbottomsep}}%
+  \def\@fs@mid{%
+    \vspace{\aboverulesep}%
+    \kern2pt\hrule height\lightrulewidth \kern2pt%
+    \vspace{\belowrulesep}}%
+  \let\@fs@iftopcapt\iftrue
+}
+
+
+}{} % \ifbool{ezlib@algorithm}

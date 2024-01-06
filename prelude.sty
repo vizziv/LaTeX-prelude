@@ -1295,7 +1295,7 @@
 % The \cref@currentlabel hackery makes this work with sort&compress in cleveref.
 % See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command.
 \if@numberinsection
-  \newcommand{\yestag@cref@format}{[equation][\arabic{equation}][\thesection]}
+  \newcommand{\yestag@cref@format}{[equation][\arabic{equation}][\csuse{the\@numberwithinlevel}]}
 \else
   \newcommand{\yestag@cref@format}{[equation][\theequation][]}
 \fi
