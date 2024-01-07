@@ -31,9 +31,10 @@
 % - natbib
 % - algorithm
 % - microtype
+% - floats
 % - font
 % - number within
-% - floats
+% - margin
 % - headings
 
 
@@ -351,7 +352,7 @@
 % - "font=charter": use font set based around Charter and Vera Sans
 % - "font=palatino": use font set based around Palatino
 %
-% Behavior with "enable by default"
+% Behavior with "enable by default":
 %
 % - If a known built-in LaTeX class is loaded, default to "font=libertine"
 %   - These are: article, report, book
@@ -377,6 +378,27 @@
 %   - Default with "enable by default"
 % - Any other setting: number within the given environment
 %   - E.g. "number within=section", "number within=subsection", etc.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: margin %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% Non-boolean feature (interaction with "enable by default" described below)
+%
+% Sets the page margins using the geometry package
+%
+% - If absent or set to "margin=none", has no affect
+% - If set to any other value, loads geometry with that margin value
+%   - To set more complex margins, load geometry before this package
+%
+% Behavior with "enable by default"
+%
+% - If a known built-in LaTeX class is loaded, default to "margin=1.25in"
+%   - These are: article, report, book
+% - Otherwise, conservatively default to "margin=none"
+%   - This avoids conflicts with journal/conference class files
+% - Either way, can be manually overridden by setting font explicitly
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -436,6 +458,7 @@
   \ezlib@microtypetrue
   \renewcommand{\ezlib@font}{default}
   \renewcommand{\ezlib@numberwithin}{default}
+  \renewcommand{\ezlib@margin}{default}
   \renewcommand{\ezlib@headings}{default}
 }
 \DeclareBoolOption[false]{ezlist}
@@ -451,6 +474,7 @@
 \DeclareBoolOption[false]{microtype}
 \DeclareStringOption[none]{font}
 \DeclareStringOption[none]{numberwithin}
+\DeclareStringOption[none]{margin}
 \DeclareStringOption[none]{headings}
 
 % Options for ezlist
@@ -484,6 +508,7 @@
 \PassOptionsToPackage{T1}{fontspec}
 \RequirePackage{fontenc}
 \RequirePackage{etoolbox}
+\RequirePackage{calc}
 
 \ifboolexpr{
   bool{ezlib@ezeq}
@@ -544,10 +569,36 @@
   \RequirePackage{natbib}
 }{}
 
+
 % Packages and miscellaneous options that can be loaded after other things
+
 \RequirePackage{booktabs}
+\RequirePackage{graphicx}
 
 \frenchspacing
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: margin %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifdefstring{\ezlib@margin}{default}{
+  \ifboolexpr{
+    test{\@ifclassloaded{article}}
+    or test{\@ifclassloaded{book}}
+    or test{\@ifclassloaded{report}}
+  }{
+    \renewcommand{\ezlib@margin}{1.25in}
+  }{
+    \renewcommand{\ezlib@margin}{none}
+  }
+}{}
+
+\ifdefstring{\ezlib@margin}{none}{}{
+  \PassOptionsToPackage{margin=\ezlib@margin}{geometry}
+  \RequirePackage{geometry}
+}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%
