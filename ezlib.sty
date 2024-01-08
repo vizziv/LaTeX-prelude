@@ -115,7 +115,8 @@
 % - Usage: use \*[subenv] inside a theorem/lemma/etc., then use \label within items
 %   - Result: \cref for those labels yields a "subtheorem" reference, e.g. "Theorem 1.2(c)"
 % - A few options to refer to just the part label, e.g. just "(c)"
-%   - "\subref{lbl}"
+%   - "\subref{lbl}", assuming subcaption package is loaded
+%     - The subcaption package's options might affect how it looks
 %   - "\ref{sub@lbl}", where "lbl" is the original label
 %     - \cref and \Cref should work, too
 % - Supported usage
@@ -123,14 +124,15 @@
 %   - But does not work with lists other than ezlist
 %   - Should only be used with top-level lists
 %
-% Editing label appearance and \partref behavior:
+% Editing subenv label appearance:
 %
 % - Redefine the \subenvFormatLabel command to change the item labels
 %   - Should take one argument, which is the counter name
 %   - Default is "(\alph{#1})", i.e. (a), (b), (c)...
 %   - Can change e.g. to "(\roman{#1})", i.e. (i), (ii), (iii)...
 % - Redefine the \subenvFormatRef command to change what the references look like
-%   - Default is to copy \subenvFormatLabel
+%   - Should take one argument, which is the counter name
+%   - Default is to do whatever \subenvFormatLabel does
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -430,8 +432,8 @@
 %
 % - "headings=none": leave LaTeX defaults
 %   - Default without "enable by default"
-% - "headings=default": choose between full and none
-%   - If a known built-in LaTeX class is loaded, use full
+% - "headings=default": choose between fancy and none
+%   - If a known built-in LaTeX class is loaded, use fancy
 %   - Otherwise, use none
 %   - Default with "enable by default"
 % - "headings=fancy": reformat section titles and headers
@@ -1324,6 +1326,17 @@
   \Crefname{#1}{Item}{Items}%
 }
 
+\crefname{figure}{Figure}{Figures}
+\shortened\cCrefname{figure}{Fig.}{Figs.}
+\crefname{table}{Table}{Tables}
+\shortened\cCrefname{table}{Tab.}{Tabs.}
+
+%-- compatibility: acmart --%
+\@ifclassloaded{acmart}{
+  \crefname{figure}{Fig.}{Figs.}
+}{}
+%-- end compatibility --%
+
 \ezlib@enum@cCrefname{enumi}
 \ezlib@enum@cCrefname{enumii}
 \ezlib@enum@cCrefname{enumiii}
@@ -1444,9 +1457,7 @@
 \PassOptionsToPackage{font=small, labelformat=simple}{subcaption}
 \RequirePackage{subcaption}
 
-
 \def\thesubfigure{(\alph{subfigure})}
-
 
 
 \fi % \ifezlib@floats
@@ -1456,6 +1467,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: headings %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifdefstring{\ezlib@headings}{default}{
+  \ifboolexpr{
+    test{\@ifclassloaded{article}}
+    or test{\@ifclassloaded{book}}
+    or test{\@ifclassloaded{report}}
+  }{
+    \renewcommand{\ezlib@headings}{fancy}
+  }{
+    \renewcommand{\ezlib@headings}{none}
+  }
+}{}
+
+
+%%% Common to fancy and inline headings
 
 \ifboolexpr{
   test{\ifdefstring{\ezlib@headings}{fancy}}
@@ -1596,6 +1622,8 @@
 %   or test{\ifdefstring{\ezlib@headings}{inline}}
 % }
 
+
+%%% Specific to inline headings
 
 \ifdefstring{\ezlib@headings}{inline}{
 
