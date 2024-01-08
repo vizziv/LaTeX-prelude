@@ -107,13 +107,30 @@
 % - This package loads enumitem with shortlabels and does some other formatting
 %   - To disalbe this, pass "enumitem options=false"
 %
-% Also introduces enumitem key "subenv"
+% Subfeature: subenv (disable with "ezlist subenv=false")
 %
-% - This is for referring to parts of theorems as theorems, not items
-% - Use \*[subenv] inside a theorem/lemma/definition/etc., then use \label within items
-% - Using \cref for those labels yields a nice "subtheorem" reference, e.g. "Theorem 1.2(c)"
-%   - Use new macro \itemref to get e.g. just "(c)"
-% - Should work with any environment whose name is also a counter name
+% Also introduces enumitem key "subenv" for referencing parts of therems/lemmas/etc.
+%
+% - Works with ezlist, but unfortunately not other list types
+% - Usage: use \*[subenv] inside a theorem/lemma/etc., then use \label within items
+%   - Result: \cref for those labels yields a "subtheorem" reference, e.g. "Theorem 1.2(c)"
+% - A few options to refer to just the part label, e.g. just "(c)"
+%   - "\subref{lbl}"
+%   - "\ref{sub@lbl}", where "lbl" is the original label
+%     - \cref and \Cref should work, too
+% - Supported usage
+%   - Should work with an ezlist inside any environment whose name is a counter
+%   - But does not work with lists other than ezlist
+%   - Should only be used with top-level lists
+%
+% Editing label appearance and \partref behavior:
+%
+% - Redefine the \subenvFormatLabel command to change the item labels
+%   - Should take one argument, which is the counter name
+%   - Default is "(\alph{#1})", i.e. (a), (b), (c)...
+%   - Can change e.g. to "(\roman{#1})", i.e. (i), (ii), (iii)...
+% - Redefine the \subenvFormatRef command to change what the references look like
+%   - Default is to copy \subenvFormatLabel
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -479,6 +496,7 @@
 
 % Options for ezlist
 \DeclareBoolOption[true]{enumitemoptions}
+\DeclareBoolOption[true]{ezlistsubenv}
 
 % Options for ezeq
 \DeclareBoolOption[true]{ezeqnumberlabeled}
@@ -539,13 +557,16 @@
   \RequirePackage{enumitem}
 }{}
 
-\ifbool{ezlib@ezeq}{
+\ifboolexpr{
+  bool{ezlib@ezeq}
+  or (bool{ezlib@ezlist} and bool{ezlib@ezlistsubenv})
+}{
   \RequirePackage{xstring}
 }{}
 
 \ifbool{ezlib@cleveref}{
   \ifbool{ezlib@cleverefcapitalize}{
-    \PassOptionsToPackage{capitalize}{enumitem}
+    \PassOptionsToPackage{capitalize}{cleveref}
   }{}
   \RequirePackage{cleveref}
 }{}
@@ -720,7 +741,7 @@
 }
 
 \newrobustcmd{\ezlib@ezlist@nostar}{%
-  \def\ezlib@ezlist@type{{ezlist}}%
+  \def\ezlib@ezlist@type{{ezlist}[before=\@nmbrlistfalse]}%
   \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
     \@ifnextchar{[}{%
       % This a new sublist with parameters, so store them in \ezlib@ezlist@type
@@ -793,13 +814,13 @@
     \item%
   }{}%
   % Set the outer current environment (see cleveref labels below)
-  \ifnumcomp{\value{ezlib@ezlist@prev}}{=}{0}{%
+  \ifdefempty{\ezlib@ezlist@currenvir}{%
     \let\ezlib@ezlist@currenvir\@currenvir%
   }{}%
   % Begin any necessary lists
   \whileboolexpr{ test{\ifnumcomp{\value{ezlib@ezlist@diff}}{>}{1}} }{%
     \addtocounter{ezlib@ezlist@diff}{-1}%
-    \begin{ezlist}%
+    \begin{ezlist}[before=\@nmbrlistfalse]%
     \item%
   }%
   % Apply any parameters to the innermost new list
@@ -813,6 +834,7 @@
     \end{ezlist}%
   }%
   \ifnumcomp{\value{ezlib@ezlist@this}}{=}{0}{%
+    \renewcommand{\ezlib@ezlist@currenvir}{}%
     \ezlib@ezlist@cleanup#1#3%
   }{%
     \ezlib@ezlist@cleanup#1#2#3%
@@ -826,41 +848,55 @@
 }
 
 
-% Use enumitem key "subenv" for smarter labels with cleveref
+\ifbool{ezlib@ezlistsubenv}{
 
-\newcommand{\ezlib@ezlist@currenvir}{document}
-\newcommand{\ezlib@ezlist@label@prefix}{item@}
-\AtBeginDocument{\let\ezlib@ezlist@old@label\label}
-\ifbool{ezlib@cleveref}{
-  % Holds current environment outside easylist
-  \newrobustcmd{\ezlib@ezlist@label}[2][]{%
-    \ifstrempty{#1}{%
-      \ezlib@ezlist@old@label[\ezlib@ezlist@currenvir]{#2}%
-    }{%
-      \ezlib@ezlist@old@label[#1]{#2}%
-    }%
+
+  % Introduce enumitem key "subenv" for smarter labels with cleveref
+  % Though also affects normal references
+
+  \newcommand{\ezlib@ezlist@currenvir}{}
+
+  \ifbool{ezlib@cleveref}{
+    % Holds current environment outside easylist
+    \newrobustcmd{\ezlib@ezlist@label}[2][]{%
+      {%
+        \protected@edef\cref@currentlabel{%
+          [\@tempa][\arabic{ezlisti}][\cref@result]\subenvFormatRef{ezlisti}%
+        }
+        \edef\@currentlabel{\subenvFormatRef{ezlisti}}%
+        \ezlib@ezlist@old@label{sub@#2}%
+      }%
+      \ifstrempty{#1}{%
+        \ezlib@ezlist@old@label[\ezlib@ezlist@currenvir]{#2}%
+      }{%
+        \ezlib@ezlist@old@label[#1]{#2}%
+      }%
+    }
+  }{
+    \newrobustcmd{\ezlib@ezlist@label}[1]{%
+      {%
+        \edef\@currentlabel{\subenvFormatRef{ezlisti}}%
+        \ezlib@ezlist@old@label{sub@#1}%
+      }%
+      \ezlib@ezlist@old@label{#1}%
+    }
   }
-}{
-  \newrobustcmd{\ezlib@ezlist@label}{\ezlib@ezlist@old@label}
-}
 
-\newcommand{\ezlib@ezlist@subenvLabel}{(\alph*)}
-\SetEnumitemKey{subenv}{
-  label=\ezlib@ezlist@subenvLabel,
-  ref=\csuse{the\ezlib@ezlist@currenvir}\ezlib@ezlist@subenvLabel,
-  before*=\renewcommand{\label}{\ezlib@ezlist@label}%
-}
+  \newrobustcmd{\ezlib@ezlist@subenv}{%
+    \let\ezlib@ezlist@old@label\label
+    \renewcommand{\label}{\ezlib@ezlist@label}%
+  }
 
-% Reference just the item in a subenv, e.g. get (c) instead of 1.2(c)
-\newrobustcmd{\itemref}[1]{%
-  {%
-    \refused{#1}%
-    \edef\ezlib@itemref@tmp{\getrefbykeydefault{#1}{}{0.0(??)}}%
-    \hyperref[#1]{\expandafter\ezlib@itemref@aux@one\ezlib@itemref@tmp}%
-  }%
-}
-\newcommand{\ezlib@itemref@aux@one}[1]{\ezlib@itemref@aux@two#1}
-\def\ezlib@itemref@aux@two#1.#2(#3){(#3)}
+  \newcommand{\subenvFormatLabel}[1]{(\alph{#1})}%
+  \newcommand{\subenvFormatRef}{\subenvFormatLabel}%
+  \SetEnumitemKey{subenv}{
+    label=\subenvFormatLabel*,
+    ref=\csuse{the\ezlib@ezlist@currenvir}\subenvFormatRef*,
+    before=\ezlib@ezlist@subenv
+  }
+
+
+}{} % \ifbool{ezlib@ezlistsubenv}
 
 
 % General list settings
@@ -962,7 +998,6 @@
     [equation][\theequation][]%
   }
 }{
-  \numberwithin{equation}{\ezlib@numberwithin}
   \newcommand{\ezlib@cref@format}{%
     [equation][\arabic{equation}][\csuse{the\ezlib@numberwithin}]%
   }
@@ -1006,9 +1041,9 @@
 \fi % \ifezlib@ezeq
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: restate %%%
-%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: ezrestate %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ifezlib@ezrestate
 
@@ -1031,7 +1066,7 @@
 
 \ifdef{\restatably}{%
   \PackageError{ezlib}{%
-    Command \textbackslash restatably already defined, being overwritten%
+    Command \restatably already defined, being overwritten%
   }{}%
 }{}
 
@@ -1062,6 +1097,7 @@
 
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
+    \def\ezlib@ezlist@currenvir{#2}
     \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
       \def\ezlib@ezrestate@collect@cont##1{%
@@ -1075,7 +1111,7 @@
     \ezlib@ezrestate@collect@body@of{#2}\ezlib@ezrestate@collect@cont%
   }{%
     \PackageError{ezlib}{%
-      Environment after \textbackslash restatably must start with a \textbackslash label%
+      Environment after \restatably must start with a \label%
     }{}%
   }%
 }
@@ -1322,7 +1358,7 @@
 \newcommand{\ezlibPlain}{plain}
 \newcommand{\ezlibDefinition}{definition}
 \newcommand{\ezlibRemark}{remark}
-\newcommand{\ezlib@Case}{remark}
+\newcommand{\ezlib@thmstyle@case}{remark}
 
 %-- compatibility: acmart --%
 \@ifclassloaded{acmart}{
@@ -1338,12 +1374,16 @@
     {.}
     {.5em}
     {\thmname{#1}\thmnumber{ #2}\thmnote{{\@acmdefinitionnotefont: #3}}}
-  \renewcommand{\ezlib@Case}{acmcase}
+  \renewcommand{\ezlib@thmstyle@case}{acmcase}
 }{}
 %-- end compatibility --%
 
 \theoremstyle{\ezlibPlain}
-\newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
+\ifdefempty{\ezlib@numberwithin}{
+  \newtheorem{theorem}{Theorem}
+}{
+  \newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
+}
 % \shortened\cCrefname{theorem}{Thm.}{Thms.}
 \newtheorem{lemma}[theorem]{Lemma}
 % \shortened\cCrefname{lemma}{Lem.}{Lems.}
@@ -1368,11 +1408,13 @@
 % \shortened\cCrefname{remark}{Rmk.}{Rmks.}
 \newtheorem{note}[theorem]{Note}
 
-\theoremstyle{\ezlib@Case}
+\theoremstyle{\ezlib@thmstyle@case}
 \newtheorem{case}{Case}
 % Use a colon instead of parentheses for names of cases.
-\newcommand{\ezlib@thmhead@case}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
-\pretocmd{\case}{\let\thmhead\ezlib@thmhead@case\@oldcase}{}{}
+\ifdefstring{\ezlib@thmstyle@case}{remark}{
+  \newcommand{\ezlib@thmhead@case}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
+  \pretocmd{\case}{\let\thmhead\ezlib@thmhead@case}{}{}
+}{}
 
 % Reset to default style
 \theoremstyle{\ezlibPlain}
@@ -1420,8 +1462,6 @@
   or test{\ifdefstring{\ezlib@headings}{inline}}
 }{
 
-\PassOptionsToPackage{\ezlib@titlestyleoptions, raggedright}{titlesec}
-\RequirePackage{titlesec}
 
 \newcommand{\ezlib@titlestyle}{\bfseries}
 \newcommand{\ezlib@titlestyleoptions}{bf}
@@ -1432,6 +1472,8 @@
   \renewcommand{\ezlib@headerstyle}{\footnotesize\sffamily}
 }{}
 
+\PassOptionsToPackage{\ezlib@titlestyleoptions, raggedright}{titlesec}
+\RequirePackage{titlesec}
 \RequirePackage{fancyhdr}
 \RequirePackage{titling}
 
@@ -1491,8 +1533,9 @@
 \preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
 \postauthor{\end{tabular}\par\end{center}}
 \predate{\begin{center}}
-\date{}
 \postdate{\ifdefempty{\thedate}{\vspace{-1.75\baselineskip}}{}\par\end{center}}
+
+\date{}
 
 \let\ezlib@old@maketitle\maketitle
 \def\ezlib@thetitle{}
@@ -1574,7 +1617,6 @@
 \preauthor{\begingroup\large\sffamily}
 \postauthor{\endgroup\\}
 \predate{}
-\date{}
 \postdate{\thispagestyle{firstpage}}
 
 \renewcommand{\maketitle}{%
@@ -1592,8 +1634,6 @@
 \titlespacing*{\subsection}{0pt}{0.8\medskipamount}{1em}
 \titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
 \titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
-
-\date{}
 
 
 }{} % \ifdefstring{\ezlib@headings}{inline}
