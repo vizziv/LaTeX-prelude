@@ -13,13 +13,17 @@
 % - A few features are not boolean
 %   - Exception: a few features require values other than true or false
 % - How to enable/disable many features at once
-%   - By default, all features are disabled
-%   - Pass the "enable by default" option to enable by default instead
-%     - Can still disable with "xyz=false" or "xyz=none"
+%   - The default is set by an option "default", which can have one of two values
+%     - "default=minimal": everything disabled by default
+%     - "default=maximal": everything enabled by default
+%   - Shortcuts
+%     - Leaving the "default" option absent is equivalent to "default=minimal"
+%     - Passing "default" with no value set is equivalent to "default=maximal"
+%   - With "default=maximal", can still disable with "xyz=false" or "xyz=none"
 % - Some features have further options associated with them
 %   - See details below
 %
-% Full feature list:
+% Full feature list, with non-boolean features marked:
 %
 % - ezlist
 % - ezeq
@@ -28,21 +32,29 @@
 % - notation
 % - cleveref
 % - theorems
-% - natbib
 % - algorithm
-% - microtype
-% - floats
 % - font
-% - number within
-% - margin
-% - headings
+% - packages
+% - number within (non-boolean)
+% - margin (non-boolean)
+% - headings (non-boolean)
+%
+% Throughout, many packages are loaded with options
+%
+% - There are two ways to change/disable options for a package "pkg"
+%   - Load pkg before this package
+%   - Call "\PassOptionsToPackage{options}{pkg}" before this package
+%     - "\PassOptionsToPackage{}{pkg}" will prevent options
+% - To clarify, the \PassOptionsToPackage behavior is specific to this package
+%   - Usually, \PassOptionsToPackage adds additional options
+%   - But this package detects if \PassOptionsToPackage has been called already
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Provides a single macro, \*, for making lists
 %
@@ -105,7 +117,7 @@
 % - The environment \* uses is called "ezlist"
 %   - For modifying options with \setlist, cleveref name, etc.
 % - This package loads enumitem with shortlabels and does some other formatting
-%   - To disalbe this, pass "enumitem options=false"
+%   - See top of guide for how to disable package options
 %
 % Subfeature: subenv (disable with "ezlist subenv=false")
 %
@@ -139,7 +151,7 @@
 %%% Feature: ezeq %%%
 %%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Makes \[ and \] a (slightly) smarter equation interface
 %
@@ -158,7 +170,7 @@
 %%% Feature: ezrestate %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Simple interface for thmtools's restatable theorems
 %
@@ -186,7 +198,7 @@
 %%% Feature: delimiters %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Provides different "group" macros for sizing parentheses and similar
 %
@@ -273,14 +285,12 @@
 %%% Feature: cleveref %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Loads the cleveref package and a bit more
 %
 % - Uses capitalize option by default
-%   - Can turn off by doing either of the following
-%     - Pass "cleveref options=false"
-%     - Load cleveref beforehand
+%   - See top of guide for how to disable package options
 % - \cCrefname: simultaneous \crefname and \Crefname
 % - Allows spaces in comma-separated list of labels in \cref and \Cref
 %
@@ -297,7 +307,7 @@
 %%% Feature: theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Declares a default set of theorem environments
 %
@@ -314,64 +324,53 @@
 % - \noqed: suppress the QED at the end of a proof
 
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: floats %%%
-%%%%%%%%%%%%%%%%%%%%%%%
-
-% Boolean feature (enabled by "enable by default")
-%
-% Formats float labels nicely and loads some useful packages, e.g. subcaption
-
-
-%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: natbib %%%
-%%%%%%%%%%%%%%%%%%%%%%%
-
-% Boolean feature (enabled by "enable by default")
-%
-% Loads the natbib package with options "square, numbers, sort&compress"
-%
-% - To load natbib with a different set of options, do one of the following:
-%   - Pass "enumitem options=false"
-%   - Load natbib (with different options) before this package
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: algorithm %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Boolean feature (enabled by "enable by default")
+% Boolean feature (enabled by "default=maximal")
 %
 % Loads the alrogithm package and slightly tweaks algorithm formatting
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: microtype %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Boolean feature (enabled by "enable by default")
 %
-% Loads the microtype package
+% - Passes the value of "number within" as an option
+%   - See top of guide for how to disable package options
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "default=maximal")
 %
-% - To load it with options, simply load microtype before this package
+% Loads various packages, some with options
+%
+% - booktabs
+% - calc
+% - caption, with options "font=small, labelfont=bf, labelsep=period"
+% - graphicx
+% - microtype
+% - natbib, with options "square, numbers, sort&compress"
+% - subcaption, with options "font=small"
+%
+% See top of guide for how to disable package options
 
 
 %%%%%%%%%%%%%%%%%%%%%
 %%% Feature: font %%%
 %%%%%%%%%%%%%%%%%%%%%
 
-% Non-boolean feature (interaction with "enable by default" described below)
+% Non-boolean feature (behavior under "default=maximal" described below)
 %
 % Changes fonts used throughout the document
 %
-% Valid options:
+% Possible values:
 %
 % - "font=none": don't change any fonts
 % - "font=libertine": use font set based around Libertine and Biolinum
 % - "font=charter": use font set based around Charter and Vera Sans
 % - "font=palatino": use font set based around Palatino
 %
-% Behavior with "enable by default":
+% Behavior with "default=maximal":
 %
 % - If a known built-in LaTeX class is loaded, default to "font=libertine"
 %   - These are: article, report, book
@@ -384,7 +383,7 @@
 %%% Feature: number within %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Non-boolean feature (interaction with "enable by default" described below)
+% Non-boolean feature (behavior under "default=maximal" described below)
 %
 % Selects what level numbering of theorems/equations/figures/etc. occurs within
 %
@@ -403,7 +402,7 @@
 %%% Feature: margin %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-% Non-boolean feature (interaction with "enable by default" described below)
+% Non-boolean feature (behavior under "default=maximal" described below)
 %
 % Sets the page margins using the geometry package
 %
@@ -411,7 +410,7 @@
 % - If set to any other value, loads geometry with that margin value
 %   - To set more complex margins, load geometry before this package
 %
-% Behavior with "enable by default"
+% Behavior with "default=maximal"
 %
 % - If a known built-in LaTeX class is loaded, default to "margin=1.25in"
 %   - These are: article, report, book
@@ -424,23 +423,23 @@
 %%% Feature: headings %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Non-boolean feature (interaction with "enable by default" described below)
+% Non-boolean feature (behavior under "default=maximal" described below)
 %
 % Formats section titles, headers, and more
 %
 % Valid options:
 %
 % - "headings=none": leave LaTeX defaults
-%   - Default without "enable by default"
+%   - Default under "default=minimal"
 % - "headings=default": choose between fancy and none
 %   - If a known built-in LaTeX class is loaded, use fancy
 %   - Otherwise, use none
-%   - Default with "enable by default"
+%   - Default under "default=maximal"
 % - "headings=fancy": reformat section titles and headers
 %   - Section titles are styled in sans if the font has a nice sans pairing
 %   - Headers choose between two styles depending on if \chapter is defined
 %   - E.g. "number within=section", "number within=subsection", etc.
-% - "headings=inline": use inline section titles
+% - "headings=inline": use inline subsection titles
 %   - E.g. for short documents with a strict page limit
 %
 % Other configuriation
@@ -463,22 +462,23 @@
 \RequirePackage{kvoptions}
 
 % Options for main features
-\DeclareVoidOption{enablebydefault}{
-  \ezlib@ezlisttrue
-  \ezlib@ezeqtrue
-  \ezlib@ezrestatetrue
-  \ezlib@delimiterstrue
-  \ezlib@notationtrue
-  \ezlib@clevereftrue
-  \ezlib@theoremstrue
-  \ezlib@floatstrue
-  \ezlib@natbibtrue
-  \ezlib@algorithmtrue
-  \ezlib@microtypetrue
-  \renewcommand{\ezlib@font}{default}
-  \renewcommand{\ezlib@numberwithin}{default}
-  \renewcommand{\ezlib@margin}{default}
-  \renewcommand{\ezlib@headings}{default}
+\DeclareStringOption[minimal]{default}[maximal]
+\AddToKeyvalOption*{default}{
+  \ifdefstring{\ezlib@default}{maximal}{
+    \ezlib@ezlisttrue
+    \ezlib@ezeqtrue
+    \ezlib@ezrestatetrue
+    \ezlib@delimiterstrue
+    \ezlib@notationtrue
+    \ezlib@clevereftrue
+    \ezlib@theoremstrue
+    \ezlib@algorithmtrue
+    \ezlib@packagestrue
+    \renewcommand{\ezlib@font}{default}
+    \renewcommand{\ezlib@numberwithin}{default}
+    \renewcommand{\ezlib@margin}{default}
+    \renewcommand{\ezlib@headings}{default}
+  }{}
 }
 \DeclareBoolOption[false]{ezlist}
 \DeclareBoolOption[false]{ezeq}
@@ -487,17 +487,14 @@
 \DeclareBoolOption[false]{notation}
 \DeclareBoolOption[false]{cleveref}
 \DeclareBoolOption[false]{theorems}
-\DeclareBoolOption[false]{floats}
-\DeclareBoolOption[false]{natbib}
 \DeclareBoolOption[false]{algorithm}
-\DeclareBoolOption[false]{microtype}
-\DeclareStringOption[none]{font}
-\DeclareStringOption[none]{numberwithin}
-\DeclareStringOption[none]{margin}
-\DeclareStringOption[none]{headings}
+\DeclareBoolOption[false]{packages}
+\DeclareStringOption[none]{font}[default]
+\DeclareStringOption[none]{numberwithin}[default]
+\DeclareStringOption[none]{margin}[default]
+\DeclareStringOption[none]{headings}[default]
 
 % Options for ezlist
-\DeclareBoolOption[true]{enumitemoptions}
 \DeclareBoolOption[true]{ezlistsubenv}
 
 % Options for ezeq
@@ -511,11 +508,12 @@
 % Options for cleveref
 \DeclareBoolOption[true]{cleverefcapitalize}
 
-% Options for natbib
+% Options for packages
 \DeclareBoolOption[true]{natbiboptions}
+\DeclareBoolOption[true]{enumitemoptions}
 
 % Options for headings
-\DeclareStringOption[default]{headingssf}
+\DeclareStringOption[default]{headingssf}[true]
 
 \ProcessLocalKeyvalOptions*
 
@@ -524,25 +522,28 @@
 %%% Required packages and general setup %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newrobustcmd\ezlib@RequirePackageWithOptions[2]{%
+  \ifcsdef{opt@#1.\@pkgextension}{}{
+    \PassOptionsToPackage{#1}{#2}
+  }
+  \RequirePackage{#2}
+}
+
 % Important packages that should be loaded first
-\PassOptionsToPackage{T1}{fontspec}
+\ezlib@RequirePackageWithOptions{T1}{fontenc}
 \RequirePackage{fontenc}
 \RequirePackage{etoolbox}
-\RequirePackage{calc}
 
 \ifboolexpr{
   bool{ezlib@ezeq}
   or bool{ezlib@ezrestate}
   or bool{ezlib@delimiters}
   or bool{ezlib@notation}
-  or bool{ezlib@notation}
   or bool{ezlib@cleveref}
   or bool{ezlib@theorems}
 }{
   \RequirePackage{amsmath}
   \RequirePackage{amsthm}
-  \PassOptionsToPackage{hidelinks}{hyperref}
-  \RequirePackage{hyperref}
 
   % -- compatibility: acmart --%
   \@ifclassloaded{acmart}{}{%
@@ -550,13 +551,12 @@
     \RequirePackage{amssymb}
   }
   % -- end compatibility --%
+
+  \ezlib@RequirePackageWithOptions{hidelinks}{hyperref}
 }{}
 
-\ifbool{ezlib@ezlist}{
-  \ifbool{ezlib@enumitemoptions}{
-    \PassOptionsToPackage{shortlabels}{enumitem}
-  }{}
-  \RequirePackage{enumitem}
+\ifboolexpr{ bool{ezlib@ezlist} or bool{ezlib@packages} }{
+  \ezlib@RequirePackageWithOptions{shortlabels}{enumitem}
 }{}
 
 \ifboolexpr{
@@ -567,36 +567,35 @@
 }{}
 
 \ifbool{ezlib@cleveref}{
-  \ifbool{ezlib@cleverefcapitalize}{
-    \PassOptionsToPackage{capitalize}{cleveref}
-  }{}
-  \RequirePackage{cleveref}
+  \ezlib@RequirePackageWithOptions{capitalize}{cleveref}
 }{}
 
 \ifbool{ezlib@ezrestate}{
   \RequirePackage{thm-restate}
 }{}
 
+\ifbool{ezlib@delimiters}{
+  \RequirePackage{mathtools}
+}
+
 \ifbool{ezlib@notation}{
   \RequirePackage{mathcommand}
 }{}
 
-\ifbool{ezlib@microtype}{
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifbool{ezlib@packages}{
+  \RequirePackage{booktabs}
+  \RequirePackage{calc}
+  \ezlib@RequirePackageWithOptions{font=small, labelfont=bf, labelsep=period}{caption}
+  \RequirePackage{graphicx}
   \RequirePackage{microtype}
+  \ezlib@RequirePackageWithOptions{square, numbers, sort&compress}{natbib}
+  \ezlib@RequirePackageWithOptions{font=small}{subcaption}
 }{}
-
-\ifbool{ezlib@natbib}{
-  \ifbool{ezlib@natbiboptions}{
-    \PassOptionsToPackage{square, numbers, sort&compress}{natbib}
-  }{}
-  \RequirePackage{natbib}
-}{}
-
-
-% Packages and miscellaneous options that can be loaded after other things
-
-\RequirePackage{booktabs}
-\RequirePackage{graphicx}
 
 \frenchspacing
 
@@ -618,8 +617,7 @@
 }{}
 
 \ifdefstring{\ezlib@margin}{none}{}{
-  \PassOptionsToPackage{margin=\ezlib@margin}{geometry}
-  \RequirePackage{geometry}
+  \ezlib@RequirePackageWithOptions{margin=\ezlib@margin}{geometry}
 }
 
 
@@ -1167,7 +1165,6 @@
 %%% Main delimiter macros
 
 \ifbool{ezlib@delimiters}{
-  \RequirePackage{mathtools}
   \DeclarePairedDelimiterX{\pgp}[1](){#1}
   \DeclarePairedDelimiterX{\bgp}[1][]{#1}
   \DeclarePairedDelimiterX{\Bgp}[1]\{\}{#1}
@@ -1445,25 +1442,6 @@
 \fi % \ifezlib@theorems
 
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: floats %%%
-%%%%%%%%%%%%%%%%%%%%%%%
-
-\ifezlib@floats
-
-
-\PassOptionsToPackage{font=small, labelfont=bf, labelsep=period}{caption}
-\RequirePackage{caption}
-\PassOptionsToPackage{font=small, labelformat=simple}{subcaption}
-\RequirePackage{subcaption}
-
-\def\thesubfigure{(\alph{subfigure})}
-
-
-\fi % \ifezlib@floats
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: headings %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1498,8 +1476,7 @@
   \renewcommand{\ezlib@headerstyle}{\footnotesize\sffamily}
 }{}
 
-\PassOptionsToPackage{\ezlib@titlestyleoptions, raggedright}{titlesec}
-\RequirePackage{titlesec}
+\ezlib@RequirePackageWithOptions{\ezlib@titlestyleoptions, raggedright}{titlesec}
 \RequirePackage{fancyhdr}
 \RequirePackage{titling}
 
@@ -1657,9 +1634,9 @@
 }
 
 \titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
-\titlespacing*{\section}{0pt}{\medskipamount}{0.8\medskipamount}
+\titlespacing*{\section}{0pt}{\bigskipamount}{\medskipamount}
 \titleformat{\subsection}[runin]{\normalfont\sffamily\bfseries}{\thesubsection}{2em/3}{}
-\titlespacing*{\subsection}{0pt}{0.8\medskipamount}{1em}
+\titlespacing*{\subsection}{0pt}{\medskipamount}{1em}
 \titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
 \titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
 
@@ -1677,10 +1654,10 @@
 
 
 \ifdefempty{\ezlib@numberwithin}{
+  \RequirePackage{algorithm}
 }{
-  \PassOptionsToPackage{\ezlib@numberwithin}{algorithm}
+  \ezlib@RequirePackageWithOptions{\ezlib@numberwithin}{algorithm}
 }
-\RequirePackage{algorithm}
 
 \@ifpackageloaded{caption}{
   \captionsetup[algorithm]{labelfont=bf, labelsep=period}
@@ -1688,8 +1665,8 @@
   %-- compatibility: acmart --%
   \@ifclassloaded{acmart}{
     % Sorta match algorithm captions with theorem formatting
-    \DeclareCaptionLabelSeparator{periodspace}{.\hspace{0.5em}}
-    \captionsetup[algorithm]{labelfont=sc, labelsep=periodspace}
+    \DeclareCaptionLabelSeparator{acmperiodspace}{.\hspace{0.5em}}
+    \captionsetup[algorithm]{labelfont=sc, labelsep=acmperiodspace}
   }{}
   %-- end compatibility --%
 }{}
