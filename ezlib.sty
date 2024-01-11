@@ -350,7 +350,9 @@
 % - graphicx
 % - microtype
 % - natbib, with options "square, numbers, sort&compress"
-% - subcaption, with options "font=small"
+% - subcaption, with options "font=small, labelformat=simple"
+%   - If options are passed, also tweaks \thesubfigure to include parentheses
+%   - If ezlist subenv is enabled, uses \subenvFormatLabel in \thesubfigure
 %
 % See top of guide for how to disable package options
 
@@ -522,11 +524,14 @@
 %%% Required packages and general setup %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newrobustcmd\ezlib@RequirePackageWithOptions[2]{%
-  \ifcsdef{opt@#1.\@pkgextension}{}{
-    \PassOptionsToPackage{#1}{#2}
+\newrobustcmd{\ezlib@RequirePackageWithOptions}[3][]{%
+  \ifcsdef{opt@#3.\@pkgextension}{
+    \RequirePackage{#3}
+  }{
+    \PassOptionsToPackage{#2}{#3}
+    \RequirePackage{#3}
+    #1
   }
-  \RequirePackage{#2}
 }
 
 % Important packages that should be loaded first
@@ -594,7 +599,13 @@
   \RequirePackage{graphicx}
   \RequirePackage{microtype}
   \ezlib@RequirePackageWithOptions{square, numbers, sort&compress}{natbib}
-  \ezlib@RequirePackageWithOptions{font=small}{subcaption}
+  \ezlib@RequirePackageWithOptions[{
+    \ifbool{ezlib@ezlistsubenv}{
+      \renewcommand{\thesubfigure}{\subenvFormatLabel{subfigure}}
+    }{
+      \renewcommand{\thesubfigure}{(\alph{subfigure})}
+    }
+  }]{font=small, labelformat=simple}{subcaption}
 }{}
 
 \frenchspacing
