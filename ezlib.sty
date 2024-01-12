@@ -462,6 +462,7 @@
 \ProvidesPackage{ezlib}[2023/12/30 Ziv's LaTeX Library]
 
 \RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
 
 % Options for main features
 \DeclareStringOption[minimal]{default}[maximal]
@@ -524,7 +525,7 @@
 %%% Required packages and general setup %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newrobustcmd{\ezlib@RequirePackageWithOptions}[3][]{%
+\newrobustcmd\ezlib@RequirePackageWithOptions[3][]{%
   \ifcsdef{opt@#3.\@pkgextension}{
     \RequirePackage{#3}
   }{
@@ -534,10 +535,10 @@
   }
 }
 
+
 % Important packages that should be loaded first
+
 \ezlib@RequirePackageWithOptions{T1}{fontenc}
-\RequirePackage{fontenc}
-\RequirePackage{etoolbox}
 
 \ifboolexpr{
   bool{ezlib@ezeq}
@@ -606,6 +607,7 @@
       \renewcommand{\thesubfigure}{(\alph{subfigure})}
     }
   }]{font=small, labelformat=simple}{subcaption}
+  \ezlib@RequirePackageWithOptions{HTML}{xcolor}
 }{}
 
 \frenchspacing
@@ -1318,6 +1320,11 @@
 \seq_new:N \l_bers_cref_seq
 \ExplSyntaxOff
 
+\newrobustcmd{\cCrefname}[3]{%
+  \crefname{#1}{#2}{#3}%
+  \Crefname{#1}{#2}{#3}%
+}
+
 % Short names for references (e.g. Thm. instead of Theorem).
 \newcommand{\crefShorten}{}
 \newrobustcmd{\shortened}[4]{\appto{\crefShorten}{#1{#2}{#3}{#4}}}
@@ -1585,7 +1592,6 @@
 }
 
 \pagestyle{fancy}
-{\ezlib@headerstyle\global\setlength{\headheight}{\baselineskip}}
 \fancyhf{}
 
 \@ifclassloaded{book}{%
@@ -1624,8 +1630,8 @@
 \crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
 
 \fancypagestyle{firstpage}{%
-  \fancyhead[L]{}%
-  \fancyhead[R]{}%
+  \fancyhead{}%
+  \renewcommand{\headrulewidth}{0pt}%
 }
 
 \pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
@@ -1636,12 +1642,18 @@
 \postdate{\thispagestyle{firstpage}}
 
 \renewcommand{\maketitle}{%
-  \inittitleauthor
-  \noindent
-  {\LARGE\textsf{\textbf{\thetitle}}}\\[\medskipamount]
-  {\large\textsf{\theauthor}}\\
-  \thispagestyle{firstpage}
-  \NoIndentAfterThis
+  \inittitleauthor%
+  {%
+    \setlength{\parskip}{0pt}
+    \large%
+    \ifbool{ezlib@headings@sf}{\sffamily}{}%
+    \ifdefempty{\thetitle}{}{\noindent\textbf{\LARGE\thetitle}\par\medskip}%
+    \ifdefempty{\theauthor}{}{\noindent\theauthor\par}%
+    \ifdefempty{\thedate}{}{\noindent\thedate\par}%
+    \rule{\textwidth}{\headrulewidth}%
+  }%
+  \thispagestyle{firstpage}%
+  \NoIndentAfterThis%
 }
 
 \titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
