@@ -552,7 +552,10 @@
   \RequirePackage{amsthm}
 
   % -- compatibility: acmart --%
-  \@ifclassloaded{acmart}{}{%
+  \ifboolexpr{
+    test{\@ifclassloaded{acmart}}
+    or test{\ifdefstring{\ezlib@font}{charter}}
+  }{}{%
     \RequirePackage{amsfonts}
     \RequirePackage{amssymb}
   }
@@ -586,6 +589,7 @@
 
 \ifbool{ezlib@notation}{
   \RequirePackage{mathcommand}
+  \RequirePackage{dsfont}
 }{}
 
 
@@ -1228,6 +1232,8 @@
 
 %%% Shortcuts for \mathbb and \mathcal, e.g. \calP and \bbQ
 
+\renewcommand{\mathbb}{\mathds}
+
 \LoopCommands{\lettersUppercase}[bb#1]{
   \newmathcommand{#2}{\mathbb{#1}}
 }
@@ -1262,15 +1268,15 @@
   \edef\ezlib@probability@gp{\noexpand\lrStarAfter\ezlib@probabilitydelimiter}
 }
 
-\newcommand{\ezlib@declareProbabilityCommand}[2]{
+\newcommand{\DeclareProbabilityCommand}[2]{
   \declaremathcommandPIE{#1}{%
-    \ezlib@probability@mathfont{P}##1##2##3\ezlib@probability@gp%
+    \ezlib@probability@mathfont{#2}##1##2##3\ezlib@probability@gp%
   }
 }
 
-\ezlib@declareProbabilityCommand{\P}{P}
-\ezlib@declareProbabilityCommand{\E}{E}
-\ezlib@declareProbabilityCommand{\Var}{Var}
+\DeclareProbabilityCommand{\P}{P}
+\DeclareProbabilityCommand{\E}{E}
+\DeclareProbabilityCommand{\Var}{Var}
 
 \let\given\mid
 
@@ -1554,7 +1560,7 @@
 \preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
 \postauthor{\end{tabular}\par\end{center}}
 \predate{\begin{center}}
-\postdate{\ifdefempty{\thedate}{\vspace{-1.75\baselineskip}}{}\par\end{center}}
+\postdate{\ifdefempty{\thedate}{\vspace{-1\baselineskip}}{}\par\end{center}}
 
 \date{}
 
