@@ -525,7 +525,7 @@
 %%% Required packages and general setup %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newrobustcmd\ezlib@RequirePackageWithOptions[3][]{%
+\newrobustcmd{\ezlib@RequirePackageWithOptions}[3][]{%
   \ifcsdef{opt@#3.\@pkgextension}{
     \RequirePackage{#3}
   }{
@@ -534,9 +534,6 @@
     #1
   }
 }
-
-
-% Important packages that should be loaded first
 
 \ezlib@RequirePackageWithOptions{T1}{fontenc}
 
@@ -551,7 +548,7 @@
   \RequirePackage{amsmath}
   \RequirePackage{amsthm}
 
-  % -- compatibility: acmart --%
+  %-- compatibility: acmart --%
   \ifboolexpr{
     test{\@ifclassloaded{acmart}}
     or test{\ifdefstring{\ezlib@font}{charter}}
@@ -559,7 +556,7 @@
     \RequirePackage{amsfonts}
     \RequirePackage{amssymb}
   }
-  % -- end compatibility --%
+  %-- end compatibility --%
 
   \ezlib@RequirePackageWithOptions{hidelinks}{hyperref}
 }{}
@@ -611,7 +608,7 @@
       \renewcommand{\thesubfigure}{(\alph{subfigure})}
     }
   }]{font=small, labelformat=simple}{subcaption}
-  \ezlib@RequirePackageWithOptions{HTML}{xcolor}
+  \ezlib@RequirePackageWithOptions{rgb}{xcolor}
 }{}
 
 \frenchspacing
@@ -865,6 +862,8 @@
 }
 
 
+%%% Implementation of subenv
+
 \ifbool{ezlib@ezlistsubenv}{
 
 
@@ -916,7 +915,7 @@
 }{} % \ifbool{ezlib@ezlistsubenv}
 
 
-% General list settings
+%%% General list settings
 
 \setlist{nosep}
 \setlist[description]{font=\normalfont\scshape, labelsep=0.75em}
@@ -1650,13 +1649,13 @@
 \renewcommand{\maketitle}{%
   \inittitleauthor%
   {%
-    \setlength{\parskip}{0pt}
-    \large%
+    \setlength{\parskip}{0pt}%
     \ifbool{ezlib@headings@sf}{\sffamily}{}%
     \ifdefempty{\thetitle}{}{\noindent\textbf{\LARGE{\thetitle}}\par\medskip}%
     \ifdefempty{\theauthor}{}{\noindent{\theauthor}\par}%
     \ifdefempty{\thedate}{}{\noindent{\thedate}\par}%
   }%
+  \noindent
   \rule{\textwidth}{\headrulewidth}%
   \thispagestyle{firstpage}%
   \NoIndentAfterThis%
