@@ -34,6 +34,7 @@
 % - theorems
 % - algorithm
 % - font
+% - mathic
 % - packages
 % - number within (non-boolean)
 % - margin (non-boolean)
@@ -336,6 +337,23 @@
 %   - See top of guide for how to disable package options
 
 
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: mathic %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+% Boolean feature (enabled by "default=maximal")
+%
+% Corrects spacing around inline math in italic text
+%
+% - Redefines $ in terms of \( \) and \[ \]
+%   - This changes the character code of $
+% - Attempts compatibility with tikz
+%   - Specifically, restoring the character code of $ within tikzpicture
+% - Attempts to also correct spacing after, but it's kind of a hack
+%   - Use "mathic after=false" to disable this
+%   - In contrast, spacing before is handled by mathtools
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: packages %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -476,6 +494,7 @@
     \ezlib@clevereftrue
     \ezlib@theoremstrue
     \ezlib@algorithmtrue
+    \ezlib@mathictrue
     \ezlib@packagestrue
     \renewcommand{\ezlib@font}{default}
     \renewcommand{\ezlib@numberwithin}{default}
@@ -491,6 +510,7 @@
 \DeclareBoolOption[false]{cleveref}
 \DeclareBoolOption[false]{theorems}
 \DeclareBoolOption[false]{algorithm}
+\DeclareBoolOption[false]{mathic}
 \DeclareBoolOption[false]{packages}
 \DeclareStringOption[none]{font}[default]
 \DeclareStringOption[none]{numberwithin}[default]
@@ -511,9 +531,9 @@
 % Options for cleveref
 \DeclareBoolOption[true]{cleverefcapitalize}
 
-% Options for packages
-\DeclareBoolOption[true]{natbiboptions}
-\DeclareBoolOption[true]{enumitemoptions}
+% Options for mathic
+\DeclareBoolOption[true]{mathicafter}
+\DeclareStringOption[0.05em]{mathicafterkern}
 
 % Options for headings
 \DeclareStringOption[default]{headingssf}[true]
@@ -580,7 +600,10 @@
   \RequirePackage{thm-restate}
 }{}
 
-\ifbool{ezlib@delimiters}{
+\ifboolexpr{
+  bool{ezlib@delimiters}
+  or bool{ezlib@mathic}
+}{
   \RequirePackage{mathtools}
 }
 
@@ -919,7 +942,6 @@
 
 \setlist{nosep}
 \setlist[description]{font=\normalfont\scshape, labelsep=0.75em}
-\setlist[0]{nosep}
 
 
 \fi % \ifezlib@ezlist
@@ -1650,12 +1672,13 @@
   \inittitleauthor%
   {%
     \setlength{\parskip}{0pt}%
+    \setlength{\parindent}{0pt}%
     \ifbool{ezlib@headings@sf}{\sffamily}{}%
-    \ifdefempty{\thetitle}{}{\noindent\textbf{\LARGE{\thetitle}}\par\medskip}%
-    \ifdefempty{\theauthor}{}{\noindent{\theauthor}\par}%
-    \ifdefempty{\thedate}{}{\noindent{\thedate}\par}%
+    \ifdefempty{\thetitle}{}{\textbf{\LARGE\thetitle}\par\medskip}%
+    \ifdefempty{\theauthor}{}{{\theauthor}\par}%
+    \ifdefempty{\thedate}{}{{\thedate}\par}%
   }%
-  \noindent
+  \noindent%
   \rule{\textwidth}{\headrulewidth}%
   \thispagestyle{firstpage}%
   \NoIndentAfterThis%
@@ -1670,9 +1693,9 @@
 
 \AtBeginDocument{%
   \@ifpackageloaded{parskip}{%
-    \titlespacing*{\section}{0pt}{1.75\parskip}{\parskip}%
-    \titlespacing*{\subsection}{0pt}{1.5\parskip}{1em}%
-    \titlespacing*{\subsubsection}{\parindent}{1.25\parskip}{1em}%
+    \titlespacing*{\section}{0pt}{1.5\parskip}{\parskip}%
+    \titlespacing*{\subsection}{0pt}{1.25\parskip}{1em}%
+    \titlespacing*{\subsubsection}{\parindent}{\parskip}{1em}%
   }{}%
 }
 
@@ -1727,3 +1750,28 @@
 
 
 }{} % \ifbool{ezlib@algorithm}
+
+
+%%% Feature: mathic %%%
+
+\ifezlib@mathic
+
+
+\mathtoolsset{mathic}
+
+\pretocmd{\tikzpicture}{\catcode`\$=3}{}{}
+\pretocmd{\array}{\catcode`\$=3}{}{}
+
+\begingroup
+  \catcode`\$=13
+  \ifbool{ezlib@mathicafter}{%
+    \gdef$#1${\(#1\)\ifdefstring{\f@shape}{it}{\kern-\ezlib@mathicafterkern\/}{}}%
+  }{%
+    \gdef$#1${\(#1\)}%
+  }%
+\endgroup
+
+\AtBeginDocument{\catcode`\$=13}
+
+
+\fi % \ifezlib@mathic
