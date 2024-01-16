@@ -1668,6 +1668,14 @@
 \titleformat{\subsubsection}[runin]{\normalfont\sffamily\itshape}{\thesubsubsection}{2em/3}{}
 \titlespacing*{\subsubsection}{\parindent}{\smallskipamount}{1em}
 
+\AtBeginDocument{%
+  \@ifpackageloaded{parskip}{%
+    \titlespacing*{\section}{0pt}{1.75\parskip}{\parskip}%
+    \titlespacing*{\subsection}{0pt}{1.5\parskip}{1em}%
+    \titlespacing*{\subsubsection}{\parindent}{1.25\parskip}{1em}%
+  }{}%
+}
+
 
 }{} % \ifdefstring{\ezlib@headings}{inline}
 
