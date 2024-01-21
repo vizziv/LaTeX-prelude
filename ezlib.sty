@@ -1549,7 +1549,7 @@
   {\chaptername~\thechapter}%
   {0.125em}%
   {\hyphenpenalty=10000\raggedright\normalfont\huge\ezlib@titlestyle}%
-  [\rule{\textwidth}{\chapterrulewidth}]
+  [\rule{\linewidth}{\chapterrulewidth}]
 
 \@ifclassloaded{book}{%
   \newcommand{\ezlib@titlesize}{\huge}%
@@ -1679,7 +1679,7 @@
     \ifdefempty{\thedate}{}{{\thedate}\par}%
   }%
   \noindent%
-  \rule{\textwidth}{\headrulewidth}%
+  \rule{\linewidth}{\headrulewidth}%
   \thispagestyle{firstpage}%
   \NoIndentAfterThis%
 }
