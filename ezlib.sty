@@ -1030,23 +1030,14 @@
 %%% Implement \yesnumber with cleveref compatibility
 
 % See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command
-
-\ifdefempty{\ezlib@numberwithin}{
-  \newcommand{\ezlib@cref@format}{%
-    [equation][\theequation][]%
-  }
-}{
-  \newcommand{\ezlib@cref@format}{%
-    [equation][\arabic{equation}][\csuse{the\ezlib@numberwithin}]%
-  }
-}
+% Change from link: "[equation][\theequation][]" -> "[equation][\arabic{equation}][\cref@result]"
 
 \newrobustcmd*{\ezlib@make@df@tag@@}[1]{%
   \cref@old@make@df@tag@@{#1}%
   \let\ezlib@old@df@tag\df@tag
   \expandafter\gdef\expandafter\df@tag\expandafter{%
     \ezlib@old@df@tag
-    \def\cref@currentlabel{\ezlib@cref@format#1}%
+    \def\cref@currentlabel{[equation][\arabic{equation}][\cref@result]#1}%
   }%
 }
 
@@ -1056,7 +1047,7 @@
   \expandafter\gdef\expandafter\df@tag\expandafter{%
     \ezlib@old@df@tag
     \toks@\@xp{\p@equation{#1}}%
-    \edef\cref@currentlabel{\ezlib@cref@format\the\toks@}%
+    \edef\cref@currentlabel{[equation][\arabic{equation}][\cref@result]\the\toks@}%
   }%
 }
 
@@ -1065,7 +1056,7 @@
   \begingroup%
     \let\make@df@tag@@\ezlib@make@df@tag@@
     \let\make@df@tag@@@\ezlib@make@df@tag@@@
-  \tag{\theequation}%
+    \tag{\theequation}%
   \endgroup%
 }
 
@@ -1347,17 +1338,24 @@
 \seq_new:N \l_bers_cref_seq
 \ExplSyntaxOff
 
+
+%%% Assigning cleveref names
+
 \newrobustcmd{\cCrefname}[3]{%
   \crefname{#1}{#2}{#3}%
   \Crefname{#1}{#2}{#3}%
 }
 
-% Short names for references (e.g. Thm. instead of Theorem).
+% Short names for references (e.g. Thm. instead of Theorem)
 \newcommand{\crefShorten}{}
 \newrobustcmd{\shortened}[4]{\appto{\crefShorten}{#1{#2}{#3}{#4}}}
 
 
 %%% Typical names
+
+% Conjunctions
+\newcommand{\crefrangeconjunction}{--}
+\newcommand{\creflastconjunction}{, and~}
 
 \crefname{equation}{}{}
 \Crefname{equation}{Equation}{Equations}
