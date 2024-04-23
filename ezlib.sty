@@ -959,9 +959,11 @@
 \newrobustcmd{\ezeqSetNumberAll}{%
   \def\[##1\]{%
     \begingroup%
-    \saveexpandmode\noexpandarg
+    \saveexpandmode\noexpandarg%
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
-    \IfSubStr{##1}{&}{\restoreexpandmode\begin{align}##1\end{align}}{%
+    \IfSubStr{##1}{&}{%
+      \restoreexpandmode\begin{align}##1\end{align}%
+    }{%
       \IfSubStr{##1}{\\}{%
         \restoreexpandmode\begin{gather}##1\end{gather}%
       }{%
@@ -995,9 +997,11 @@
   \def\[##1\]{%
     \begingroup%
     \cslet{\ezlib@label@macro}\ezlib@label@in@display%
-    \saveexpandmode\noexpandarg
+    \saveexpandmode\noexpandarg%
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
-    \IfSubStr{##1}{&}{\restoreexpandmode\begin{align*}##1\end{align*}}{%
+    \IfSubStr{##1}{&}{%
+      \restoreexpandmode\begin{align*}##1\end{align*}%
+    }{%
       \IfSubStr{##1}{\\}{%
         \restoreexpandmode\begin{gather*}##1\end{gather*}%
       }{%
