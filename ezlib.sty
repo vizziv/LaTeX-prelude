@@ -461,11 +461,14 @@
 %   - E.g. "number within=section", "number within=subsection", etc.
 % - "headings=inline": use inline subsection titles
 %   - E.g. for short documents with a strict page limit
+%   - Equivalent to using "headings=fancy" and "headings inline=true" (see below)
 %
 % Other configuriation
 %
-% - Set "headings sf=true" or "headings sf=false" to change style of headings
+% - "headings sf" (boolean): set to true to make headings sans
 %   - Defaults to true if the font has a nice sans pairing, false otherwise
+% - "headings inline" (boolean): use inline subsection and lower-level headings
+%   - Defaults to false, but set to true by "headings=inline"
 
 
 %-- end guide --%
@@ -537,6 +540,7 @@
 
 % Options for headings
 \DeclareStringOption[default]{headingssf}[true]
+\DeclareBoolOption[true]{headingsinline}
 
 \ProcessLocalKeyvalOptions*
 
@@ -1505,13 +1509,15 @@
   }
 }{}
 
+\ifdefstring{\ezlib@headings}{inline}{
+  \renewcommand{\ezlib@headings}{fancy}
+  \setbool{ezlib@headingsinline}{true}
+}
+
 
 %%% Common to fancy and inline headings
 
-\ifboolexpr{
-  test{\ifdefstring{\ezlib@headings}{fancy}}
-  or test{\ifdefstring{\ezlib@headings}{inline}}
-}{
+\ifdefstring{\ezlib@headings}{fancy}{
 
 
 \newcommand{\ezlib@titlestyle}{\bfseries}
@@ -1640,17 +1646,15 @@
 }
 
 
-}{} % \ifboolexpr{
-%   test{\ifdefstring{\ezlib@headings}{fancy}}
-%   or test{\ifdefstring{\ezlib@headings}{inline}}
-% }
+}{} % \ifdefstring{\ezlib@headings}{fancy}
 
 
 %%% Specific to inline headings
 
-\ifdefstring{\ezlib@headings}{inline}{
+\ifbool{ezlib@headingsinline}{
 
 
+\ezlib@RequirePackageWithOptions{raggedright}{titlesec}
 \RequirePackage{noindentafter}
 
 \newcommand{\@gobblespace}{\@ifnextchar\nobreakspace\@gobble\relax}
@@ -1658,33 +1662,33 @@
 \crefname{subsection}{\S\@gobblespace}{\S\S\@gobblespace}
 \crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
 
-\fancypagestyle{firstpage}{%
-  \fancyhead{}%
-  \renewcommand{\headrulewidth}{0pt}%
-}
-
-\pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
-\posttitle{\endgroup\\[\medskipamount]}
-\preauthor{\begingroup\large\sffamily}
-\postauthor{\endgroup\\}
-\predate{}
-\postdate{\thispagestyle{firstpage}}
-
-\renewcommand{\maketitle}{%
-  \inittitleauthor%
-  {%
-    \setlength{\parskip}{0pt}%
-    \setlength{\parindent}{0pt}%
-    \ifbool{ezlib@headings@sf}{\sffamily}{}%
-    \ifdefempty{\thetitle}{}{\textbf{\LARGE\thetitle}\par\medskip}%
-    \ifdefempty{\theauthor}{}{{\theauthor}\par}%
-    \ifdefempty{\thedate}{}{{\thedate}\par}%
-  }%
-  \noindent%
-  \rule{\linewidth}{\headrulewidth}%
-  \thispagestyle{firstpage}%
-  \NoIndentAfterThis%
-}
+\ifdefstring{\ezlib@headings}{fancy}{
+  \fancypagestyle{firstpage}{%
+    \fancyhead{}%
+    \renewcommand{\headrulewidth}{0pt}%
+  }
+  \pretitle{\noindent\begingroup\LARGE\sffamily\bfseries}
+  \posttitle{\endgroup\\[\medskipamount]}
+  \preauthor{\begingroup\large\sffamily}
+  \postauthor{\endgroup\\}
+  \predate{}
+  \postdate{\thispagestyle{firstpage}}
+  \renewcommand{\maketitle}{%
+    \inittitleauthor%
+    {%
+      \setlength{\parskip}{0pt}%
+      \setlength{\parindent}{0pt}%
+      \ifbool{ezlib@headings@sf}{\sffamily}{}%
+      \ifdefempty{\thetitle}{}{\textbf{\LARGE\thetitle}\par\medskip}%
+      \ifdefempty{\theauthor}{}{{\theauthor}\par}%
+      \ifdefempty{\thedate}{}{{\thedate}\par}%
+    }%
+    \noindent%
+    \rule{\linewidth}{\headrulewidth}%
+    \thispagestyle{firstpage}%
+    \NoIndentAfterThis%
+  }
+}{}
 
 \titleformat{\section}{\normalfont\Large\sffamily\bfseries}{\thesection}{2em/3}{}
 \titlespacing*{\section}{0pt}{\bigskipamount}{\medskipamount}
@@ -1702,7 +1706,7 @@
 }
 
 
-}{} % \ifdefstring{\ezlib@headings}{inline}
+}{} % \ifbool{\ezlib@headingsinline}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
