@@ -540,7 +540,7 @@
 
 % Options for headings
 \DeclareStringOption[default]{headingssf}[true]
-\DeclareBoolOption[true]{headingsinline}
+\DeclareBoolOption[false]{headingsinline}
 
 \ProcessLocalKeyvalOptions*
 
@@ -1361,6 +1361,11 @@
 
 %%% Typical names
 
+% Use section symbol when names are shortened
+\shortened\crefname{section}{\textsection}{\textsection\textsection}
+\shortened\crefname{subsection}{\textsection}{\textsection\textsection}
+\shortened\crefname{subsubsection}{\textsection}{\textsection\textsection}
+
 % Conjunctions
 \newcommand{\crefrangeconjunction}{--}
 \newcommand{\creflastconjunction}{, and~}
@@ -1445,28 +1450,27 @@
 }{
   \newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
 }
-% \shortened\cCrefname{theorem}{Thm.}{Thms.}
+\shortened\cCrefname{theorem}{Thm.}{Thms.}
 \newtheorem{lemma}[theorem]{Lemma}
-% \shortened\cCrefname{lemma}{Lem.}{Lems.}
+\shortened\cCrefname{lemma}{Lem.}{Lems.}
 \newtheorem{corollary}[theorem]{Corollary}
-% \shortened\cCrefname{corollary}{Cor.}{Cors.}
+\shortened\cCrefname{corollary}{Cor.}{Cors.}
 \newtheorem{proposition}[theorem]{Proposition}
-% \shortened\cCrefname{proposition}{Prop.}{Props.}
+\shortened\cCrefname{proposition}{Prop.}{Props.}
 
 \theoremstyle{\ezlibDefinition}
 \newtheorem{definition}[theorem]{Definition}
-% \shortened\cCrefname{definition}{Def.}{Defs.}
+\shortened\cCrefname{definition}{Def.}{Defs.}
 \newtheorem{example}[theorem]{Example}
-% \shortened\cCrefname{example}{Ex.}{Exs.}
-\newtheorem{result}[theorem]{Result}
+\shortened\cCrefname{example}{Ex.}{Exs.}
 \newtheorem{observation}[theorem]{Observation}
-% \shortened\cCrefname{observation}{Obs.}{Obss.}
+\shortened\cCrefname{observation}{Obs.}{Obss.}
 \newtheorem{assumption}[theorem]{Assumption}
-% \shortened\cCrefname{assumption}{Asm.}{Asms.}
+\shortened\cCrefname{assumption}{Asm.}{Asms.}
 
 \theoremstyle{\ezlibRemark}
 \newtheorem{remark}[theorem]{Remark}
-% \shortened\cCrefname{remark}{Rmk.}{Rmks.}
+\shortened\cCrefname{remark}{Rmk.}{Rmks.}
 \newtheorem{note}[theorem]{Note}
 
 \theoremstyle{\ezlib@thmstyle@case}
@@ -1660,11 +1664,6 @@
 
 \ezlib@RequirePackageWithOptions{raggedright}{titlesec}
 \RequirePackage{noindentafter}
-
-\newcommand{\@gobblespace}{\@ifnextchar\nobreakspace\@gobble\relax}
-\crefname{section}{\S\@gobblespace}{\S\S\@gobblespace}
-\crefname{subsection}{\S\@gobblespace}{\S\S\@gobblespace}
-\crefname{subsubsection}{\S\@gobblespace}{\S\S\@gobblespace}
 
 \ifdefstring{\ezlib@headings}{fancy}{
   \fancypagestyle{firstpage}{%
