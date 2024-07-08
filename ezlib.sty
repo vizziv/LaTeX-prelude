@@ -1526,6 +1526,11 @@
 \newcommand{\ezlib@titlestyleoptions}{bf}
 \newcommand{\ezlib@headerstyle}{\footnotesize}
 
+% Used in inline headings only by default to end them with a period
+% First macro copied from amsgen (part of amsmath)
+\def\ezlib@addpunct#1{\ifnum\spacefactor>\@m \else#1\fi}
+\def\ezlib@addpunctafter#1#2{#2\ezlib@addpunct{#1}}
+
 
 \ifdefstring{\ezlib@headings}{fancy}{
 
@@ -1695,16 +1700,16 @@
 
 \titleformat{\section}{\normalfont\Large\ezlib@titlestyle}{\thesection}{2em/3}{}
 \titlespacing*{\section}{0pt}{\bigskipamount}{\medskipamount}
-\titleformat{\subsection}[runin]{\normalfont\ezlib@titlestyle}{\thesubsection}{2em/3}{}
-\titlespacing*{\subsection}{0pt}{\medskipamount}{1em}
-\titleformat{\subsubsection}[runin]{\normalfont\ezlib@subtitlestyle\itshape}{\thesubsubsection}{2em/3}{}
-\titlespacing*{\subsubsection}{0pt}{\medskipamount}{1em}
+\titleformat{\subsection}[runin]{\normalfont\ezlib@titlestyle}{\thesubsection}{1em/2}{\ezlib@addpunctafter{.}}
+\titlespacing*{\subsection}{0pt}{\medskipamount}{2em/3}
+\titleformat{\subsubsection}[runin]{\normalfont\ezlib@subtitlestyle\itshape}{\thesubsubsection}{1em/2}{\ezlib@addpunctafter{.}}
+\titlespacing*{\subsubsection}{0pt}{\medskipamount}{2em/3}
 
 \AtBeginDocument{%
   \@ifpackageloaded{parskip}{%
     \titlespacing*{\section}{0pt}{1.5\parskip}{\parskip}%
-    \titlespacing*{\subsection}{0pt}{1.25\parskip}{1em}%
-    \titlespacing*{\subsubsection}{0pt}{1.25\parskip}{1em}%
+    \titlespacing*{\subsection}{0pt}{1.25\parskip}{2em/3}%
+    \titlespacing*{\subsubsection}{0pt}{1.25\parskip}{2em/3}%
   }{}%
 }
 
