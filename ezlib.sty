@@ -531,9 +531,6 @@
 \DeclareStringOption[sq]{probabilitydelimiter}
 \DeclareStringOption[bf]{probabilitystyle}
 
-% Options for cleveref
-\DeclareBoolOption[true]{cleverefcapitalize}
-
 % Options for mathic
 \DeclareBoolOption[true]{mathicafter}
 \DeclareStringOption[0.05em]{mathicafterkern}
@@ -629,7 +626,7 @@
   \RequirePackage{microtype}
   \ezlib@RequirePackageWithOptions{square, numbers, sort&compress}{natbib}
   \ezlib@RequirePackageWithOptions[{
-    \ifbool{ezlib@ezlistsubenv}{
+    \ifdef{\subenvFormatLabel}{
       \renewcommand{\thesubfigure}{\subenvFormatLabel{subfigure}}
     }{
       \renewcommand{\thesubfigure}{(\alph{subfigure})}
@@ -1599,10 +1596,10 @@
     \ezlib@titlestyle\ezlib@titlesize%
 }
 \posttitle{\par\end{center}}
-\preauthor{\begin{center}\lineskip 0.5em\begin{tabular}[t]{c}}
+\preauthor{\begin{center}\begin{tabular}[t]{c}}
 \postauthor{\end{tabular}\par\end{center}}
-\predate{\begin{center}}
-\postdate{\ifdefempty{\thedate}{\vspace{-1\baselineskip}}{}\par\end{center}}
+\predate{\ifdefempty{\thedate}{}{\begin{center}}}
+\postdate{\ifdefempty{\thedate}{}{\par\end{center}}}
 
 \date{}
 
@@ -1785,7 +1782,12 @@
   }%
 \endgroup
 
+% Use mathic in the main document...
 \AtBeginDocument{\catcode`\$=13}
+% ... but reset the category code after
+% Otherwise, LaTeX might mistakenly think a label changed due to changing catcodes
+% Specifically, captions with inline math cause a problem without this
+\AtEndDocument{\catcode`\$=3}
 
 
 \fi % \ifezlib@mathic
