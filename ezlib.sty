@@ -469,6 +469,8 @@
 %   - Defaults to true if the font has a nice sans pairing, false otherwise
 % - "headings inline" (boolean): use inline subsection and lower-level headings
 %   - Defaults to false, but set to true by "headings=inline"
+% - "headings inline period" (boolean): if using inline headings, add period after heading
+%   - Defaults to true
 
 
 %-- end guide --%
@@ -538,6 +540,7 @@
 % Options for headings
 \DeclareStringOption[default]{headingssf}[true]
 \DeclareBoolOption[false]{headingsinline}
+\DeclareBoolOption[true]{headingsinlineperiod}
 
 \ProcessLocalKeyvalOptions*
 
@@ -1661,6 +1664,14 @@
 
 %%% Specific to inline headings
 
+\newcommand{\ezlib@headingsinline@numtitlesep}{2em/3}
+\newcommand{\ezlib@headingsinline@titletextsep}{3em/4}
+\newcommand{\ezlib@headingsinline@period}{\ezlib@addpunctafter{.}}
+\ifbool{ezlib@headingsinlineperiod}{}{
+  \renewcommand{\ezlib@headingsinline@titletextsep}{1em}
+  \renewcommand{\ezlib@headingsinline@period}{}
+}
+
 \ifbool{ezlib@headingsinline}{
 
 
@@ -1695,18 +1706,18 @@
   }
 }{}
 
-\titleformat{\section}{\normalfont\Large\ezlib@titlestyle}{\thesection}{2em/3}{}
+\titleformat{\section}{\normalfont\Large\ezlib@titlestyle}{\thesection}{\ezlib@headingsinline@numtitlesep}{}
 \titlespacing*{\section}{0pt}{\bigskipamount}{\medskipamount}
-\titleformat{\subsection}[runin]{\normalfont\ezlib@titlestyle}{\thesubsection}{1em/2}{\ezlib@addpunctafter{.}}
-\titlespacing*{\subsection}{0pt}{\medskipamount}{2em/3}
-\titleformat{\subsubsection}[runin]{\normalfont\ezlib@subtitlestyle\itshape}{\thesubsubsection}{1em/2}{\ezlib@addpunctafter{.}}
-\titlespacing*{\subsubsection}{0pt}{\medskipamount}{2em/3}
+\titleformat{\subsection}[runin]{\normalfont\ezlib@titlestyle}{\thesubsection}{\ezlib@headingsinline@numtitlesep}{\ezlib@headingsinline@period}
+\titlespacing*{\subsection}{0pt}{\medskipamount}{\ezlib@headingsinline@titletextsep}
+\titleformat{\subsubsection}[runin]{\normalfont\ezlib@subtitlestyle\itshape}{\thesubsubsection}{\ezlib@headingsinline@numtitlesep}{\ezlib@headingsinline@period}
+\titlespacing*{\subsubsection}{0pt}{\medskipamount}{\ezlib@headingsinline@titletextsep}
 
 \AtBeginDocument{%
   \@ifpackageloaded{parskip}{%
     \titlespacing*{\section}{0pt}{1.5\parskip}{\parskip}%
-    \titlespacing*{\subsection}{0pt}{1.25\parskip}{2em/3}%
-    \titlespacing*{\subsubsection}{0pt}{1.25\parskip}{2em/3}%
+    \titlespacing*{\subsection}{0pt}{1.25\parskip}{\ezlib@headingsinline@titletextsep}%
+    \titlespacing*{\subsubsection}{0pt}{1.25\parskip}{\ezlib@headingsinline@titletextsep}%
   }{}%
 }
 
