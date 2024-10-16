@@ -390,6 +390,11 @@
 % - "font=charter": use font set based around Charter and Vera Sans
 % - "font=palatino": use font set based around Palatino
 %
+% Other configuration:
+%
+% - "ttfont=inconsolata": use Inconsolata (default) for monospaced text
+% - "ttfont=sourcecodepro": use Source Code Pro for monospaced text
+%
 % Behavior with "default=maximal":
 %
 % - If a known built-in LaTeX class is loaded, default to "font=libertine"
@@ -430,7 +435,7 @@
 % - If set to any other value, loads geometry with that margin value
 %   - To set more complex margins, load geometry before this package
 %
-% Behavior with "default=maximal"
+% Behavior with "default=maximal":
 %
 % - If a known built-in LaTeX class is loaded, default to "margin=1.25in"
 %   - These are: article, report, book
@@ -463,7 +468,7 @@
 %   - E.g. for short documents with a strict page limit
 %   - Equivalent to using "headings=fancy" and "headings inline=true" (see below)
 %
-% Other configuriation
+% Other configuriation:
 %
 % - "headings sf" (boolean): set to true to make headings sans
 %   - Defaults to true if the font has a nice sans pairing, false otherwise
@@ -528,6 +533,9 @@
 % Options for ezeq
 \DeclareBoolOption[true]{ezeqnumberlabeled}
 \DeclareComplementaryOption{ezeqnumberall}{ezeqnumberlabeled}
+
+% Options for font
+\DeclareStringOption[inconsolata]{ttfont}
 
 % Options for notation
 \DeclareStringOption[sq]{probabilitydelimiter}
@@ -687,20 +695,28 @@
 % Loading the fonts
 \ifdefstring{\ezlib@font}{libertine}{
   \RequirePackage[tt=false]{libertine}
-  \RequirePackage[varqu, scaled=0.95]{zi4}
+  \PassOptionsToPackage{scaled=0.95}{zi4}
+  \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
   \RequirePackage[libertine]{newtxmath}
   \booltrue{ezlib@headings@sf}
 }{}
 \ifdefstring{\ezlib@font}{charter}{
   \RequirePackage[charter, cal=cmcal]{mathdesign}
-  \RequirePackage[varqu]{zi4}
+  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
   \RequirePackage{berasans}
   \booltrue{ezlib@headings@sf}
 }{}
 \ifdefstring{\ezlib@font}{palatino}{
+  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
   \RequirePackage{mathpazo}
-  \RequirePackage[varqu]{zi4}
 }{}
+\ifdefstring{\ezlib@font}{none}{}{
+  \ifdefstring{\ezlib@ttfont}{sourcecodepro}{
+    \RequirePackage{sourcecodepro}
+  }{
+    \RequirePackage[varqu]{zi4}
+  }
+}
 
 \ifboolexpr{
   test{\ifdefstring{\ezlib@headingssf}{true}}
