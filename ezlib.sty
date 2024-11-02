@@ -1,6 +1,20 @@
+%%%%%%%%%%%%%
+%%% ezlib %%%
+%%%%%%%%%%%%%
+
+
 %-- guide --%
 
-
+% This package can be used in two main ways
+%
+% - Enable all of features with the "default" option, then disable one by one
+%   - Best for new documents of class article, book, report, or acmart
+% - Enable features one by one
+%   - Best when integrating into an existing document
+%   - Best when using a class other than article, book, report, or acmart
+% - If no options are passed, the package should do (almost) nothing
+%   - The "almost": it loads fontenc with option T1
+%
 % Each of the features below can be enabled or disabled with an option
 %
 % - The option always has the same name as the feature
@@ -578,6 +592,8 @@
   }
 }
 
+% TODO: figure out when this needs to be loaded, and only load if needed
+% (Then the package will truly do nothing if no options are passed)
 \ezlib@RequirePackageWithOptions{T1}{fontenc}
 
 \ifboolexpr{
