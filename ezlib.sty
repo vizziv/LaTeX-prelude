@@ -9,9 +9,9 @@
 %   - Disable xyz: pass "xyz=false" to this package
 % - How to enable/disable a non-boolean feature
 %   - Enable xyz: pass "xyz=default", or pass another value
+%     - Can use "xyz=true" as alias for "xyz=default", but this is discouraged
 %   - Disable xyz: pass "xyz=none"
-% - A few features are not boolean
-%   - Exception: a few features require values other than true or false
+%     - Can use "xyz=false" as alias for "xyz=none", but this is discouraged
 % - How to enable/disable many features at once
 %   - The default is set by an option "default", which can have one of two values
 %     - "default=minimal": everything disabled by default
@@ -33,9 +33,9 @@
 % - cleveref
 % - theorems
 % - algorithm
-% - font
 % - mathic
 % - packages
+% - font (non-boolean)
 % - number within (non-boolean)
 % - margin (non-boolean)
 % - headings (non-boolean)
@@ -371,6 +371,7 @@
 % - subcaption, with options "font=small, labelformat=simple"
 %   - If options are passed, also tweaks \thesubfigure to include parentheses
 %   - If ezlist subenv is enabled, uses \subenvFormatLabel in \thesubfigure
+% - Not a package, but also turns on \frenchspacing
 %
 % See top of guide for how to disable package options
 
@@ -431,7 +432,7 @@
 %
 % Sets the page margins using the geometry package
 %
-% - If absent or set to "margin=none", has no affect
+% - If absent or set to "margin=none", has no effect
 % - If set to any other value, loads geometry with that margin value
 %   - To set more complex margins, load geometry before this package
 %
@@ -552,6 +553,16 @@
 
 \ProcessLocalKeyvalOptions*
 
+% Process "xyz=true" and "xyz=false" aliases for non-boolean options
+\newcommand{\ezlib@ProcessTrueFalseAlias}[1]{
+  \ifcsstring{ezlib@#1}{false}{\csdef{ezlib@#1}{none}}{}
+  \ifcsstring{ezlib@#1}{true}{\csdef{ezlib@#1}{default}}{}
+}
+\ezlib@ProcessTrueFalseAlias{font}
+\ezlib@ProcessTrueFalseAlias{numberwithin}
+\ezlib@ProcessTrueFalseAlias{margin}
+\ezlib@ProcessTrueFalseAlias{headings}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Required packages and general setup %%%
@@ -644,9 +655,9 @@
     }
   }]{font=small, labelformat=simple}{subcaption}
   \ezlib@RequirePackageWithOptions{rgb}{xcolor}
-}{}
 
-\frenchspacing
+  \frenchspacing
+}{}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -731,10 +742,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ifdefstring{\ezlib@numberwithin}{default}{
-  \ifboolexpr{ test{\@ifclassloaded{book}} or test{\@ifclassloaded{report}} }{
-    \renewcommand{\ezlib@numberwithin}{chapter}
-  }{
+  \ifundef{\c@chapter}{
     \renewcommand{\ezlib@numberwithin}{section}
+  }{
+    \renewcommand{\ezlib@numberwithin}{chapter}
   }
 }{}
 
