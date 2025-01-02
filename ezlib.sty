@@ -1529,7 +1529,7 @@
 \theoremstyle{\ezlib@thmstyle@case}
 \newtheorem{case}{Case}
 \cCrefname{case}{Case}{Cases}
-% Use a colon instead of parentheses for names of cases.
+% Use a colon instead of parentheses for names of cases
 \ifdefstring{\ezlib@thmstyle@case}{remark}{
   \newcommand{\ezlib@thmhead@case}[3]{\thmname{#1}\thmnumber{ #2}\thmnote{: #3}}
   \pretocmd{\case}{\let\thmhead\ezlib@thmhead@case}{}{}
@@ -1647,7 +1647,7 @@
 \pretitle{%
   \vspace{-3.75\baselineskip}%
   \begin{center}
-    % Protrusion can mess up centering slightly on first line of title.
+    % Protrusion can mess up centering slightly on first line of title
     \ezlib@noMicrotypeProtrusion%
     \hyphenpenalty=10000%
     \ezlib@titlestyle\ezlib@titlesize%
