@@ -1066,6 +1066,18 @@
 }
 
 
+%%% Try to fix \qedhere
+
+% If tags are on the right, just use a tag
+% If tags are on the left... do whatever hacks are already in place
+\ifbool{tagsleft@}{}{
+  \def\align@qed{\tag*{\qedsymbol}}
+  \csdef{align*@qed}{\tag*{\qedsymbol}}
+  \def\alignat@qed{\tag*{\qedsymbol}}
+  \csdef{alignat*@qed}{\tag*{\qedsymbol}}
+}{}
+
+
 %%% Choosing whether to number labeled or all
 
 \ifbool{ezlib@ezeqnumberlabeled}{
