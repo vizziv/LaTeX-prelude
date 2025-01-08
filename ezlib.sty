@@ -13,7 +13,7 @@
 %   - Best when integrating into an existing document
 %   - Best when using a class other than article, book, report, or acmart
 % - If no options are passed, the package should do (almost) nothing
-%   - The "almost": it loads fontenc with option T1
+%   - The "almost": it loads fontenc with option "T1"
 %
 % Each of the features below can be enabled or disabled with an option
 %
@@ -131,8 +131,12 @@
 %
 % - The environment \* uses is called "ezlist"
 %   - For modifying options with \setlist, cleveref name, etc.
-% - This package loads enumitem with shortlabels and does some other formatting
+% - This package loads enumitem with option "shortlabels" and does some other formatting
 %   - See top of guide for how to disable package options
+% - This package defines an enumitem key "afterheading" for lists after inline headings
+%   - It ensures the list starts on a new line after the heading
+%   - It prevents page breaks between the heading and the list
+%   - Main use case is lists that appear at the start of a theorem/lemma/etc.
 %
 % Subfeature: subenv (disable with "ezlist subenv=false")
 %
@@ -155,8 +159,8 @@
 %
 % - Redefine the \subenvFormatLabel command to change the item labels
 %   - Should take one argument, which is the counter name
-%   - Default is "(\alph{#1})", i.e. (a), (b), (c)...
-%   - Can change e.g. to "(\roman{#1})", i.e. (i), (ii), (iii)...
+%   - Default is "(\alph{#1})", yielding (a), (b), (c)...
+%   - Example: changing to "(\roman{#1})" would yield (i), (ii), (iii)...
 % - Redefine the \subenvFormatRef command to change what the references look like
 %   - Should take one argument, which is the counter name
 %   - Default is to do whatever \subenvFormatLabel does
@@ -304,7 +308,7 @@
 %
 % Loads the cleveref package and a bit more
 %
-% - Uses capitalize option by default
+% - Uses "capitalize" option by default
 %   - See top of guide for how to disable package options
 % - \cCrefname: simultaneous \crefname and \Crefname
 % - Allows spaces in comma-separated list of labels in \cref and \Cref
@@ -1006,20 +1010,27 @@
 \ifezlib@ezeq
 
 
-%%% Implementation of \[ \] numbering all
+%%% Implementation of \[ \]
 
-\newrobustcmd{\ezeqSetNumberAll}{%
+\newrobustcmd{\ezeqSetNumberAll}{\ezlib@ezeqSet{}{}}
+\newrobustcmd{\ezeqSetNumberLabeled}{%
+  % Implementation of \ezlib@label@in@display is below
+  \ezlib@ezeqSet{*}{\cslet{\ezlib@label@macro}\ezlib@label@in@display}%
+}
+
+\newrobustcmd{\ezlib@ezeqSet}[2]{%
   \def\[##1\]{%
     \begingroup%
+    #2%
     \saveexpandmode\noexpandarg%
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
     \IfSubStr{##1}{&}{%
-      \restoreexpandmode\begin{align}##1\end{align}%
+      \restoreexpandmode\begin{align#1}##1\end{align#1}%
     }{%
       \IfSubStr{##1}{\\}{%
-        \restoreexpandmode\begin{gather}##1\end{gather}%
+        \restoreexpandmode\begin{gather#1}##1\end{gather#1}%
       }{%
-        \restoreexpandmode\begin{equation}##1\end{equation}%
+        \restoreexpandmode\begin{equation#1}##1\end{equation#1}%
       }%
     }%
     \endgroup%
@@ -1028,7 +1039,7 @@
 }
 
 
-%%% Implementation of \[ \] when numbering labeled
+%%% Helpers for implementation of \[ \] when numbering only labeled
 
 \ifbool{ezlib@cleveref}{
   \newcommand{\ezlib@label@macro}{cref@old@label@in@display}
@@ -1044,38 +1055,6 @@
   \ezlib@old@label@in@display{#1}%
   \@ifnextchar{\tag}{}{\yesnumber}%
 }
-
-\newrobustcmd{\ezeqSetNumberLabeled}{%
-  \def\[##1\]{%
-    \begingroup%
-    \cslet{\ezlib@label@macro}\ezlib@label@in@display%
-    \saveexpandmode\noexpandarg%
-    \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
-    \IfSubStr{##1}{&}{%
-      \restoreexpandmode\begin{align*}##1\end{align*}%
-    }{%
-      \IfSubStr{##1}{\\}{%
-        \restoreexpandmode\begin{gather*}##1\end{gather*}%
-      }{%
-        \restoreexpandmode\begin{equation*}##1\end{equation*}%
-      }%
-    }%
-    \endgroup%
-    \ignorespaces%
-  }%
-}
-
-
-%%% Try to fix \qedhere
-
-% If tags are on the right, just use a tag
-% If tags are on the left... do whatever hacks are already in place
-\ifbool{tagsleft@}{}{
-  \def\align@qed{\tag*{\qedsymbol}}
-  \csdef{align*@qed}{\tag*{\qedsymbol}}
-  \def\alignat@qed{\tag*{\qedsymbol}}
-  \csdef{alignat*@qed}{\tag*{\qedsymbol}}
-}{}
 
 
 %%% Choosing whether to number labeled or all
@@ -1133,6 +1112,20 @@
 }{
   \newrobustcmd{\yesnumber}{\ezlib@yesnumber@nocleveref}
 }
+
+
+%%% Try to fix \qedhere
+
+% TODO: Document this feature and introduce an option to disable it if desired
+
+% If tags are on the right, just use a tag
+% If tags are on the left... do whatever hacks are already in place
+\ifbool{tagsleft@}{}{
+  \def\align@qed{\tag*{\qedsymbol}}
+  \csdef{align*@qed}{\tag*{\qedsymbol}}
+  \def\alignat@qed{\tag*{\qedsymbol}}
+  \csdef{alignat*@qed}{\tag*{\qedsymbol}}
+}{}
 
 
 \fi % \ifezlib@ezeq
@@ -1387,6 +1380,8 @@
 %%% Patches
 
 % TODO: find out if we need this
+% Pretty sure the answer is no, as thmtools has been patched
+% See https://tex.stackexchange.com/questions/553406/the-label-command-defined-by-cleveref-fails-in-a-thm-restate-environment
 % \patchcmd{\thmt@restatable}
 %   {\let\label=\@gobble}
 %   {\let\label=\gobbled@cleveref@label}
