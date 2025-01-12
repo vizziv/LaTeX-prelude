@@ -13,7 +13,7 @@
 %   - Best when integrating into an existing document
 %   - Best when using a class other than article, book, report, or acmart
 % - If no options are passed, the package should do (almost) nothing
-%   - The "almost": it loads fontenc with option "T1"
+%   - The "almost": loading kvoptions and etoolbox, and defining some private commands
 %
 % Each of the features below can be enabled or disabled with an option
 %
@@ -63,6 +63,8 @@
 % - To clarify, the \PassOptionsToPackage behavior is specific to this package
 %   - Usually, \PassOptionsToPackage adds additional options
 %   - But this package detects if \PassOptionsToPackage has been called already
+% - Random hack: "\PassOptionsToPackage{no ezlib}{pkg}" prevents pkg from loading
+%   - This could break stuff, but should work for things like natbib and microtype
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -183,6 +185,10 @@
 %   - It is local to the \[ \] in which it appears
 %   - The optional argument of \allowdisplaybreaks is not supported
 %   - Remember that LaTeX provies \\* for non-breakable newlines
+% - Also slightly changes how \qedhere behaves
+%   - The new version is simpler and a bit less buggy for equation numbers on the right
+%   - But the new version is incompatible with equation numbers on the left
+%   - If this package detects equation numbers are on the left, will use the old version
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -408,6 +414,7 @@
 % - "font=libertine": use font set based around Libertine and Biolinum
 % - "font=charter": use font set based around Charter and Vera Sans
 % - "font=palatino": use font set based around Palatino
+% - Unless "font=none", also loads fontenc with option "T1"
 %
 % Other configuration:
 %
@@ -588,7 +595,9 @@
 
 \newrobustcmd{\ezlib@RequirePackageWithOptions}[3][]{%
   \ifcsdef{opt@#3.\@pkgextension}{
-    \RequirePackage{#3}
+    \ifcsstring{opt@#3.\@pkgextension}{noezlib}{}{
+      \RequirePackage{#3}
+    }
   }{
     \PassOptionsToPackage{#2}{#3}
     \RequirePackage{#3}
@@ -596,9 +605,9 @@
   }
 }
 
-% TODO: figure out when this needs to be loaded, and only load if needed
-% (Then the package will truly do nothing if no options are passed)
-\ezlib@RequirePackageWithOptions{T1}{fontenc}
+\newrobustcmd{\ezlib@RequirePackage}[1]{%
+  \ezlib@RequirePackageWithOptions{}{#1}
+}
 
 \ifboolexpr{
   bool{ezlib@ezeq}
@@ -608,16 +617,16 @@
   or bool{ezlib@cleveref}
   or bool{ezlib@theorems}
 }{
-  \RequirePackage{amsmath}
-  \RequirePackage{amsthm}
+  \ezlib@RequirePackage{amsmath}
+  \ezlib@RequirePackage{amsthm}
 
   %-- compatibility: acmart --%
   \ifboolexpr{
     test{\@ifclassloaded{acmart}}
     or test{\ifdefstring{\ezlib@font}{charter}}
   }{}{%
-    \RequirePackage{amsfonts}
-    \RequirePackage{amssymb}
+    \ezlib@RequirePackage{amsfonts}
+    \ezlib@RequirePackage{amssymb}
   }
   %-- end compatibility --%
 
@@ -632,7 +641,7 @@
   bool{ezlib@ezeq}
   or (bool{ezlib@ezlist} and bool{ezlib@ezlistsubenv})
 }{
-  \RequirePackage{xstring}
+  \ezlib@RequirePackage{xstring}
 }{}
 
 \ifbool{ezlib@cleveref}{
@@ -640,19 +649,19 @@
 }{}
 
 \ifbool{ezlib@ezrestate}{
-  \RequirePackage{thm-restate}
+  \ezlib@RequirePackage{thm-restate}
 }{}
 
 \ifboolexpr{
   bool{ezlib@delimiters}
   or bool{ezlib@mathic}
 }{
-  \RequirePackage{mathtools}
+  \ezlib@RequirePackage{mathtools}
 }
 
 \ifbool{ezlib@notation}{
-  \RequirePackage{mathcommand}
-  \RequirePackage{dsfont}
+  \ezlib@RequirePackage{mathcommand}
+  \ezlib@RequirePackage{dsfont}
 }{}
 
 
@@ -661,11 +670,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \ifbool{ezlib@packages}{
-  \RequirePackage{booktabs}
-  \RequirePackage{calc}
+  \ezlib@RequirePackage{booktabs}
+  \ezlib@RequirePackage{calc}
   \ezlib@RequirePackageWithOptions{font=small, labelfont=bf, labelsep=period}{caption}
-  \RequirePackage{graphicx}
-  \RequirePackage{microtype}
+  \ezlib@RequirePackage{graphicx}
+  \ezlib@RequirePackage{microtype}
   \ezlib@RequirePackageWithOptions{square, numbers, sort&compress}{natbib}
   \ezlib@RequirePackageWithOptions[{
     \ifdef{\subenvFormatLabel}{
@@ -677,6 +686,66 @@
   \ezlib@RequirePackageWithOptions{rgb}{xcolor}
 
   \frenchspacing
+}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Feature: font %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+% Deciding which font to use
+\ifdefstring{\ezlib@font}{default}{
+  \ifboolexpr{
+    test{\@ifclassloaded{article}}
+    or test{\@ifclassloaded{book}}
+    or test{\@ifclassloaded{report}}
+  }{
+    \renewcommand{\ezlib@font}{libertine}
+  }{
+    \renewcommand{\ezlib@font}{none}
+  }
+}{}
+
+\ifdefstring{\ezlib@font}{none}{}{
+  \ezlib@RequirePackageWithOptions{T1}{fontenc}
+}
+
+% Use sans in titles? (For headings feature)
+\newbool{ezlib@headings@sf}
+\boolfalse{ezlib@headings@sf}
+
+% Loading the fonts
+% TODO: should we avoid "\PassOptionsToPackage" because it's our hacky disable switch?
+\ifdefstring{\ezlib@font}{libertine}{
+  \ezlib@RequirePackageWithOptions{tt=false}{libertine}
+  \PassOptionsToPackage{scaled=0.95}{zi4}
+  \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
+  \ezlib@RequirePackageWithOptions{libertine}{newtxmath}
+  \booltrue{ezlib@headings@sf}
+}{}
+\ifdefstring{\ezlib@font}{charter}{
+  \ezlib@RequirePackageWithOptions{charter, cal=cmcal}{mathdesign}
+  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
+  \ezlib@RequirePackage{berasans}
+  \booltrue{ezlib@headings@sf}
+}{}
+\ifdefstring{\ezlib@font}{palatino}{
+  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
+  \ezlib@RequirePackage{mathpazo}
+}{}
+\ifdefstring{\ezlib@font}{none}{}{
+  \ifdefstring{\ezlib@ttfont}{sourcecodepro}{
+    \ezlib@RequirePackage{sourcecodepro}
+  }{
+    \ezlib@RequirePackageWithOptions{varqu}{zi4}
+  }
+}
+
+\ifboolexpr{
+  test{\ifdefstring{\ezlib@headingssf}{true}}
+  or test{\ifdefstring{\ezlib@headingssf}{false}}
+}{
+  \setbool{ezlib@headings@sf}{\ezlib@headingssf}
 }{}
 
 
@@ -699,62 +768,6 @@
 \ifdefstring{\ezlib@margin}{none}{}{
   \ezlib@RequirePackageWithOptions{margin=\ezlib@margin}{geometry}
 }
-
-
-
-%%%%%%%%%%%%%%%%%%%%%
-%%% Feature: font %%%
-%%%%%%%%%%%%%%%%%%%%%
-
-% Deciding which font to use
-\ifdefstring{\ezlib@font}{default}{
-  \ifboolexpr{
-    test{\@ifclassloaded{article}}
-    or test{\@ifclassloaded{book}}
-    or test{\@ifclassloaded{report}}
-  }{
-    \renewcommand{\ezlib@font}{libertine}
-  }{
-    \renewcommand{\ezlib@font}{none}
-  }
-}{}
-
-% Use sans in titles? (For headings feature)
-\newbool{ezlib@headings@sf}
-\boolfalse{ezlib@headings@sf}
-
-% Loading the fonts
-\ifdefstring{\ezlib@font}{libertine}{
-  \RequirePackage[tt=false]{libertine}
-  \PassOptionsToPackage{scaled=0.95}{zi4}
-  \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
-  \RequirePackage[libertine]{newtxmath}
-  \booltrue{ezlib@headings@sf}
-}{}
-\ifdefstring{\ezlib@font}{charter}{
-  \RequirePackage[charter, cal=cmcal]{mathdesign}
-  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
-  \RequirePackage{berasans}
-  \booltrue{ezlib@headings@sf}
-}{}
-\ifdefstring{\ezlib@font}{palatino}{
-  \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
-  \RequirePackage{mathpazo}
-}{}
-\ifdefstring{\ezlib@font}{none}{}{
-  \ifdefstring{\ezlib@ttfont}{sourcecodepro}{
-    \RequirePackage{sourcecodepro}
-  }{
-    \RequirePackage[varqu]{zi4}
-  }
-}
-
-\ifboolexpr{
-  test{\ifdefstring{\ezlib@headingssf}{true}}
-  or test{\ifdefstring{\ezlib@headingssf}{false}}
-}{
-  \setbool{ezlib@headings@sf}{\ezlib@headingssf}
-}{}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1116,8 +1129,6 @@
 
 %%% Try to fix \qedhere
 
-% TODO: Document this feature and introduce an option to disable it if desired
-
 % If tags are on the right, just use a tag
 % If tags are on the left... do whatever hacks are already in place
 \ifbool{tagsleft@}{}{
@@ -1379,15 +1390,6 @@
 
 %%% Patches
 
-% TODO: find out if we need this
-% Pretty sure the answer is no, as thmtools has been patched
-% See https://tex.stackexchange.com/questions/553406/the-label-command-defined-by-cleveref-fails-in-a-thm-restate-environment
-% \patchcmd{\thmt@restatable}
-%   {\let\label=\@gobble}
-%   {\let\label=\gobbled@cleveref@label}
-%   {}{}
-% \newcommand\gobbled@cleveref@label[2][]{}
-
 % Allow spaces between labels in \cref and \Cref
 % (This is an egreg stackexchange answer)
 \ExplSyntaxOn
@@ -1604,8 +1606,8 @@
 }{}
 
 \ezlib@RequirePackageWithOptions{\ezlib@titlestyleoptions, raggedright}{titlesec}
-\RequirePackage{fancyhdr}
-\RequirePackage{titling}
+\ezlib@RequirePackage{fancyhdr}
+\ezlib@RequirePackage{titling}
 
 \newcommand{\ezlib@nonewlines}[1]{{\def\\{\ignorespaces}#1}}
 
@@ -1737,7 +1739,7 @@
 
 
 \ezlib@RequirePackageWithOptions{raggedright}{titlesec}
-\RequirePackage{noindentafter}
+\ezlib@RequirePackage{noindentafter}
 
 \ifdefstring{\ezlib@headings}{fancy}{
   \fancypagestyle{firstpage}{%
@@ -1796,7 +1798,7 @@
 
 
 \ifdefempty{\ezlib@numberwithin}{
-  \RequirePackage{algorithm}
+  \ezlib@RequirePackage{algorithm}
 }{
   \ezlib@RequirePackageWithOptions{\ezlib@numberwithin}{algorithm}
 }
