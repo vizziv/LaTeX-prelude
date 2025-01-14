@@ -1609,7 +1609,7 @@
 \ezlib@RequirePackage{fancyhdr}
 \ezlib@RequirePackage{titling}
 
-\newcommand{\ezlib@nonewlines}[1]{{\def\\{\ignorespaces}#1}}
+\newcommand{\ezlib@nonewlines}[1]{{\def\\{\unskip\ \ignorespaces}#1}}
 
 \AtBeginDocument{\patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{}}
 
