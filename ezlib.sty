@@ -1200,7 +1200,7 @@
 
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
-    \def\ezlib@ezlist@currenvir{#2}
+    % \def\ezlib@ezlist@currenvir{#2}
     \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
       \def\ezlib@ezrestate@collect@cont##1{%
@@ -1210,6 +1210,9 @@
       \def\ezlib@ezrestate@collect@cont##1{%
         \begin{restatable#1}[#3]{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
       }%
+    }%
+    \csxappto{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}{%
+      \noexpand\ezlib@restateAll@cont{#5}%
     }%
     \ezlib@ezrestate@collect@body@of{#2}\ezlib@ezrestate@collect@cont%
   }{%
@@ -1248,6 +1251,24 @@
       Attempted to restate undeclared theorem with label #2%
     }{}%
   }%
+}
+
+
+%%% Restating all restatables of a certain environment
+
+\newrobustcmd{\restateAll}{%
+  \@ifstar{\ezlib@restateAll@go{*}}{\ezlib@restateAll@go{}}%
+}
+
+\newrobustcmd{\clearRestateAll}[1]{%
+  \csgdef{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#1}{}%
+}
+
+\newrobustcmd{\ezlib@restateAll@go}[2]{%
+  \begingroup%
+    \def\ezlib@restateAll@cont{\restate#1}%
+    \csuse{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}%
+  \endgroup%
 }
 
 
