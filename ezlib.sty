@@ -1200,6 +1200,8 @@
 
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
+    % TODO: do we need the following line?
+    % If so, we need to fix it: right now it messes up future subenvs
     % \def\ezlib@ezlist@currenvir{#2}
     \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
