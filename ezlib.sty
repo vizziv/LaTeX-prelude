@@ -349,6 +349,7 @@
 %
 % - \begin{case}[...] ... \end{case}: cases in a proof
 % - \noqed: suppress the QED at the end of a proof
+% - \cleartheorem: undefines a theorem environment and its counter
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1555,14 +1556,14 @@
 \newtheorem{assumption}[theorem]{Assumption}
 \cCrefname{assumption}{Assumption}{Asssumptions}
 \shortened\cCrefname{assumption}{Asm.}{Asms.}
+\newtheorem{notation}[theorem]{Notation}
+\cCrefname{notation}{Notation}{Notations}
+\shortened\cCrefname{notation}{Ntn.}{Ntns.}
 
 \theoremstyle{\ezlibRemark}
 \newtheorem{remark}[theorem]{Remark}
 \shortened\cCrefname{remark}{Rmk.}{Rmks.}
 \newtheorem{note}[theorem]{Note}
-\newtheorem{notation}[theorem]{Notation}
-\cCrefname{notation}{Notation}{Notations}
-\shortened\cCrefname{notation}{Ntn.}{Ntns.}
 
 \theoremstyle{\ezlib@thmstyle@case}
 \newtheorem{case}{Case}
@@ -1584,6 +1585,12 @@
   \setcounter{case}{0}%
   \renewcommand{\qed}{\ezlib@qed}%
 }{}{}
+
+% Undefine a theorem environment, e.g. to redefine it with a different style
+\newcommand{\cleartheorem}[1]{%
+  \csundef{#1}%
+  \csundef{c@#1}%
+}
 
 
 \fi % \ifezlib@theorems
