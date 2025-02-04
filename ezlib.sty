@@ -342,6 +342,8 @@
 % - \ezlibDefinition: definition or analogue
 % - \ezlibRemark: remark or analogue
 %   - For some classes, e.g. acmart, this is the same as \ezlibDefinition
+% - If any of the above are already defined, they will not be redefined
+%   - This allows for changing styles by redefining the commands
 %
 % Other definitions
 %
@@ -1478,16 +1480,16 @@
 \ifezlib@theorems
 
 
-\newcommand{\ezlibPlain}{plain}
-\newcommand{\ezlibDefinition}{definition}
-\newcommand{\ezlibRemark}{remark}
+\newcommand{\ezlib@thmstyle@plain}{plain}
+\newcommand{\ezlib@thmstyle@definition}{definition}
+\newcommand{\ezlib@thmstyle@remark}{remark}
 \newcommand{\ezlib@thmstyle@case}{remark}
 
 %-- compatibility: acmart --%
 \@ifclassloaded{acmart}{
-  \renewcommand{\ezlibPlain}{acmplain}
-  \renewcommand{\ezlibDefinition}{acmdefinition}
-  \renewcommand{\ezlibRemark}{acmdefinition}
+  \renewcommand{\ezlib@thmstyle@plain}{acmplain}
+  \renewcommand{\ezlib@thmstyle@definition}{acmdefinition}
+  \renewcommand{\ezlib@thmstyle@remark}{acmdefinition}
   \newtheoremstyle{acmcase}
     {.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}
     {.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}
@@ -1500,6 +1502,10 @@
   \renewcommand{\ezlib@thmstyle@case}{acmcase}
 }{}
 %-- end compatibility --%
+
+\providecommand{\ezlibPlain}{\ezlib@thmstyle@plain}
+\providecommand{\ezlibDefinition}{\ezlib@thmstyle@definition}
+\providecommand{\ezlibRemark}{\ezlib@thmstyle@remark}
 
 \theoremstyle{\ezlibPlain}
 \ifdefempty{\ezlib@numberwithin}{
