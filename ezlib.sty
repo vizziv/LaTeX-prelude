@@ -1727,7 +1727,6 @@
 \renewcommand{\maketitle}{%
   \inittitleauthor%
   \ezlib@old@maketitle%
-  \def\and{\unskip, }%
   \thispagestyle{plain}%
   \vspace{-2\baselineskip}%
 }
@@ -1753,7 +1752,7 @@
   \fancyhead[LE, RO]{\ezlib@headerstyle\thepage}%
 }{%
   \fancyhead[L]{\ezlib@headerstyle\ezlib@thetitle}%
-  \fancyhead[R]{\ezlib@headerstyle\ezlib@theauthor}%
+  \fancyhead[R]{\ezlib@headerstyle{\def\and{\unskip, }\ezlib@theauthor}}%
   \fancyfoot[C]{\ezlib@headerstyle\thepage}%
 }
 
