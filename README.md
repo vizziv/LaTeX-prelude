@@ -8,7 +8,7 @@ This package can be used in two main ways
   - Best when integrating into an existing document
   - Best when using a class other than article, book, report, or acmart
 - If no options are passed, the package should do (almost) nothing
-  - The `almost`: loading kvoptions and etoolbox, and defining some private commands
+  - The "almost": loading kvoptions and etoolbox, and defining some private commands
 
 Each of the features below can be enabled or disabled with an option
 
