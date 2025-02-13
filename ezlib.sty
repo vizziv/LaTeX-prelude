@@ -1889,8 +1889,8 @@
 
 % Use mathic in the main document (aside from a few environments)...
 \AtBeginDocument{%
-  \pretocmd{\tikzpicture}{\def\TEST{bye}\catcode`\$=3}{}{}%
-  \pretocmd{\array}{\def\TEST{bye}\catcode`\$=3}{}{}%
+  \pretocmd{\tikzpicture}{\catcode`\$=3}{}{}%
+  \pretocmd{\array}{\catcode`\$=3}{}{}%
   \catcode`\$=13%
 }
 % ... but reset the category code after
