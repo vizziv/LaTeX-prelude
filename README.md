@@ -452,7 +452,7 @@ Behavior with `default=maximal`:
   - These are: article, report, book
 - Otherwise, conservatively default to `margin=none`
   - This avoids conflicts with journal/conference class files
-- Either way, can be manually overridden by setting font explicitly
+- Either way, can be manually overridden by setting margin explicitly
 
 
 ## Feature: headings
