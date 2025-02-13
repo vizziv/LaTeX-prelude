@@ -1876,11 +1876,7 @@
 
 \ifezlib@mathic
 
-
 \mathtoolsset{mathic}
-
-\pretocmd{\tikzpicture}{\catcode`\$=3}{}{}
-\pretocmd{\array}{\catcode`\$=3}{}{}
 
 \begingroup
   \catcode`\$=13
@@ -1891,8 +1887,12 @@
   }%
 \endgroup
 
-% Use mathic in the main document...
-\AtBeginDocument{\catcode`\$=13}
+% Use mathic in the main document (aside from a few environments)...
+\AtBeginDocument{%
+  \pretocmd{\tikzpicture}{\def\TEST{bye}\catcode`\$=3}{}{}%
+  \pretocmd{\array}{\def\TEST{bye}\catcode`\$=3}{}{}%
+  \catcode`\$=13%
+}
 % ... but reset the category code after
 % Otherwise, LaTeX might mistakenly think a label changed due to changing catcodes
 % Specifically, captions with inline math cause a problem without this
