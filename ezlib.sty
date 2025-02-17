@@ -322,10 +322,11 @@
 
 % Mechanism for registering alternate versions of names
 
-% - `\shortened`: put before `\crefname` or similar to register a shortened version
-%   - Works with `\crefname`, `\Crefname`, `\cCrefname`, or any three-argument macro
-%   - Example: `\shortened\cCrefname{theorem}{Thm.}{Thms.}`
+% - `\crefShortened`: wrap around a `\crefname` or similar to register a shortened version
+%   - Example: `\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}`
+%   - To omit the final "and": `\crefShortened{\def\creflastconjunction{, }}`
 % - `\crefShorten`: redefine all names using the shortened versions
+%   - This just executes all the code registered with `\crefShortened`
 %   - Redefinitions are local to any enclosing group
 
 
@@ -1427,14 +1428,14 @@
 
 % Short names for references (e.g. Thm. instead of Theorem)
 \newcommand{\crefShorten}{}
-\newrobustcmd{\shortened}[4]{\appto{\crefShorten}{#1{#2}{#3}{#4}}}
+\newrobustcmd{\crefShortened}[1]{\appto{\crefShorten}{#1}}
 
 
 %%% Typical names
 
 % Use section symbol when names are shortened
-\shortened\crefname{section}{\textsection}{\textsection\textsection}
-\shortened\crefname{paragraph}{\textparagraph}{\textparagraph\textparagraph}
+\crefShortened{\crefname{section}{\textsection}{\textsection\textsection}}
+\crefShortened{\crefname{paragraph}{\textparagraph}{\textparagraph\textparagraph}}
 % Don't need subsection, subsubsection, or subparagraph thanks to aliases
 
 % Conjunctions
@@ -1443,7 +1444,7 @@
 
 \crefname{equation}{}{}
 \Crefname{equation}{Equation}{Equations}
-\shortened\Crefname{equation}{Eq.}{Eqs.}
+\crefShortened{\Crefname{equation}{Eq.}{Eqs.}}
 
 \newrobustcmd{\ezlib@enum@cCrefname}[1]{%
   \crefname{#1}{}{}%
@@ -1451,9 +1452,9 @@
 }
 
 \crefname{figure}{Figure}{Figures}
-\shortened\cCrefname{figure}{Fig.}{Figs.}
+\crefShortened{\cCrefname{figure}{Fig.}{Figs.}}
 \crefname{table}{Table}{Tables}
-\shortened\cCrefname{table}{Tab.}{Tabs.}
+\crefShortened{\cCrefname{table}{Tab.}{Tabs.}}
 
 %-- compatibility: acmart --%
 \@ifclassloaded{acmart}{
@@ -1525,32 +1526,32 @@
 }{
   \newtheorem{theorem}{Theorem}[\ezlib@numberwithin]
 }
-\shortened\cCrefname{theorem}{Thm.}{Thms.}
+\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}
 \newtheorem{lemma}[theorem]{Lemma}
-\shortened\cCrefname{lemma}{Lem.}{Lems.}
+\crefShortened{\cCrefname{lemma}{Lem.}{Lems.}}
 \newtheorem{corollary}[theorem]{Corollary}
-\shortened\cCrefname{corollary}{Cor.}{Cors.}
+\crefShortened{\cCrefname{corollary}{Cor.}{Cors.}}
 \newtheorem{proposition}[theorem]{Proposition}
-\shortened\cCrefname{proposition}{Prop.}{Props.}
+\crefShortened{\cCrefname{proposition}{Prop.}{Props.}}
 
 \theoremstyle{\ezlibDefinition}
 \newtheorem{definition}[theorem]{Definition}
-\shortened\cCrefname{definition}{Def.}{Defs.}
+\crefShortened{\cCrefname{definition}{Def.}{Defs.}}
 \newtheorem{example}[theorem]{Example}
-\shortened\cCrefname{example}{Ex.}{Exs.}
+\crefShortened{\cCrefname{example}{Ex.}{Exs.}}
 \newtheorem{observation}[theorem]{Observation}
 \cCrefname{observation}{Observation}{Observations}
-\shortened\cCrefname{observation}{Obs.}{Obss.}
+\crefShortened{\cCrefname{observation}{Obs.}{Obss.}}
 \newtheorem{assumption}[theorem]{Assumption}
 \cCrefname{assumption}{Assumption}{Asssumptions}
-\shortened\cCrefname{assumption}{Asm.}{Asms.}
+\crefShortened{\cCrefname{assumption}{Asm.}{Asms.}}
 \newtheorem{notation}[theorem]{Notation}
 \cCrefname{notation}{Notation}{Notations}
-\shortened\cCrefname{notation}{Ntn.}{Ntns.}
+\crefShortened{\cCrefname{notation}{Ntn.}{Ntns.}}
 
 \theoremstyle{\ezlibRemark}
 \newtheorem{remark}[theorem]{Remark}
-\shortened\cCrefname{remark}{Rmk.}{Rmks.}
+\crefShortened{\cCrefname{remark}{Rmk.}{Rmks.}}
 \newtheorem{note}[theorem]{Note}
 
 \theoremstyle{\ezlib@thmstyle@case}

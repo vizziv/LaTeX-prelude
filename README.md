@@ -314,10 +314,11 @@ Loads the cleveref package and a bit more
 
 Mechanism for registering alternate versions of names
 
-- `\shortened`: put before `\crefname` or similar to register a shortened version
-  - Works with `\crefname`, `\Crefname`, `\cCrefname`, or any three-argument macro
-  - Example: `\shortened\cCrefname{theorem}{Thm.}{Thms.}`
+- `\crefShortened`: wrap around a `\crefname` or similar to register a shortened version
+  - Example: `\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}`
+  - To omit the final "and": `\crefShortened{\def\creflastconjunction{, }}`
 - `\crefShorten`: redefine all names using the shortened versions
+  - This just executes all the code registered with `\crefShortened`
   - Redefinitions are local to any enclosing group
 
 
