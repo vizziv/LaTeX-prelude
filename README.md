@@ -316,7 +316,7 @@ Mechanism for registering alternate versions of names
 
 - `\crefShortened`: wrap around a `\crefname` or similar to register a shortened version
   - Example: `\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}`
-  - To omit the final "and": `\crefShortened{\def\creflastconjunction{, }}`
+  - To omit the final "and": `\crefShortened{\def\creflastconjunction{, }\def\crefpairconjunction{, }}`
 - `\crefShorten`: redefine all names using the shortened versions
   - This just executes all the code registered with `\crefShortened`
   - Redefinitions are local to any enclosing group
