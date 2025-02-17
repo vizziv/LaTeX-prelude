@@ -178,7 +178,7 @@ Makes `\[` and `\]` a (slightly) smarter equation interface
 - Automatically chooses between equation, align, and gather
   - Conservative choice based on seeing whether `&` or `\\` appears in the text
 - Automatically numbers only labeled equations, if desired
-- If using `\tag`, put it right after `\label`, as in `\label{...} \tag{...}`
+  - If using `\tag`, put it right after `\label`, as in `\label{...} \tag{...}`
 - Enables `\allowdisplaybreaks` inside the `\[ \]`
   - If it appears anywhere in the `\[ \]`, it applies to the whole thing
   - It is local to the `\[ \]` in which it appears
@@ -188,6 +188,13 @@ Makes `\[` and `\]` a (slightly) smarter equation interface
   - The new version is simpler and a bit less buggy for equation numbers on the right
   - But the new version is incompatible with equation numbers on the left
   - If this package detects equation numbers are on the left, will use the old version
+
+Other configuration:
+
+- `ezeq number labeled` (default): only number labeled equations
+  - Equivalent to `ezeq number labeled=true` or `ezeq number all=false`
+- `ezeq number all`: number all equations
+  - Equivalent to `ezeq number labeled=false` or `ezeq number all=true`
 
 
 ## Feature: ezrestate
