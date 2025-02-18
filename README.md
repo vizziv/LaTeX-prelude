@@ -298,6 +298,8 @@ Probability (best with delimiters option on, too):
       - Without delimiters loaded, supports `p`, `sq`/`b`, and `curl`/`B`
     - Also supported: `[]`, `()`, and any valid followup to `\lrStarAfter`
       - Limitation: manual sizing won't work
+- `\DeclareProbabilityCommand`: declare new commands that work like `\P`
+  - Example: `\DeclareProbabilityCommand{\Cov}{Cov}`
 
 Other:
 
