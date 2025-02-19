@@ -186,8 +186,8 @@ Makes `\[` and `\]` a (slightly) smarter equation interface
   - Remember that LaTeX provies `\\*` for non-breakable newlines
 - Automatically inserts `\qedhere` if immediately before `\end{proof}`
   - Won't do anything if there's already a `\qedhere`
-  - Put `\noqedhere` somewhere in the equation to disable this for one equation
-    - `\noqedhere` has no other effect
+  - Put `\noAutoQed` somewhere in the equation to disable this for one equation
+    - `\noAutoQed` has no other effect
   - Use `ezeq auto qed=false` to disable this globally
 - Also slightly changes how `\qedhere` behaves
   - The new version is simpler and a bit less buggy for equation numbers on the right

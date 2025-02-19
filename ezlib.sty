@@ -194,8 +194,8 @@
 %   - Remember that LaTeX provies `\\*` for non-breakable newlines
 % - Automatically inserts `\qedhere` if immediately before `\end{proof}`
 %   - Won't do anything if there's already a `\qedhere`
-%   - Put `\noqedhere` somewhere in the equation to disable this for one equation
-%     - `\noqedhere` has no other effect
+%   - Put `\noAutoQed` somewhere in the equation to disable this for one equation
+%     - `\noAutoQed` has no other effect
 %   - Use `ezeq auto qed=false` to disable this globally
 % - Also slightly changes how `\qedhere` behaves
 %   - The new version is simpler and a bit less buggy for equation numbers on the right
@@ -1057,22 +1057,24 @@
   \end{#2}%
 }
 
-\newcommand{\noqedhere}{}
+\newcommand{\noAutoQed}{}
 
 \newrobustcmd{\ezlib@ezeq@set}[2]{%
   \def\ezlib@ezeq@go##1##2{%
     \begingroup%
     #2%
+    \def\ezlib@ezeq@qedhereMaybe{##2}
     \saveexpandmode\noexpandarg%
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
-    \IfSubStr{##1}{\noqedhere}{\def\qedhere{}}{}%
+    \IfSubStr{##1}{\qedhere}{\def\ezlib@ezeq@qedhereMaybe{}}{}%
+    \IfSubStr{##1}{\noAutoQed}{\def\ezlib@ezeq@qedhereMaybe{}}{}%
     \IfSubStr{##1}{&}{%
-      \restoreexpandmode\begin{align#1}##1##2\end{align#1}%
+      \restoreexpandmode\begin{align#1}##1\ezlib@ezeq@qedhereMaybe\end{align#1}%
     }{%
       \IfSubStr{##1}{\\}{%
-        \restoreexpandmode\begin{gather#1}##1##2\end{gather#1}%
+        \restoreexpandmode\begin{gather#1}##1\ezlib@ezeq@qedhereMaybe\end{gather#1}%
       }{%
-        \restoreexpandmode\begin{equation#1}##1##2\end{equation#1}%
+        \restoreexpandmode\begin{equation#1}##1\ezlib@ezeq@qedhereMaybe\end{equation#1}%
       }%
     }%
     \endgroup%
