@@ -192,6 +192,11 @@
 %   - It is local to the `\[ \]` in which it appears
 %   - The optional argument of `\allowdisplaybreaks` is not supported
 %   - Remember that LaTeX provies `\\*` for non-breakable newlines
+% - Automatically inserts `\qedhere` if immediately before `\end{proof}`
+%   - Won't do anything if there's already a `\qedhere`
+%   - Put `\noqedhere` somewhere in the equation to disable this for one equation
+%     - `\noqedhere` has no other effect
+%   - Use `ezeq auto qed=false` to disable this globally
 % - Also slightly changes how `\qedhere` behaves
 %   - The new version is simpler and a bit less buggy for equation numbers on the right
 %   - But the new version is incompatible with equation numbers on the left
@@ -203,6 +208,8 @@
 %   - Equivalent to `ezeq number labeled=true` or `ezeq number all=false`
 % - `ezeq number all`: number all equations
 %   - Equivalent to `ezeq number labeled=false` or `ezeq number all=true`
+% - `ezeq auto qed=true` (default): pl
+% - `ezeq auto qed=false`:
 
 
 % ## Feature: ezrestate
@@ -560,6 +567,7 @@
 % Options for ezeq
 \DeclareBoolOption[true]{ezeqnumberlabeled}
 \DeclareComplementaryOption{ezeqnumberall}{ezeqnumberlabeled}
+\DeclareBoolOption[true]{ezeqautoqed}
 
 % Options for font
 \DeclareStringOption[inconsolata]{ttfont}
@@ -1026,25 +1034,45 @@
 
 %%% Implementation of \[ \]
 
-\newrobustcmd{\ezeqSetNumberAll}{\ezlib@ezeqSet{}{}}
+\newrobustcmd{\ezeqSetNumberAll}{\ezlib@ezeq@set{}{}}
 \newrobustcmd{\ezeqSetNumberLabeled}{%
   % Implementation of \ezlib@label@in@display is below
-  \ezlib@ezeqSet{*}{\cslet{\ezlib@label@macro}\ezlib@label@in@display}%
+  \ezlib@ezeq@set{*}{\cslet{\ezlib@label@macro}\ezlib@label@in@display}%
 }
 
-\newrobustcmd{\ezlib@ezeqSet}[2]{%
-  \def\[##1\]{%
+\ifbool{ezlib@ezeqautoqed}{
+  \def\[#1\]{%
+    \@ifnextchar{\end}{\ezlib@ezeq@checkEndProof{#1}}{\ezlib@ezeq@go{#1}{}}%
+  }
+}{
+  \def\[#1\]{\ezlib@ezeq@go{#1}{}}
+}
+
+\def\ezlib@ezeq@checkEndProof#1\end#2{%
+  \ifstrequal{#2}{proof}{%
+    \ezlib@ezeq@go{#1}{\qedhere}
+  }{%
+    \ezlib@ezeq@go{#1}{}%
+  }%
+  \end{#2}%
+}
+
+\newcommand{\noqedhere}{}
+
+\newrobustcmd{\ezlib@ezeq@set}[2]{%
+  \def\ezlib@ezeq@go##1##2{%
     \begingroup%
     #2%
     \saveexpandmode\noexpandarg%
     \IfSubStr{##1}{\allowdisplaybreaks}{\allowdisplaybreaks}{}%
+    \IfSubStr{##1}{\noqedhere}{\def\qedhere{}}{}%
     \IfSubStr{##1}{&}{%
-      \restoreexpandmode\begin{align#1}##1\end{align#1}%
+      \restoreexpandmode\begin{align#1}##1##2\end{align#1}%
     }{%
       \IfSubStr{##1}{\\}{%
-        \restoreexpandmode\begin{gather#1}##1\end{gather#1}%
+        \restoreexpandmode\begin{gather#1}##1##2\end{gather#1}%
       }{%
-        \restoreexpandmode\begin{equation#1}##1\end{equation#1}%
+        \restoreexpandmode\begin{equation#1}##1##2\end{equation#1}%
       }%
     }%
     \endgroup%
