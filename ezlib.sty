@@ -193,6 +193,7 @@
 %   - The optional argument of `\allowdisplaybreaks` is not supported
 %   - Remember that LaTeX provies `\\*` for non-breakable newlines
 % - Automatically inserts `\qedhere` if immediately before `\end{proof}`
+%   - When `ezlist` is activated, also inserts it before `\*/ \end{proof}`
 %   - Won't do anything if there's already a `\qedhere`
 %   - Put `\noAutoQed` somewhere in the equation to disable this for one equation
 %     - `\noAutoQed` has no other effect
@@ -804,6 +805,24 @@
 }
 
 
+%%%%%%%%%%%%%%%
+%%% Helpers %%%
+%%%%%%%%%%%%%%%
+
+\newrobustcmd{\ezlib@noezlist@ifAtEnd}[3]{%
+  \@ifnextchar{\end}{%
+    \ezlib@noezlist@ifAtEnd@go{#1}{#2}{#3}%
+  }{%
+    #3%
+  }%
+}
+\def\ezlib@noezlist@ifAtEnd@go#1#2#3\end#4{%
+  \ifstrequal{#1}{#4}{#2}{#3}\end{#4}%
+}
+
+\def\ezlib@ifAtEnd{\ezlib@noezlist@ifAtEnd}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -958,6 +977,30 @@
 }
 
 
+%%% Testing for environment end after \*/
+
+\newrobustcmd{\ezlib@ezlist@ifAtEnd}[3]{%
+  \@ifnextchar{\end}{%
+    \ezlib@noezlist@ifAtEnd@go{#1}{#2}{#3}%
+  }{
+    \@ifnextchar{\*}{%
+      \ezlib@ezlist@ifAtEnd@go{#1}{#2}{#3}%
+    }{%
+      #3%
+    }%
+  }%
+}
+\def\ezlib@ezlist@ifAtEnd@go#1#2#3\*#4{%
+  \ifstrequal{/}{#4}{%
+    \ezlib@noezlist@ifAtEnd{#1}{#2\*#4}{#3\*#4}%
+  }{%
+    #3\*#4%
+  }%
+}
+
+\def\ezlib@ifAtEnd{\ezlib@ezlist@ifAtEnd}
+
+
 %%% Implementation of subenv
 
 \ifbool{ezlib@ezlistsubenv}{
@@ -1042,22 +1085,13 @@
 
 \ifbool{ezlib@ezeqautoqed}{
   \def\[#1\]{%
-    \@ifnextchar{\end}{\ezlib@ezeq@checkEndProof{#1}}{\ezlib@ezeq@go{#1}{}}%
+    \ezlib@ifAtEnd{proof}{\ezlib@ezeq@go{#1}{\qedhere}}{\ezlib@ezeq@go{#1}{}}%
   }
 }{
   \def\[#1\]{\ezlib@ezeq@go{#1}{}}
 }
 
-\def\ezlib@ezeq@checkEndProof#1\end#2{%
-  \ifstrequal{#2}{proof}{%
-    \ezlib@ezeq@go{#1}{\qedhere}
-  }{%
-    \ezlib@ezeq@go{#1}{}%
-  }%
-  \end{#2}%
-}
-
-\newcommand{\noAutoQed}{}
+\newrobustcmd{\noAutoQed}{}
 
 \newrobustcmd{\ezlib@ezeq@set}[2]{%
   \def\ezlib@ezeq@go##1##2{%

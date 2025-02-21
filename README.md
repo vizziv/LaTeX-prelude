@@ -185,6 +185,7 @@ Makes `\[` and `\]` a (slightly) smarter equation interface
   - The optional argument of `\allowdisplaybreaks` is not supported
   - Remember that LaTeX provies `\\*` for non-breakable newlines
 - Automatically inserts `\qedhere` if immediately before `\end{proof}`
+  - When `ezlist` is activated, also inserts it before `\*/ \end{proof}`
   - Won't do anything if there's already a `\qedhere`
   - Put `\noAutoQed` somewhere in the equation to disable this for one equation
     - `\noAutoQed` has no other effect
