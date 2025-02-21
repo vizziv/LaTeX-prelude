@@ -148,6 +148,9 @@
 %   - It ensures the list starts on a new line after the heading
 %   - It prevents page breaks between the heading and the list
 %   - Main use case is lists that appear at the start of a theorem/lemma/etc.
+% - Automatically calls `\qedhere` if `\*/` is right before `\end{proof}`
+%   - Use `ezlist auto qed=false` to disable this globally
+%   - No way to disable locally for now
 
 % ### Subfeature: subenv (disable with `ezlist subenv=false`)
 
@@ -563,6 +566,7 @@
 \DeclareStringOption[none]{headings}[default]
 
 % Options for ezlist
+\DeclareBoolOption[true]{ezlistautoqed}
 \DeclareBoolOption[true]{ezlistsubenv}
 
 % Options for ezeq
@@ -809,6 +813,13 @@
 %%% Helpers %%%
 %%%%%%%%%%%%%%%
 
+% Test if a string is in a comma-separated list
+% No spaces around the commas!
+\newcommand{\ezlib@ifstringin}[2]{\IfSubStr{,#2,}{,#1,}}
+
+% Test if we're at the end of one of many environments
+% #1 should be the list of environments, separated by commas (no spaces!)
+% Limitation: will be buggy for environment names with commas
 \newrobustcmd{\ezlib@noezlist@ifAtEnd}[3]{%
   \@ifnextchar{\end}{%
     \ezlib@noezlist@ifAtEnd@go{#1}{#2}{#3}%
@@ -817,14 +828,17 @@
   }%
 }
 \def\ezlib@noezlist@ifAtEnd@go#1#2#3\end#4{%
-  \ifstrequal{#1}{#4}{#2}{#3}\end{#4}%
+  \ezlib@ifstringin{#4}{#1}{#2}{#3}\end{#4}%
 }
-
-\def\ezlib@ifAtEnd{\ezlib@noezlist@ifAtEnd}
 
 \newrobustcmd{\ezlib@ifnextchar@gobble}[3]{%
   \@ifnextchar{#1}{\@firstoftwo{#2}}{#3}%
 }%
+
+% Test if we're at the end of a proof
+% Defining a dedicated command to make it easier to redfine
+% Example: `\renewcommand{\ezlib@ifAtEndProof}{\ezlib@ifAtEnd{proof,solution}}`
+\newcommand{\ezlib@ifAtEndProof}{\ezlib@ifAtEnd{proof}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -925,12 +939,25 @@
     }{%
       % There is, so end the list without adding an \item
       \addtocounter{ezlib@ezlist@this}{-1}%
-      \ezlib@ezlist@go{}{}{}%
+      \ezlib@ezlist@end%
     }%
   }{%
     % We're not ending a list
     \ezlib@ezlist@go{}{\item}{}%
   }%
+}
+
+\ifbool{ezlib@ezlistautoqed}{%
+  \newrobustcmd{\ezlib@ezlist@end}{%
+    \ezlib@ifAtEndProof{%
+      \qedhere%
+      \ezlib@ezlist@go{}{}{}%
+    }{%
+      \ezlib@ezlist@go{}{}{}%
+    }%
+  }%
+}{%
+  \newrobustcmd{\ezlib@ezlist@end}{\ezlib@ezlist@go{}{}{}}%
 }
 
 % #1 goes before the potential \item
@@ -1088,7 +1115,7 @@
 
 \ifbool{ezlib@ezeqautoqed}{
   \def\[#1\]{%
-    \ezlib@ifAtEnd{proof}{\ezlib@ezeq@go{#1}{\qedhere}}{\ezlib@ezeq@go{#1}{}}%
+    \ezlib@ifAtEndProof{\ezlib@ezeq@go{#1}{\qedhere}}{\ezlib@ezeq@go{#1}{}}%
   }
 }{
   \def\[#1\]{\ezlib@ezeq@go{#1}{}}
