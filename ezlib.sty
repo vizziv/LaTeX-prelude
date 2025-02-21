@@ -1185,7 +1185,7 @@
 \newtoks\ezlib@ezrestate@collect@toks
 
 % Variant of \thmt@collect@body
-% \thmt@collect@body@of{env} collects until \end{env} instead of the end of the current environment
+% Collects until \end{env} instead of the end of the current environment
 \long\def\ezlib@ezrestate@collect@body@of#1#2#3\end#4{%
   \expandafter\ezlib@ezrestate@collect@toks\expandafter{\the\ezlib@ezrestate@collect@toks #3}%
   \ifstrequal{#1}{#4}{%
@@ -1234,11 +1234,11 @@
     % \def\ezlib@ezlist@currenvir{#2}
     \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
-      \def\ezlib@ezrestate@collect@cont##1{%
+      \long\def\ezlib@ezrestate@collect@cont##1{%
         \begin{restatable#1}{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
       }%
     }{%
-      \def\ezlib@ezrestate@collect@cont##1{%
+      \long\def\ezlib@ezrestate@collect@cont##1{%
         \begin{restatable#1}[#3]{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
       }%
     }%
@@ -1288,7 +1288,7 @@
 %%% Restating all restatables of a certain environment
 
 \newrobustcmd{\restateAll}{%
-  \@ifstar{\ezlib@restateAll@go{*}}{\ezlib@restateAll@go{}}%
+  \@ifstar{\ezlib@restateAll@go{\restate*}}{\ezlib@restateAll@go{\restate}}%
 }
 
 \newrobustcmd{\clearRestateAll}[1]{%
@@ -1297,7 +1297,7 @@
 
 \newrobustcmd{\ezlib@restateAll@go}[2]{%
   \begingroup%
-    \def\ezlib@restateAll@cont{\restate#1}%
+    \def\ezlib@restateAll@cont{#1}%
     \csuse{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}%
   \endgroup%
 }
