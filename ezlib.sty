@@ -664,6 +664,7 @@
 
 \ifbool{ezlib@ezrestate}{
   \ezlib@RequirePackage{thm-restate}
+  \ezlib@RequirePackage{refcount}
 }{}
 
 \ifboolexpr{
@@ -1351,18 +1352,25 @@
 
 %%% Restating all restatables of a certain environment
 
-\newrobustcmd{\restateAll}{%
-  \@ifstar{\ezlib@restateAll@go{\restate*}}{\ezlib@restateAll@go{\restate}}%
+\newrobustcmd{\restateAll}[1][]{%
+  \@ifstar{\ezlib@restateAll@go{#1}{\restate*}}{\ezlib@restateAll@go{#1}{\restate}}%
 }
 
 \newrobustcmd{\clearRestateAll}[1]{%
   \csgdef{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#1}{}%
 }
 
-\newrobustcmd{\ezlib@restateAll@go}[2]{%
+\newrobustcmd{\ezlib@restateAll@go}[3]{%
   \begingroup%
-    \def\ezlib@restateAll@cont{#1}%
-    \csuse{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}%
+    \def\ezlib@restateAll@cont{#2}%
+    % Putting / in the macro seems to work to control space inside `\csuse`
+    % In contrast, just putting {} after the usage seems not to work
+    \ifblank{#1}{%
+      \edef\ezlib@restateAll@region/{\csuse{the\ezlib@numberwithin}}%
+    }{%
+      \edef\ezlib@restateAll@region/{\getrefnumber{#1}}%
+    }%
+    \csuse{ezlib@restate@all ezlib@region@\ezlib@restateAll@region/ ezlib@env@#3}%
   \endgroup%
 }
 
