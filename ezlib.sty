@@ -822,6 +822,10 @@
 
 \def\ezlib@ifAtEnd{\ezlib@noezlist@ifAtEnd}
 
+\newrobustcmd{\ezlib@ifnextchar@gobble}[3]{%
+  \@ifnextchar{#1}{\@firstoftwo{#2}}{#3}%
+}%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
@@ -912,18 +916,17 @@
 
 % Check for /, which indicates the end of a list
 \newrobustcmd{\ezlib@ezlist@checkend}{%
-  \@ifnextchar{/}{%
+  \ezlib@ifnextchar@gobble{/}{%
     % We want to end a list, but is there actually a list to end?
     \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
       % There is not, so issue a warning and ignore this line
       \PackageError{ezlist}{attempted to end easy list at too high a level}{}%
       \setcounter{ezlib@ezlist@this}{1}%
-      \@gobble%
     }{%
       % There is, so end the list without adding an \item
       \addtocounter{ezlib@ezlist@this}{-1}%
-      \ezlib@ezlist@go{}{}{\@gobble}%
-    }
+      \ezlib@ezlist@go{}{}{}%
+    }%
   }{%
     % We're not ending a list
     \ezlib@ezlist@go{}{\item}{}%
