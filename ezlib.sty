@@ -1294,17 +1294,26 @@
 
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
-    % TODO: do we need the following line?
-    % If so, we need to fix it: right now it messes up future subenvs
-    % \def\ezlib@ezlist@currenvir{#2}
     \ezlib@ezrestate@collect@toks{}%
     \ifstrempty{#3}{%
       \long\def\ezlib@ezrestate@collect@cont##1{%
-        \begin{restatable#1}{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
+        \begin{restatable#1}{#2}{ezlib@restate #5}%
+          \label{#5}%
+          % Need this or else `\ezlib@ezlist@currenvir` gets set to "restatable"
+          % Putting here so the definition is local
+          \def\ezlib@ezlist@currenvir{#2}%
+          ##1%
+        \end{restatable#1}%
       }%
     }{%
       \long\def\ezlib@ezrestate@collect@cont##1{%
-        \begin{restatable#1}[#3]{#2}{ezlib@restate #5}\label{#5}##1\end{restatable#1}%
+        \begin{restatable#1}[#3]{#2}{ezlib@restate #5}%
+          \label{#5}%
+          % Need this or else `\ezlib@ezlist@currenvir` gets set to "restatable"
+          % Putting here so the definition is local
+          \def\ezlib@ezlist@currenvir{#2}%
+          ##1%
+        \end{restatable#1}%
       }%
     }%
     \csxappto{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}{%
