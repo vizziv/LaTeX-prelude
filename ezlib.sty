@@ -1073,12 +1073,14 @@
     \renewcommand{\label}{\ezlib@ezlist@label}%
   }
 
+  \newcommand{\subenvFont}{}%
   \newcommand{\subenvFormatLabel}[1]{(\alph{#1})}%
   \newcommand{\subenvFormatRef}{\subenvFormatLabel}%
   \SetEnumitemKey{subenv}{
     label=\subenvFormatLabel*,
     ref=\csuse{the\ezlib@ezlist@currenvir}\subenvFormatRef*,
-    before*=\ezlib@ezlist@subenv
+    before*=\ezlib@ezlist@subenv,
+    font=\subenvFont
   }
 
 
