@@ -914,8 +914,8 @@
 % If it is, then we omit the \item
 % #1 is either blank or \par
 \newrobustcmd{\ezlib@ezlist@checkempty}[1]{%
-  \@ifnextchar{\par}{%
-    \ezlib@ezlist@checkemptypar{#1}%
+  \ezlib@ifnextchar@gobble{\par}{%
+    \ezlib@ezlist@checkempty{#1\par}%
   }{%
     \@ifnextchar{\*}{%
       \ezlib@ezlist@go{\toggletrue{ezlib@ezlist@prevempty}}{}{#1}%
@@ -923,10 +923,6 @@
       \ezlib@ezlist@go{}{\item}{#1}%
     }%
   }%
-}
-
-\def\ezlib@ezlist@checkemptypar#1\par{%
-  \ezlib@ezlist@checkempty{#1\par}%
 }
 
 % Check for /, which indicates the end of a list
