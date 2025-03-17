@@ -841,6 +841,15 @@
 % Example: `\renewcommand{\ezlib@ifAtEndProof}{\ezlib@ifAtEnd{proof,solution}}`
 \newcommand{\ezlib@ifAtEndProof}{\ezlib@ifAtEnd{proof}}
 
+% Used to tell cleveref what section/chatper/etc. an equation or subtheorem is part of
+% TODO: Can we avoid relying on `\ezlib@numberwithin`?
+% (It might require introspection on the definition of `\theequation`, etc., so seems hard)
+\ifdefempty{\ezlib@numberwithin}{
+  \newcommand{\ezlib@crefPrefix}{}
+}{
+  \newcommand{\ezlib@crefPrefix}{\arabic{\ezlib@numberwithin}}
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Feature: ezlist %%%
@@ -1043,7 +1052,7 @@
     \newrobustcmd{\ezlib@ezlist@label}[2][]{%
       {%
         \protected@edef\cref@currentlabel{%
-          [\@tempa][\arabic{ezlisti}][\cref@result]\subenvFormatRef{ezlisti}%
+          [\@tempa][\arabic{ezlisti}][\ezlib@crefPrefix]\subenvFormatRef{ezlisti}%
         }
         \edef\@currentlabel{\subenvFormatRef{ezlisti}}%
         \ezlib@ezlist@old@label{sub@#2}%
@@ -1184,14 +1193,14 @@
 %%% Implement \yesnumber with cleveref compatibility
 
 % See https://tex.stackexchange.com/questions/545726/labelcref-doesnt-like-my-user-defined-command
-% Change from link: "[equation][\theequation][]" -> "[equation][\arabic{equation}][\cref@result]"
+% Change from link: "[equation][\theequation][]" -> "[equation][\arabic{equation}][\ezlib@crefPrefix]"
 
 \newrobustcmd*{\ezlib@make@df@tag@@}[1]{%
   \cref@old@make@df@tag@@{#1}%
   \let\ezlib@old@df@tag\df@tag
   \expandafter\gdef\expandafter\df@tag\expandafter{%
     \ezlib@old@df@tag
-    \def\cref@currentlabel{[equation][\arabic{equation}][\cref@result]#1}%
+    \def\cref@currentlabel{[equation][\arabic{equation}][\ezlib@crefPrefix]#1}%
   }%
 }
 
@@ -1201,7 +1210,7 @@
   \expandafter\gdef\expandafter\df@tag\expandafter{%
     \ezlib@old@df@tag
     \toks@\@xp{\p@equation{#1}}%
-    \edef\cref@currentlabel{[equation][\arabic{equation}][\cref@result]\the\toks@}%
+    \edef\cref@currentlabel{[equation][\arabic{equation}][\ezlib@crefPrefix]\the\toks@}%
   }%
 }
 
