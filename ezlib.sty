@@ -897,8 +897,10 @@
   \ezlib@ezlist@item%
 }
 
+\newcommand{\ezlib@ezlist@typeDefault}{{ezlist}[before=\@nmbrlistfalse]}
+
 \newrobustcmd{\ezlib@ezlist@nostar}{%
-  \def\ezlib@ezlist@type{{ezlist}[before=\@nmbrlistfalse]}%
+  \let\ezlib@ezlist@type\ezlib@ezlist@typeDefault%
   \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
     \@ifnextchar{[}{%
       % This a new sublist with parameters, so store them in \ezlib@ezlist@type
