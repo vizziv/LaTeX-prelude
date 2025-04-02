@@ -676,7 +676,6 @@
 
 \ifbool{ezlib@notation}{
   \ezlib@RequirePackage{mathcommand}
-  \ezlib@RequirePackage{dsfont}
 }{}
 
 
@@ -733,9 +732,9 @@
 % TODO: should we avoid "\PassOptionsToPackage" because it's our hacky disable switch?
 \ifdefstring{\ezlib@font}{libertine}{
   \ezlib@RequirePackageWithOptions{tt=false}{libertine}
-  \PassOptionsToPackage{scaled=0.95}{zi4}
+  \PassOptionsToPackage{scaled=0.95, varqu}{zi4}
   \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
-  \ezlib@RequirePackageWithOptions{libertine}{newtxmath}
+  \ezlib@RequirePackageWithOptions{libertine, vvarbb}{newtxmath}
   \booltrue{ezlib@headings@sf}
 }{}
 \ifdefstring{\ezlib@font}{charter}{
@@ -746,7 +745,8 @@
 }{}
 \ifdefstring{\ezlib@font}{palatino}{
   \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
-  \ezlib@RequirePackage{mathpazo}
+  \ezlib@RequirePackage{newpxtext}
+  \ezlib@RequirePackageWithOptions{vvarbb}{newpxmath}
 }{}
 \ifdefstring{\ezlib@font}{none}{}{
   \ifdefstring{\ezlib@ttfont}{sourcecodepro}{
@@ -1123,18 +1123,23 @@
   \ezlib@ezeq@set{*}{\cslet{\ezlib@label@macro}\ezlib@label@in@display}%
 }
 
+% Not sure why we need \unskip both here and in \ezlib@ezeq@go
 \ifbool{ezlib@ezeqautoqed}{
   \def\[#1\]{%
+    \unskip%
     \ezlib@ifAtEndProof{\ezlib@ezeq@go{#1}{\qedhere}}{\ezlib@ezeq@go{#1}{}}%
   }
 }{
-  \def\[#1\]{\ezlib@ezeq@go{#1}{}}
+  \def\[#1\]{\unskip\ezlib@ezeq@go{#1}{}}
 }
 
 \newrobustcmd{\noAutoQed}{}
 
 \newrobustcmd{\ezlib@ezeq@set}[2]{%
+  % Not sure why we need \unskip both here and in \[ \]
   \def\ezlib@ezeq@go##1##2{%
+    % Not sure why we need this \unskip to....
+    \unskip%
     \begingroup%
     #2%
     \def\ezlib@ezeq@qedhereMaybe{##2}
@@ -1187,7 +1192,10 @@
 %%% Implement \yesnumber without cleveref compatibility
 
 \newrobustcmd{\ezlib@yesnumber@nocleveref}{%
+  % To prevent weird spacing issues, need \mathclose{} and \mathopen{} around \refstepcounter
+  \mathclose{}%
   \refstepcounter{equation}%
+  \mathopen{}%
   \tag{\theequation}%
 }
 
@@ -1217,7 +1225,10 @@
 }
 
 \newrobustcmd{\ezlib@yesnumber@cleveref}{%
+  % To prevent weird spacing issues, need \mathclose{} and \mathopen{} around \refstepcounter
+  \mathclose{}%
   \refstepcounter{equation}%
+  \mathopen{}%
   \begingroup%
     \let\make@df@tag@@\ezlib@make@df@tag@@
     \let\make@df@tag@@@\ezlib@make@df@tag@@@
@@ -1459,9 +1470,6 @@
 
 
 %%% Shortcuts for \mathbb and \mathcal, e.g. \calP and \bbQ
-
-\let\mathbbLaTeX\mathbb
-\renewcommand{\mathbb}{\mathds}
 
 \LoopCommands{\lettersAll}[bb#1]{
   \newmathcommand{#2}{\mathbb{#1}}
