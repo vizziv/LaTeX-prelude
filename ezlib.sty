@@ -295,7 +295,8 @@
 
 % Various math notation shortcuts and conventions
 
-% Provides `\lr` and `\lrStarAfter` from delimiters above (but not the others)
+% - Provides `\lr` and `\lrStarAfter` from delimiters above (but not the others)
+% - Loads a better `\mathbb` (from STIX)
 
 % Caligraphic and blackboard bold shortcuts:
 
@@ -734,7 +735,7 @@
   \ezlib@RequirePackageWithOptions{tt=false}{libertine}
   \PassOptionsToPackage{scaled=0.95, varqu}{zi4}
   \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
-  \ezlib@RequirePackageWithOptions{libertine, vvarbb}{newtxmath}
+  \ezlib@RequirePackageWithOptions{libertine}{newtxmath}
   \booltrue{ezlib@headings@sf}
 }{}
 \ifdefstring{\ezlib@font}{charter}{
@@ -746,7 +747,7 @@
 \ifdefstring{\ezlib@font}{palatino}{
   \PassOptionsToPackage{scaled=0.95}{sourcecodepro}
   \ezlib@RequirePackage{newpxtext}
-  \ezlib@RequirePackageWithOptions{vvarbb}{newpxmath}
+  \ezlib@RequirePackage{newpxmath}
 }{}
 \ifdefstring{\ezlib@font}{none}{}{
   \ifdefstring{\ezlib@ttfont}{sourcecodepro}{
@@ -761,6 +762,11 @@
   or test{\ifdefstring{\ezlib@headingssf}{false}}
 }{
   \setbool{ezlib@headings@sf}{\ezlib@headingssf}
+}{}
+
+% Actually part of notation, but needs to be loaded after font stuff
+\ifbool{ezlib@notation}{
+  \ezlib@RequirePackageWithOptions{bb=stixtwo}{mathalfa}
 }{}
 
 
