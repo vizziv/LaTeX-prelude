@@ -146,13 +146,13 @@ Additional notes:
 Also introduces enumitem key `subenv` for referencing parts of therems/lemmas/etc.
 
 - Works with ezlist, but unfortunately not other list types
-- Usage: use \*[subenv] inside a theorem/lemma/etc., then use \label within items
-  - Result: \cref for those labels yields a `subtheorem` reference, e.g. `Theorem 1.2(c)`
-- A few options to refer to just the part label, e.g. just `(c)`
+- Usage: use `\*[subenv]` inside a theorem/lemma/etc., then use `\label` within items
+  - Result: `\cref` for those labels yields a `subtheorem` reference, e.g. "Theorem 1.2(c)"
+- A few options to refer to just the part label, e.g. just "(c)"
   - `\subref{lbl}`, assuming subcaption package is loaded
     - The subcaption package's options might affect how it looks
   - `\ref{sub@lbl}`, where `lbl` is the original label
-    - \cref and \Cref should work, too
+    - `\cref` and `\Cref` should work, too
 - Supported usage
   - Should work with an ezlist inside any environment whose name is a counter
   - But does not work with lists other than ezlist
@@ -160,13 +160,13 @@ Also introduces enumitem key `subenv` for referencing parts of therems/lemmas/et
 
 Editing subenv label appearance:
 
-- Redefine the \subenvFormatLabel command to change the item labels
+- Redefine the `\subenvFormatLabel` command to change the item labels
   - Should take one argument, which is the counter name
   - Default is `(\alph{#1})`, yielding (a), (b), (c)...
   - Example: changing to `(\roman{#1})` would yield (i), (ii), (iii)...
-- Redefine the \subenvFormatRef command to change what the references look like
+- Redefine the `\subenvFormatRef` command to change what the references look like
   - Should take one argument, which is the counter name
-  - Default is to do whatever \subenvFormatLabel does
+  - Default is to do whatever `\subenvFormatLabel` does
 
 
 ## Feature: ezeq
@@ -201,8 +201,8 @@ Other configuration:
   - Equivalent to `ezeq number labeled=true` or `ezeq number all=false`
 - `ezeq number all`: number all equations
   - Equivalent to `ezeq number labeled=false` or `ezeq number all=true`
-- `ezeq auto qed=true` (default): pl
-- `ezeq auto qed=false`:
+- `ezeq auto qed` (boolean): whether to automatically place `\qedhere` in equations when at the end of a proof
+  - Defaults to true
 
 
 ## Feature: ezrestate
