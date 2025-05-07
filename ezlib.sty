@@ -1128,11 +1128,11 @@
 % Not sure why we need \unskip both here and in \ezlib@ezeq@go
 \ifbool{ezlib@ezeqautoqed}{
   \def\[#1\]{%
-    \unskip%
+    \ifbool{vmode}{}{\unskip}%
     \ezlib@ifAtEndProof{\ezlib@ezeq@go{#1}{\qedhere}}{\ezlib@ezeq@go{#1}{}}%
   }
 }{
-  \def\[#1\]{\unskip\ezlib@ezeq@go{#1}{}}
+  \def\[#1\]{\ifbool{vmode}{}{\unskip}\ezlib@ezeq@go{#1}{}}
 }
 
 \newrobustcmd{\noAutoQed}{}
@@ -1141,7 +1141,7 @@
   % Not sure why we need \unskip both here and in \[ \]
   \def\ezlib@ezeq@go##1##2{%
     % Not sure why we need this \unskip to....
-    \unskip%
+    \ifbool{vmode}{}{\unskip}%
     \begingroup%
     #2%
     \def\ezlib@ezeq@qedhereMaybe{##2}
