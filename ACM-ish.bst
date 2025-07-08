@@ -611,6 +611,47 @@ FUNCTION { strip.doi } % UTAH
   if$
 }
 
+% Added by Ziv in 2025
+FUNCTION { string.or }
+{
+  % Input: ..., a, b
+  % Output: ..., [a, b, or ""]
+  % Returns
+  % - a if it's not empty.or.unknown,
+  % - else b if it's not empty.or.unknown,
+  % - else ""
+  % (I.e. if b is unknown but nonempty, this yields "" instead of "??")
+  swap$ duplicate$ empty.or.unknown
+    { pop$ }
+    { swap$ pop$ }
+  if$
+  "" swap$ duplicate$ empty.or.unknown
+    { pop$ }
+    { swap$ pop$ }
+  if$
+}
+
+% Added by Ziv in 2025
+FUNCTION { item.is.preprint }
+{
+  % Returns true if either of publisher or archiveprefix/eprinttype is a prefix of the other
+  % (E.g. publisher={arXiv preprint}, archiveprefix={arXiv})
+  % Unless either is empty.or.unknown, in which case return false
+  % Half-heartedly attempts to convert both to lowercase when comparing
+  publisher empty.or.unknown
+  archiveprefix eprinttype string.or empty.or.unknown
+  or
+    { #0 }
+    {
+      publisher "l" change.case$ 't :=
+      archiveprefix eprinttype string.or "l" change.case$ 'u :=
+      t u text.length$ text.prefix$ u =
+      u t text.length$ text.prefix$ t =
+      or
+    }
+  if$
+}
+
 %
 % Change by BV: added standard prefix to URL
 %
@@ -623,7 +664,10 @@ FUNCTION { output.doi } % UTAH
       %% see output.url for further discussion.
       "\urldef\tempurl%" writeln
       "\doi{" strip.doi * "}%" * writeln
-      "\showDOI{\tempurl}" writeln
+      item.is.preprint
+        { "\showDOIpreprint{\tempurl}" writeln }
+        { "\showDOI{\tempurl}" writeln }
+      if$
     }
   if$
 }
@@ -705,34 +749,27 @@ FUNCTION { output.note.check } % UTAH
   if$
 }
 
-% Changed by Ziv in 2022
-% - Use \showeprint
-% - Don't output if DOI is defined
+% Changed by Ziv in 2025
+% - Use \showeprint, or \showeprintBeforeDOI if there's a DOI
+% - Don't output unless we think the item is a preprint
 FUNCTION { output.eprint } %
 { % return with stack empty
-  doi empty.or.unknown
+  item.is.preprint
   {
     eprint empty.or.unknown
       { }
-      { "\showeprint"
-          archiveprefix empty.or.unknown
-            { eprinttype empty.or.unknown
-                { "{}" * }
-                { "{" eprinttype "}" * * * }
-              if$
-            }
-            { "{" archiveprefix "}" * * * }
-          if$
-        "{" eprint "}" * * *
-          primaryclass empty.or.unknown
-            { eprintclass empty.or.unknown
-              { "{}" * }
-              { "{" eprintclass "}" * * * }
-              if$
-            }
-            { "{" primaryclass "}" * * * }
-          if$
-        writeln
+      {
+         doi empty.or.unknown
+         { "\showeprint{" }
+         { "\showeprintBeforeDOI{" }
+         if$
+         archiveprefix eprinttype string.or *
+         "}{" *
+         eprint *
+         "}{" *
+         primaryclass eprintclass string.or *
+         "}" *
+         writeln
       }
     if$
   }
@@ -3057,11 +3094,15 @@ FUNCTION { begin.bib }
   "\providecommand\natexlab[1]{#1}" writeln
   "" writeln
   % \showeprint changed by Ziv
+  % \showeprintBeforeDOI added by Ziv
+  % \showDOIpreprint added by Ziv
   "\providecommand\showeprint[3]{\hrefeprint{#1}{#2}{#1:\texttt{#2}}.}" writeln
+  "\providecommand\showeprintBeforeDOI\showeprint" writeln
+  "\providecommand\showDOIpreprint[1]{\unskip}" writeln
   "\providecommand\hrefeprint[3]{%" writeln
   "  \IfEqCase{#1}{%" writeln
   "    {arXiv}{\href{https://arxiv.org/abs/#2}{#3}}%" writeln
-  "    {arxiv}{\href{https://arxiv.org/abs/#2}{#3}}%" writeln
+  "    {SSRN}{\href{https://www.ssrn.com/abstract=#2}{#3}}%" writeln
   "  }[#3]%" writeln
   "}" writeln
   "\DeclareUrlCommand\doi{\urlstyle{same}%" writeln
