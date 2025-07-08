@@ -652,6 +652,8 @@ FUNCTION { item.is.preprint }
   if$
 }
 
+% Changed by Ziv in 2025
+% - Use \showDOIpreprint if we think the item is a preprint
 %
 % Change by BV: added standard prefix to URL
 %
@@ -776,7 +778,6 @@ FUNCTION { output.eprint } %
   { }
   if$
 }
-
 
 %
 % Changes by BV 2011/04/15.  Do not output
