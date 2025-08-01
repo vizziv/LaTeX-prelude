@@ -662,14 +662,11 @@ FUNCTION { output.doi } % UTAH
   doi empty.or.unknown
     { }
     {
-      %% Use \urldef here for the same reason it is used in output.url,
-      %% see output.url for further discussion.
-      "\urldef\tempurl%" writeln
-      "\doi{" strip.doi * "}%" * writeln
       item.is.preprint
-        { "\showDOIpreprint{\tempurl}" writeln }
-        { "\showDOI{\tempurl}" writeln }
+        { "\showDOIpreprint{\doi{" writeln }
+        { "\showDOI{\doi{" writeln }
       if$
+      strip.doi "}}" * writeln
     }
   if$
 }
@@ -3097,7 +3094,7 @@ FUNCTION { begin.bib }
   % \showeprint changed by Ziv
   % \showeprintBeforeDOI added by Ziv
   % \showDOIpreprint added by Ziv
-  "\providecommand\showeprint[3]{\hrefeprint{#1}{#2}{#1:\texttt{#2}}.}" writeln
+  "\providecommand\showeprint[3]{\hrefeprint{#1}{#2}{#1:\texttt{\nolinkurl{#2}}}.}" writeln
   "\providecommand\showeprintBeforeDOI\showeprint" writeln
   "\providecommand\showDOIpreprint[1]{\unskip}" writeln
   "\providecommand\hrefeprint[3]{%" writeln
@@ -3106,8 +3103,7 @@ FUNCTION { begin.bib }
   "    {SSRN}{\href{https://www.ssrn.com/abstract=#2}{#3}}%" writeln
   "  }[#3]%" writeln
   "}" writeln
-  "\DeclareUrlCommand\doi{\urlstyle{same}%" writeln
-  "  \def\UrlLeft##1\UrlRight{\href{https://doi.org/##1}{doi:\texttt{##1}}}}" writeln
+  "\providecommand\doi[1]{\href{https://doi.org/#1}{doi:\texttt{\nolinkurl{#1}}}}" writeln
 }
 
 EXECUTE {begin.bib}
