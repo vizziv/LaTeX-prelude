@@ -316,6 +316,8 @@ Other:
 - `\epsilon` and `\phi`: now refer to `\varepsilon` and `\varphi`
   - Use `\LaTeXepsilon` and `\LaTeXphi` for old versions
 - `\argmin`, `\argmax`, `\liminf`, `\limsup`: math operators
+- `\widebar`: like `\widetilde`, and a little nicer than `\overline`
+  - Omitted if another package defines it first, e.g. newtxmath
 
 
 ## Feature: cleveref
