@@ -1196,10 +1196,7 @@
 %%% Implement \yesnumber without cleveref compatibility
 
 \newrobustcmd{\ezlib@yesnumber@nocleveref}{%
-  % To prevent weird spacing issues, need \mathclose{} and \mathopen{} around \refstepcounter
-  \mathclose{}%
   \refstepcounter{equation}%
-  \mathopen{}%
   \tag{\theequation}%
 }
 
@@ -1229,11 +1226,8 @@
 }
 
 \newrobustcmd{\ezlib@yesnumber@cleveref}{%
-  % To prevent weird spacing issues, need \mathclose{} and \mathopen{} around \refstepcounter
-  \mathclose{}%
-  \refstepcounter{equation}%
-  \mathopen{}%
   \begingroup%
+    \refstepcounter{equation}%
     \let\make@df@tag@@\ezlib@make@df@tag@@
     \let\make@df@tag@@@\ezlib@make@df@tag@@@
     \tag{\theequation}%
