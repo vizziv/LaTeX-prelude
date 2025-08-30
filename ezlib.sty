@@ -1473,6 +1473,14 @@
   \newmathcommand{#2}{\mathbb{#1}}
 }
 
+\LoopCommands{\lettersAll}[bf#1]{
+  \newmathcommand{#2}{\mathbf{#1}}
+}
+
+\LoopCommands{\lettersAll}[sf#1]{
+  \newmathcommand{#2}{\mathsf{#1}}
+}
+
 \LoopCommands{\lettersUppercase}[cal#1]{
   \newmathcommand{#2}{\mathcal{#1}}
 }
@@ -1832,7 +1840,7 @@
 % Used in inline headings only by default to end them with a period
 % First macro copied from amsgen (part of amsmath)
 \def\ezlib@addpunct#1{\ifnum\spacefactor>\@m \else#1\fi}
-\def\ezlib@addpunctafter#1#2{#2\ezlib@addpunct{#1}}
+\def\ezlib@addpunctafter#1#2{\ifblank{#2}{}{#2\ezlib@addpunct{#1}}}
 
 
 \ifdefstring{\ezlib@headings}{fancy}{
