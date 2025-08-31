@@ -308,7 +308,7 @@ Shortcuts for letters in different math fonts:
 
 - `\bbA`, ..., `\bbZ`: short for `\mathbb{A}`, ..., `\mathbb{Z}` (uppercase only)
 - `\calA`, ..., `\calZ`: short for `\mathcal{A}`, ..., `\mathcal{Z}` (uppercase only)
-- `\bfA`, ..., `\bfz`: short for `\mathbf{A}`, ..., `\mathbf{Z}` (lowecase and uppercase)
+- `\bfA`, ..., `\bfz`: short for `\mathbf{A}`, ..., `\mathbf{z}` (lowecase and uppercase)
 - `\sfA`, ..., `\sfz`: short for `\mathsf{A}`, ..., `\mathsf{z}` (lowecase and uppercase)
 
 Other:
