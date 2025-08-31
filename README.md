@@ -286,11 +286,6 @@ Various math notation shortcuts and conventions
 
 Provides `\lr` and `\lrStarAfter` from delimiters above (but not the others)
 
-Caligraphic and blackboard bold shortcuts:
-
-- `\bbA`, ..., `\bbZ`: short for `\mathbb{A}`, ..., `\mathbb{Z}`
-- `\calA`, ..., `\calZ`: short for `\mathcal{A}`, ..., `\mathcal{Z}`
-
 Probability (best with delimiters option on, too):
 
 - `\P`, `\E`, and `\Var`: have interface like delimiters
@@ -308,6 +303,13 @@ Probability (best with delimiters option on, too):
       - Limitation: manual sizing won't work
 - `\DeclareProbabilityCommand`: declare new commands that work like `\P`
   - Example: `\DeclareProbabilityCommand{\Cov}{Cov}`
+
+Shortcuts for letters in different math fonts:
+
+- `\bbA`, ..., `\bbZ`: short for `\mathbb{A}`, ..., `\mathbb{Z}` (uppercase only)
+- `\calA`, ..., `\calZ`: short for `\mathcal{A}`, ..., `\mathcal{Z}` (uppercase only)
+- `\bfA`, ..., `\bfz`: short for `\mathbf{A}`, ..., `\mathbf{Z}` (lowecase and uppercase)
+- `\sfA`, ..., `\sfz`: short for `\mathsf{A}`, ..., `\mathsf{z}` (lowecase and uppercase)
 
 Other:
 
@@ -331,7 +333,7 @@ Loads the cleveref package and a bit more
 - `\cCrefname`: simultaneous `\crefname` and `\Crefname`
 - Allows spaces in comma-separated list of labels in `\cref` and `\Cref`
 
-Mechanism for registering alternate versions of names
+Mechanism for registering alternate versions of names:
 
 - `\crefShortened`: wrap around a `\crefname` or similar to register a shortened version
   - Example: `\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}`
@@ -347,7 +349,7 @@ Boolean feature (enabled by `default=maximal`)
 
 Declares a default set of theorem environments
 
-Theorem style synonyms, with support for class-specific analogues
+Theorem style synonyms, with support for class-specific analogues:
 
 - `\ezlibPlain`: plain or class-specific analogue (e.g. acmplain for acmart)
 - `\ezlibDefinition`: definition or analogue
@@ -356,7 +358,7 @@ Theorem style synonyms, with support for class-specific analogues
 - If any of the above are already defined, they will not be redefined
   - This allows for changing styles by redefining the commands
 
-Other definitions
+Other:
 
 - `\begin{case}[...] ... \end{case}`: cases in a proof
 - `\noqed`: suppress the QED at the end of a proof
@@ -369,7 +371,7 @@ Boolean feature (enabled by `default=maximal`)
 
 Loads the alrogithm package and slightly tweaks algorithm formatting
 
-- Passes the value of `number within` as an option
+- Passes the value of `number within` as an option to the algorithm package
   - See top of guide for how to disable package options
 
 
