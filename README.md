@@ -422,7 +422,7 @@ Changes fonts used throughout the document
 Possible values:
 
 - `font=none`: don't change any fonts
-- `font=libertine`: use font set based around Libertine and Biolinum
+- `font=libertinus` or `font=libertine`: use font set based around Libertinus (fork of Libertine and Biolinum)
 - `font=charter`: use font set based around Charter and Vera Sans
 - `font=palatino`: use font set based around Palatino
 - Unless `font=none`, also loads fontenc with option `T1`
@@ -434,7 +434,7 @@ Other configuration:
 
 Behavior with `default=maximal`:
 
-- If a known built-in LaTeX class is loaded, default to `font=libertine`
+- If a known built-in LaTeX class is loaded, default to `font=libertinus`
   - These are: article, report, book
 - Otherwise, conservatively default to `font=none`
   - This avoids conflicts with journal/conference class files
