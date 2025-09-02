@@ -422,7 +422,9 @@ Changes fonts used throughout the document
 Possible values:
 
 - `font=none`: don't change any fonts
-- `font=libertinus` or `font=libertine`: use font set based around Libertinus (fork of Libertine and Biolinum)
+- `font=libertine`: use font set based around Libertine and Biolinum
+- `font=libertinus`: use font set based around Libertinus (fork of Libertine and Biolinum)
+  - `libertinus` is newer and recommended over `libertine`
 - `font=charter`: use font set based around Charter and Vera Sans
 - `font=palatino`: use font set based around Palatino
 - Unless `font=none`, also loads fontenc with option `T1`

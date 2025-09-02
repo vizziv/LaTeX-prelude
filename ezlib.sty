@@ -430,7 +430,9 @@
 % Possible values:
 
 % - `font=none`: don't change any fonts
-% - `font=libertinus` or `font=libertine`: use font set based around Libertinus (fork of Libertine and Biolinum)
+% - `font=libertine`: use font set based around Libertine and Biolinum
+% - `font=libertinus`: use font set based around Libertinus (fork of Libertine and Biolinum)
+%   - `libertinus` is newer and recommended over `libertine`
 % - `font=charter`: use font set based around Charter and Vera Sans
 % - `font=palatino`: use font set based around Palatino
 % - Unless `font=none`, also loads fontenc with option `T1`
@@ -731,11 +733,16 @@
 
 % Loading the fonts
 % TODO: should we avoid "\PassOptionsToPackage" because it's our hacky disable switch?
-\ifdefstring{\ezlib@font}{libertine}{
-  \renewcommand{\ezlib@font}{libertinus}
-}{}
 \ifdefstring{\ezlib@font}{libertinus}{
-  \ezlib@RequirePackageWithOptions{libertinus, tt=false}{newtx}
+  \ezlib@RequirePackageWithOptions{tt=false}{libertinus}
+  \ezlib@RequirePackageWithOptions{libertinus}{newtxmath}
+  \PassOptionsToPackage{scaled=0.95, varqu}{zi4}
+  \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
+  \booltrue{ezlib@headings@sf}
+}{}
+\ifdefstring{\ezlib@font}{libertine}{
+  \ezlib@RequirePackageWithOptions{tt=false}{libertine}
+  \ezlib@RequirePackageWithOptions{libertine}{newtxmath}
   \PassOptionsToPackage{scaled=0.95, varqu}{zi4}
   \PassOptionsToPackage{scaled=0.9025}{sourcecodepro}
   \booltrue{ezlib@headings@sf}
