@@ -332,15 +332,18 @@ Loads the cleveref package and a bit more
   - See top of guide for how to disable package options
 - `\cCrefname`: simultaneous `\crefname` and `\Crefname`
 - Allows spaces in comma-separated list of labels in `\cref` and `\Cref`
+- Tweaks default conjunctions: en-dashes for ranges, oxford comma, other tweaks
 
 Mechanism for registering alternate versions of names:
 
 - `\crefShortened`: wrap around a `\crefname` or similar to register a shortened version
   - Example: `\crefShortened{\cCrefname{theorem}{Thm.}{Thms.}}`
-  - To omit the final "and": `\crefShortened{\def\creflastconjunction{, }\def\crefpairconjunction{, }}`
+  - To omit the final "and": `\crefShortened{\crefRemoveAnds}`
+    - `\crefRemoveAnds` redefines conjunctions to be just commas and en-dashes
 - `\crefShorten`: redefine all names using the shortened versions
   - This just executes all the code registered with `\crefShortened`
   - Redefinitions are local to any enclosing group
+    - Unless you try to do otherwise, e.g. using `\gdef` inside `\crefShortened`
 
 
 ## Feature: theorems
