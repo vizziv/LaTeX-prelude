@@ -1336,8 +1336,13 @@
       \Hy@SaveLastskip%
       \phantomsection%
       \newcounter{ezlib@restate@restatements #5}%
-      \label{restatement_0@#5}
-      \@ifstar{\label{restatement@#5}}{\label{statement@#5}}#1%
+      \@ifstar{%
+        \label{restatement@#5}%
+        \stepcounter{ezlib@restate@restatements #5}%
+        \label{restatement_1@#5}
+      }{%
+        \label{statement@#5}%
+      }#1%
       \Hy@RestoreLastskip%
       \begingroup%
       \renewcommand{\ezlib@restate@thmheadwrap}[1]{\@ifstar{\hyperref[#5]{####1}}{\hyperref[restatement@#5]{####1}}#1}%
@@ -1396,9 +1401,15 @@
   \ifcsdef{ezlib@restate #2}{%
     \Hy@SaveLastskip%
     \phantomsection%
-    \stepcounter{ezlib@restate@restatements #2}%
-    \label{restatement_\csuse{theezlib@restate@restatements #2}@#2}%
-    \ifnumcomp{\value{ezlib@restate@restatements #2}}{=}{1}{\@ifstar{\label{restatement@#2}}{\label{statement@#2}}#1}{}%
+    \@ifstar{%
+      \ifnumcomp{\value{ezlib@restate@restatements #2}}{=}{0}{%
+        \label{restatement@#2}%
+      }{}%
+      \stepcounter{ezlib@restate@restatements #2}%
+      \label{restatement_\csuse{theezlib@restate@restatements #2}@#2}%
+    }{%
+      \label{statement@#2}%
+    }#1%
     \Hy@RestoreLastskip%
     \begingroup%
     \renewcommand{\ezlib@restate@thmheadwrap}[1]{\@ifstar{\hyperref[#2]{##1}}{\hyperref[restatement@#2]{##1}}#1}%
