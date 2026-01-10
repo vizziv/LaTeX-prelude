@@ -1276,12 +1276,24 @@
 \ifezlib@ezrestate
 
 
+%%% Adding hook to theorem head to enable links between (re)statements
+
+\newcommand{\ezlib@restate@thmheadwrap}[1]{#1}
+
+\patchcmd{\@begintheorem}{%
+  \thm@swap\swappedhead\thmhead{#1}{#2}{#3}%
+}{%
+  \ezlib@restate@thmheadwrap{{\thm@swap\swappedhead\thmhead{#1}{#2}{#3}}}%
+}{}{}
+
+
 %%% Declaring restatables
 
 \newtoks\ezlib@ezrestate@collect@toks
 
 % Variant of \thmt@collect@body
-% Collects until \end{env} instead of the end of the current environment
+% Collects until \end{#1} instead of the end of the current environment
+% Calls #2{captured text} at the end
 \long\def\ezlib@ezrestate@collect@body@of#1#2#3\end#4{%
   \expandafter\ezlib@ezrestate@collect@toks\expandafter{\the\ezlib@ezrestate@collect@toks #3}%
   \ifstrequal{#1}{#4}{%
@@ -1291,12 +1303,6 @@
     \ezlib@ezrestate@collect@body@of{#1}{#2}%
   }%
 }
-
-\ifdef{\restatably}{%
-  \PackageError{ezlib}{%
-    Command \restatably already defined, being overwritten%
-  }{}%
-}{}
 
 \newrobustcmd{\restatably}{%
   \@ifstar{%
@@ -1326,8 +1332,16 @@
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
   \ifdefequal{#4}{\label}{%
     \ezlib@ezrestate@collect@toks{}%
-    \ifstrempty{#3}{%
-      \long\def\ezlib@ezrestate@collect@cont##1{%
+    \long\def\ezlib@ezrestate@collect@cont##1{%
+      \Hy@SaveLastskip%
+      \phantomsection%
+      \newcounter{ezlib@restate@restatements #5}%
+      \label{restatement_0@#5}
+      \@ifstar{\label{restatement@#5}}{\label{statement@#5}}#1%
+      \Hy@RestoreLastskip%
+      \begingroup%
+      \renewcommand{\ezlib@restate@thmheadwrap}[1]{\hyperref[restatement@#5]{####1}}%
+      \ifstrempty{#3}{%
         \begin{restatable#1}{#2}{ezlib@restate #5}%
           \label{#5}%
           % Need this or else `\ezlib@ezlist@currenvir` gets set to "restatable"
@@ -1335,9 +1349,8 @@
           \def\ezlib@ezlist@currenvir{#2}%
           ##1%
         \end{restatable#1}%
-      }%
-    }{%
-      \long\def\ezlib@ezrestate@collect@cont##1{%
+      }{%
+        \begingroup%
         \begin{restatable#1}[#3]{#2}{ezlib@restate #5}%
           \label{#5}%
           % Need this or else `\ezlib@ezlist@currenvir` gets set to "restatable"
@@ -1346,6 +1359,7 @@
           ##1%
         \end{restatable#1}%
       }%
+      \endgroup%
     }%
     \csxappto{ezlib@restate@all ezlib@region@\csuse{the\ezlib@numberwithin} ezlib@env@#2}{%
       \noexpand\ezlib@restateAll@cont{#5}%
@@ -1381,7 +1395,16 @@
 % #2 is the label we want to restate
 \def\ezlib@restate@go#1\ref#2{%
   \ifcsdef{ezlib@restate #2}{%
+    \Hy@SaveLastskip%
+    \phantomsection%
+    \stepcounter{ezlib@restate@restatements #2}%
+    \label{restatement_\csuse{theezlib@restate@restatements #2}@#2}%
+    \ifnumcomp{\value{ezlib@restate@restatements #2}}{=}{1}{\@ifstar{\label{restatement@#2}}{\label{statement@#2}}#1}{}%
+    \Hy@RestoreLastskip%
+    \begingroup%
+    \renewcommand{\ezlib@restate@thmheadwrap}[1]{\hyperref[#2]{##1}}%
     \csuse{ezlib@restate #2}#1%
+    \endgroup%
   }{%
     \PackageError{ezlib}{%
       Attempted to restate undeclared theorem with label #2%
