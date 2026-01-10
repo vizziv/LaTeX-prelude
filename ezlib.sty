@@ -1340,7 +1340,7 @@
       \@ifstar{\label{restatement@#5}}{\label{statement@#5}}#1%
       \Hy@RestoreLastskip%
       \begingroup%
-      \renewcommand{\ezlib@restate@thmheadwrap}[1]{\hyperref[restatement@#5]{####1}}%
+      \renewcommand{\ezlib@restate@thmheadwrap}[1]{\@ifstar{\hyperref[#5]{####1}}{\hyperref[restatement@#5]{####1}}#1}%
       \ifstrempty{#3}{%
         \begin{restatable#1}{#2}{ezlib@restate #5}%
           \label{#5}%
@@ -1350,7 +1350,6 @@
           ##1%
         \end{restatable#1}%
       }{%
-        \begingroup%
         \begin{restatable#1}[#3]{#2}{ezlib@restate #5}%
           \label{#5}%
           % Need this or else `\ezlib@ezlist@currenvir` gets set to "restatable"
@@ -1402,7 +1401,7 @@
     \ifnumcomp{\value{ezlib@restate@restatements #2}}{=}{1}{\@ifstar{\label{restatement@#2}}{\label{statement@#2}}#1}{}%
     \Hy@RestoreLastskip%
     \begingroup%
-    \renewcommand{\ezlib@restate@thmheadwrap}[1]{\hyperref[#2]{##1}}%
+    \renewcommand{\ezlib@restate@thmheadwrap}[1]{\@ifstar{\hyperref[#2]{##1}}{\hyperref[restatement@#2]{##1}}#1}%
     \csuse{ezlib@restate #2}#1%
     \endgroup%
   }{%
