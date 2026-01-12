@@ -34,20 +34,20 @@ Each of the features below can be enabled or disabled with an option
 
 Full feature list, with non-boolean features marked:
 
-- `ezlist`
-- `ezeq`
-- `ezrestate`
-- `delimiters`
-- `notation`
-- `cleveref`
-- `theorems`
-- `algorithm`
-- `mathic`
-- `packages`
-- `font` (non-boolean)
-- `number within` (non-boolean)
-- `margin` (non-boolean)
-- `headings` (non-boolean)
+- [`ezlist`]
+- [`ezeq`]
+- [`ezrestate`]
+- [`delimiters`]
+- [`notation`]
+- [`cleveref`][`cleveref` feature]
+- [`theorems`]
+- [`algorithm`][`algorithm` feature]
+- [`mathic`]
+- [`packages`]
+- [`font`] (non-boolean)
+- [`number within`] (non-boolean)
+- [`margin`] (non-boolean)
+- [`headings`] (non-boolean)
 
 Throughout, many packages are loaded with options
 
@@ -59,7 +59,7 @@ Throughout, many packages are loaded with options
   - Usually, `\PassOptionsToPackage` adds additional options
   - But this package detects if `\PassOptionsToPackage` has been called already
 - Random hack: `\PassOptionsToPackage{no ezlib}{pkg}` prevents `pkg` from loading
-  - Should work to disable things loaded by the `packages` feature, e.g. [`natbib`] or [`microtype`]
+  - Should work to disable things loaded by the [`packages`] feature, e.g. [`natbib`] or [`microtype`]
   - But could break things if used on something more essential, e.g. [`mathtools`]
 
 
@@ -142,11 +142,14 @@ Additional notes:
   - It prevents page breaks between the heading and the list
   - Main use case is lists that appear at the start of a theorem/lemma/etc.
 
-### Subfeature: subenv (disable with `ezlist subenv=false`)
 
-Also introduces [`enumitem`] key `subenv` for referencing parts of therems/lemmas/etc.
+### Subfeature: `ezlist subenv`
 
-- Works with `ezlist`, but unfortunately not other list types
+Introduces [`enumitem`] key `subenv` for referencing parts of therems/lemmas/etc.
+
+- Enabled by default if [`ezlist`] feature is enabled
+  - Disable with `ezlist subenv=false`
+- Works with `ezlist` list environment, but unfortunately not other list types
 - Usage: use `\*[subenv]` inside a theorem/lemma/etc., then use `\label` within items
   - Result: `\cref` for those labels yields a `subtheorem` reference, e.g. "Theorem 1.2(c)"
 - A few options to refer to just the part label, e.g. just "(c)"
@@ -185,16 +188,6 @@ Makes `\[` and `\]` a (slightly) smarter equation interface
   - It is local to the `\[ \]` in which it appears
   - The optional argument of `\allowdisplaybreaks` is not supported
   - Remember that LaTeX provies `\\*` for non-breakable newlines
-- Automatically inserts `\qedhere` if immediately before `\end{proof}`
-  - When `ezlist` is activated, also inserts it before `\*/ \end{proof}`
-  - Won't do anything if there's already a `\qedhere`
-  - Put `\noAutoQed` somewhere in the equation to disable this for one equation
-    - `\noAutoQed` has no other effect
-  - Use `ezeq auto qed=false` to disable this globally
-- Also slightly changes how `\qedhere` behaves
-  - The new version is simpler and a bit less buggy for equation numbers on the right
-  - But the new version is incompatible with equation numbers on the left
-  - If this package detects equation numbers are on the left, will use the old version
 
 Other configuration:
 
@@ -202,8 +195,25 @@ Other configuration:
   - Equivalent to `ezeq number labeled=true` or `ezeq number all=false`
 - `ezeq number all`: number all equations
   - Equivalent to `ezeq number labeled=false` or `ezeq number all=true`
-- `ezeq auto qed` (boolean): whether to automatically place `\qedhere` in equations when at the end of a proof
-  - Defaults to true
+
+
+### Subfeature: `ezeq auto qed`
+
+Automatically inserts `\qedhere` if immediately before `\end{proof}`
+
+- Enabled by default if [`ezlist`] feature is enabled
+  - Disable with `ezlist subenv=false`
+- When [`ezlist`] is enabled, also inserts `\qedhere` before `\*/ \end{proof}`
+- Won't do anything if there's already a `\qedhere`
+- Put `\noAutoQed` somewhere in the equation to disable this for one equation
+  - `\noAutoQed` has no other effect
+- Use `ezeq auto qed=false` to disable this globally
+
+Also slightly changes how `\qedhere` behaves
+
+- The new version is simpler and a bit less buggy for equation numbers on the right
+- But the new version is incompatible with equation numbers on the left
+- If this package detects equation numbers are on the left, will use the old version
 
 
 ## Feature: `ezrestate`
@@ -302,13 +312,13 @@ Boolean feature (enabled by `default=maximal`)
 
 Various math notation shortcuts and conventions
 
-Provides `\lr` and `\lrStarAfter` from `delimiters` above (but not the others)
+Provides `\lr` and `\lrStarAfter` from [`delimiters`] above (but not the others)
 
-Probability (best with `delimiters` feture on, too):
+Probability (best with [`delimiters`] feture on, too):
 
 - `\P`, `\E`, and `\Var`: have interface like delimiters macros, e.g. `\gp`
   - But they also support subscripts/superscripts and primes
-  - If `delimiters` feature isn't on, then manual sizing doesn't work
+  - If [`delimiters`] feature isn't on, then manual sizing doesn't work
 - `\given`: synonym for `\mid`
 - Example: `\E_{X \sim \pi}*{\frac{1}{2} X^2 \given X > 3}`
 - Change appearance with the following two options
@@ -316,7 +326,7 @@ Probability (best with `delimiters` feture on, too):
     - Also supported: `bb`, `rm`, `sf`, and any X where a `\mathX` command exists
   - `probability delim` (default: `probability delim=sq`)
     - Also supported: `p`, `curl`, and any X where an `\Xgp` command exists
-      - Without `delimiters` on, supports `p`, `sq`/`b`, and `curl`/`B`
+      - Without [`delimiters`] on, supports `p`, `sq`/`b`, and `curl`/`B`
     - Also supported: `[]`, `()`, and any valid followup to `\lrStarAfter`
       - Limitation: manual sizing won't work
 - `\DeclareProbabilityCommand`: declare new commands that work like `\P`
@@ -390,9 +400,9 @@ Other:
 
 Boolean feature (enabled by `default=maximal`)
 
-Loads the [`alrogithm`] package and slightly tweaks its formatting
+Loads the [`algorithm`] package and slightly tweaks its formatting
 
-- Passes the value of `number within` as an option to the [`algorithm`] package
+- Passes the value of [`number within`] as an option to the [`algorithm`] package
   - See top of guide for how to disable package options
 
 
@@ -428,7 +438,7 @@ Loads various packages, some with options
 - [`natbib`], with options `square, numbers, sort&compress`
 - [`subcaption`], with options `font=small, labelformat=simple`
   - If options are passed, also tweaks `\thesubfigure` to include parentheses
-  - If `ezlist subenv` is enabled, uses `\subenvFormatLabel` in `\thesubfigure`
+  - If [`ezlist subenv`] is enabled, uses `\subenvFormatLabel` in `\thesubfigure`
 - Not a package, but also turns on `\frenchspacing`
 
 See top of guide for how to disable package options
@@ -520,7 +530,7 @@ Valid options:
   - E.g. for short documents with a strict page limit
   - Equivalent to `headings=fancy, headings inline=true, headings compact title=true` (see below)
 
-Other configuriation:
+Other configuration:
 
 - `headings sf` (boolean): set to true to make headings sans
   - Defaults to true if the font has a nice sans pairing, false otherwise
@@ -534,8 +544,7 @@ Other configuriation:
 
 
 [`acmart`]: https://ctan.org/pkg/acmart
-[`algorithm`]: https://ctan.org/pkg/algorithm
-[`alrogithm`]: https://ctan.org/pkg/alrogithm
+[`algorithm`]: https://ctan.org/pkg/algorithms
 [`booktabs`]: https://ctan.org/pkg/booktabs
 [`calc`]: https://ctan.org/pkg/calc
 [`caption`]: https://ctan.org/pkg/caption
@@ -548,4 +557,22 @@ Other configuriation:
 [`microtype`]: https://ctan.org/pkg/microtype
 [`natbib`]: https://ctan.org/pkg/natbib
 [`subcaption`]: https://ctan.org/pkg/subcaption
-[`tikz`]: https://ctan.org/pkg/tikz
+[`tikz`]: https://ctan.org/pkg/pgf
+
+[`ezlist`]: #feature-ezlist
+[`ezeq`]: #feature-ezeq
+[`ezrestate`]: #feature-ezrestate
+[`delimiters`]: #feature-delimiters
+[`notation`]: #feature-notation
+[`cleveref` feature]: #feature-cleveref
+[`theorems`]: #feature-theorems
+[`algorithm` feature]: #feature-algorithm
+[`mathic`]: #feature-mathic
+[`packages`]: #feature-packages
+[`font`]: #feature-font
+[`number within`]: #feature-number-within
+[`margin`]: #feature-margin
+[`headings`]: #feature-headings
+
+[`ezlist subenv`]: #subfeature-ezlist-subenv
+[`ezeq auto qed`]: #subfeature-ezeq-auto-qed
