@@ -11,12 +11,12 @@
 % This package can be used in two main ways
 
 % - Enable all of features with the `default` option, then disable one by one
-%   - Best for new documents of class article, book, report, or acmart
+%   - Best for new documents of class `article`, `book`, `report`, or [`acmart`]
 % - Enable features one by one
 %   - Best when integrating into an existing document
-%   - Best when using a class other than article, book, report, or acmart
+%   - Best when using a class other than `article`, `book`, `report`, or [`acmart`]
 % - If no options are passed, the package should do (almost) nothing
-%   - The "almost": loading kvoptions and etoolbox, and defining some private commands
+%   - The "almost": loading [`kvoptions`] and [`etoolbox`] and defining some private commands
 
 % Each of the features below can be enabled or disabled with an option
 
@@ -42,35 +42,36 @@
 
 % Full feature list, with non-boolean features marked:
 
-% - ezlist
-% - ezeq
-% - ezrestate
-% - delimiters
-% - notation
-% - cleveref
-% - theorems
-% - algorithm
-% - mathic
-% - packages
-% - font (non-boolean)
-% - number within (non-boolean)
-% - margin (non-boolean)
-% - headings (non-boolean)
+% - `ezlist`
+% - `ezeq`
+% - `ezrestate`
+% - `delimiters`
+% - `notation`
+% - `cleveref`
+% - `theorems`
+% - `algorithm`
+% - `mathic`
+% - `packages`
+% - `font` (non-boolean)
+% - `number within` (non-boolean)
+% - `margin` (non-boolean)
+% - `headings` (non-boolean)
 
 % Throughout, many packages are loaded with options
 
 % - There are two ways to change/disable options for a package `pkg`
-%   - Load pkg before this package
+%   - Load `pkg` before this package
 %   - Call `\PassOptionsToPackage{options}{pkg}` before this package
 %     - `\PassOptionsToPackage{}{pkg}` will prevent options
-% - To clarify, the \PassOptionsToPackage behavior is specific to this package
-%   - Usually, \PassOptionsToPackage adds additional options
-%   - But this package detects if \PassOptionsToPackage has been called already
-% - Random hack: `\PassOptionsToPackage{no ezlib}{pkg}` prevents pkg from loading
-%   - This could break stuff, but should work for things like natbib and microtype
+% - To clarify, the `\PassOptionsToPackage` behavior is specific to this package
+%   - Usually, `\PassOptionsToPackage` adds additional options
+%   - But this package detects if `\PassOptionsToPackage` has been called already
+% - Random hack: `\PassOptionsToPackage{no ezlib}{pkg}` prevents `pkg` from loading
+%   - Should work to disable things loaded by the `packages` feature, e.g. [`natbib`] or [`microtype`]
+%   - But could break things if used on something more essential, e.g. [`mathtools`]
 
 
-% ## Feature: ezlist
+% ## Feature: `ezlist`
 
 % Boolean feature (enabled by `default=maximal`)
 
@@ -102,7 +103,7 @@
 
 % ### Advanced usage
 
-% More generally, use `[]` to pass any options the enumitem package supports
+% More generally, use `[]` to pass any options the [`enumitem`] package supports
 
 % Optional feature: explicit start/end:
 
@@ -141,29 +142,29 @@
 % Additional notes:
 
 % - The environment `\*` uses is called `ezlist`
-%   - For modifying options with `\setlist`, cleveref name, etc.
-% - This package loads enumitem with option `shortlabels` and does some other formatting
+%   - Use this name to modify its options with [`enumitem`]'s `\setlist`, etc.
+% - This package loads [`enumitem`] with option `shortlabels` and does some other formatting
 %   - See top of guide for how to disable package options
-% - This package defines an enumitem key `afterheading` for lists after inline headings
+% - This package defines an [`enumitem`] key `afterheading` for lists after inline headings
 %   - It ensures the list starts on a new line after the heading
 %   - It prevents page breaks between the heading and the list
 %   - Main use case is lists that appear at the start of a theorem/lemma/etc.
 
 % ### Subfeature: subenv (disable with `ezlist subenv=false`)
 
-% Also introduces enumitem key `subenv` for referencing parts of therems/lemmas/etc.
+% Also introduces [`enumitem`] key `subenv` for referencing parts of therems/lemmas/etc.
 
-% - Works with ezlist, but unfortunately not other list types
+% - Works with `ezlist`, but unfortunately not other list types
 % - Usage: use `\*[subenv]` inside a theorem/lemma/etc., then use `\label` within items
 %   - Result: `\cref` for those labels yields a `subtheorem` reference, e.g. "Theorem 1.2(c)"
 % - A few options to refer to just the part label, e.g. just "(c)"
-%   - `\subref{lbl}`, assuming subcaption package is loaded
-%     - The subcaption package's options might affect how it looks
+%   - `\subref{lbl}`, assuming [`subcaption`] package is loaded
+%     - The [`subcaption`] package's options might affect how it looks
 %   - `\ref{sub@lbl}`, where `lbl` is the original label
 %     - `\cref` and `\Cref` should work, too
 % - Supported usage
-%   - Should work with an ezlist inside any environment whose name is a counter
-%   - But does not work with lists other than ezlist
+%   - Should work with an `ezlist` inside any environment whose name is a counter
+%   - But does not work with lists other than `ezlist`
 %   - Should only be used with top-level lists
 
 % Editing subenv label appearance:
@@ -177,7 +178,7 @@
 %   - Default is to do whatever `\subenvFormatLabel` does
 
 
-% ## Feature: ezeq
+% ## Feature: `ezeq`
 
 % Boolean feature (enabled by `default=maximal`)
 
@@ -213,16 +214,16 @@
 %   - Defaults to true
 
 
-% ## Feature: ezrestate
+% ## Feature: `ezrestate`
 
 % Boolean feature (enabled by `default=maximal`)
 
-% Simple interface for thmtools's restatable theorems
+% Simpler interface and some improvements to `thmtools`'s restatable theorems
 
 % - `\restatably` or `\restatably*`: makes any theorem/lemma/etc. restatable
 %   - Usage: `\restatably \begin{theorem} \label{lbl} ... \end{theorem}`
 %     - Spaces or newlines are okay
-%   - The theorem/lemma/etc. must start with a \label
+%   - The theorem/lemma/etc. must start with a `\label`
 % - `restate` or `\restate*`: restates a `\restatably` stated theorem/lemma/etc.
 %   - Usage: `\restate*{lbl}` or `\restate*\ref{lbl}`
 %     - The `\ref` syntax is for convenient autocomplete, e.g. on Overleaf
@@ -238,18 +239,35 @@
 % - The star always appears immediately after the macro
 %   - E.g. `\restatably* \begin{...}` or `\restate*\ref{...}`
 
+% Labels and links between theorems and their restatements
 
-% ## Feature: delimiters
+% - Both `\restatably` and `\restate` create labels so that specific (re)statements can be referenced
+% - If the theorem's label is `lbl`, the created label is one of the following:
+%   - `statement@lbl` if it's the main version (i.e. the macro is not starred)
+%   - `restatement_n@lbl` if it's the `n`th restatement (i.e. the macro is starred)
+%     - Also creates `restatement@lbl` if it's the first restatement
+% - The labels live just before the relevant theorem environment, so they typically refer to a section or similar
+%   - This is to enable usage like the following
+%   - Example: `We revisit \cref{thm} in \cref{restatement@thm}` becomes e.g. "We revisit Theorem 4 in Appendix C"
+% - But when used as link targets, the labels act nearly the same as links to the theorem (re)statement
+%   - Example: the Appenix C above example links directly to the restatement of Theorem 4, not the start of Appendix C
+%   - Details: the labels link to a `\phantomsection` that's created right before the (re)statement
+% - The theorem titles of restated theorems are turned into links
+%   - The main version links to the first restatement
+%   - All restatements link to the main version
+
+
+% ## Feature: `delimiters`
 
 % Boolean feature (enabled by `default=maximal`)
 
 % Provides different "group" macros for sizing parentheses and similar
 
 % - `\gp{x}`: normal size
-% - `\gp*{x}`: automatically sized using \left/\right
+% - `\gp*{x}`: automatically sized using `\left`/`\right` (but with better spacing)
 % - `\gp[size]{x}`: manually sized, where `size` is one of `\big`, `\Big`, `\bigg`, or `\Bigg`
 
-% See the mathtools `\DeclarePairedDelimiter` documentation for more details
+% See the [`mathtools`] `\DeclarePairedDelimiter` documentation for more details
 
 % Variants of `\gp`:
 
@@ -271,7 +289,7 @@
 
 % Generic version:
 
-% - `\lr`: like `\gp`, but after the optional `*`, takes delimiters as input
+% - `\lr`: like `\gp`, but after the optional `*`, takes the delimiters as input
 % - `\lrStarAfter`: like `\lr`, but takes the delimiters first, then checks for `*`
 % - Limitation: neither `\lr` nor `\lrStarAfter` supports manual sizing
 % - Examples:
@@ -286,19 +304,19 @@
 %     - But the `\gp` family is even better, because it supports manual sizing
 
 
-% ## Feature: notation
+% ## Feature: `notation`
 
 % Boolean feature (enabled by `default=maximal`)
 
 % Various math notation shortcuts and conventions
 
-% Provides `\lr` and `\lrStarAfter` from delimiters above (but not the others)
+% Provides `\lr` and `\lrStarAfter` from `delimiters` above (but not the others)
 
-% Probability (best with delimiters option on, too):
+% Probability (best with `delimiters` feture on, too):
 
-% - `\P`, `\E`, and `\Var`: have interface like delimiters
+% - `\P`, `\E`, and `\Var`: have interface like delimiters macros, e.g. `\gp`
 %   - But they also support subscripts/superscripts and primes
-%   - If delimiters option isn't on, then manual sizing doesn't work
+%   - If `delimiters` feature isn't on, then manual sizing doesn't work
 % - `\given`: synonym for `\mid`
 % - Example: `\E_{X \sim \pi}*{\frac{1}{2} X^2 \given X > 3}`
 % - Change appearance with the following two options
@@ -306,7 +324,7 @@
 %     - Also supported: `bb`, `rm`, `sf`, and any X where a `\mathX` command exists
 %   - `probability delim` (default: `probability delim=sq`)
 %     - Also supported: `p`, `curl`, and any X where an `\Xgp` command exists
-%       - Without delimiters loaded, supports `p`, `sq`/`b`, and `curl`/`B`
+%       - Without `delimiters` on, supports `p`, `sq`/`b`, and `curl`/`B`
 %     - Also supported: `[]`, `()`, and any valid followup to `\lrStarAfter`
 %       - Limitation: manual sizing won't work
 % - `\DeclareProbabilityCommand`: declare new commands that work like `\P`
@@ -327,14 +345,14 @@
 %   - Use `\LaTeXepsilon` and `\LaTeXphi` for old versions
 % - `\argmin`, `\argmax`, `\liminf`, `\limsup`: math operators
 % - `\widebar`: like `\widetilde`, and a little nicer than `\overline`
-%   - Omitted if another package defines it first, e.g. newtxmath
+%   - Omitted if another package defines it first, e.g. `newtxmath`
 
 
-% ## Feature: cleveref
+% ## Feature: `cleveref`
 
 % Boolean feature (enabled by `default=maximal`)
 
-% Loads the cleveref package and a bit more
+% Loads the [`cleveref`] package and a bit more
 
 % - Uses `capitalize` option by default
 %   - See top of guide for how to disable package options
@@ -354,7 +372,7 @@
 %     - Unless you try to do otherwise, e.g. using `\gdef` inside `\crefShortened`
 
 
-% ## Feature: theorems
+% ## Feature: `theorems`
 
 % Boolean feature (enabled by `default=maximal`)
 
@@ -362,31 +380,31 @@
 
 % Theorem style synonyms, with support for class-specific analogues:
 
-% - `\ezlibPlain`: plain or class-specific analogue (e.g. acmplain for acmart)
-% - `\ezlibDefinition`: definition or analogue
-% - `\ezlibRemark`: remark or analogue
-%   - For some classes, e.g. acmart, this is the same as `\ezlibDefinition`
+% - `\ezlibPlain`: `plain` or class-specific analogue (e.g. `acmplain` for [`acmart`])
+% - `\ezlibDefinition`: `definition` or analogue
+% - `\ezlibRemark`: `remark` or analogue
+%   - For some classes, e.g. [`acmart`], this is the same as `\ezlibDefinition`
 % - If any of the above are already defined, they will not be redefined
 %   - This allows for changing styles by redefining the commands
 
 % Other:
 
 % - `\begin{case}[...] ... \end{case}`: cases in a proof
-% - `\noqed`: suppress the QED at the end of a proof
+% - `\noqed`: suppress the QED symbol at the end of a proof
 % - `\cleartheorem`: undefines a theorem environment and its counter
 
 
-% ## Feature: algorithm
+% ## Feature: `algorithm`
 
 % Boolean feature (enabled by `default=maximal`)
 
-% Loads the alrogithm package and slightly tweaks algorithm formatting
+% Loads the [`alrogithm`] package and slightly tweaks its formatting
 
-% - Passes the value of `number within` as an option to the algorithm package
+% - Passes the value of `number within` as an option to the [`algorithm`] package
 %   - See top of guide for how to disable package options
 
 
-% ## Feature: mathic
+% ## Feature: `mathic`
 
 % Boolean feature (enabled by `default=maximal`)
 
@@ -396,35 +414,35 @@
 %   - `$ $` becomes `\( \)`, possibly with an extra italic space tweak after (see below)
 %   - `$$ $$` becomes `\[ \]`
 %   - This changes the character code of `$`
-% - Attempts compatibility with tikz
-%   - Specifically, restores the character code of `$` within tikzpicture
+% - Attempts compatibility with [`tikz`]
+%   - Specifically, restores the character code of `$` within `tikzpicture`
 % - Attempts to also correct spacing after, but it's kind of a hack
 %   - Use `mathic after=false` to disable this
-%   - In contrast, spacing before is handled by mathtools
+%   - In contrast, spacing before is handled by [`mathtools`]
 %   - This applies only to `$ $`, not `\( \)`
 
 
-% ## Feature: packages
+% ## Feature: `packages`
 
 % Boolean feature (enabled by `default=maximal`)
 
 % Loads various packages, some with options
 
-% - booktabs
-% - calc
-% - caption, with options `font=small, labelfont=bf, labelsep=period`
-% - graphicx
-% - microtype
-% - natbib, with options `square, numbers, sort&compress`
-% - subcaption, with options `font=small, labelformat=simple`
+% - [`booktabs`]
+% - [`calc`]
+% - [`caption`], with options `font=small, labelfont=bf, labelsep=period`
+% - [`graphicx`]
+% - [`microtype`]
+% - [`natbib`], with options `square, numbers, sort&compress`
+% - [`subcaption`], with options `font=small, labelformat=simple`
 %   - If options are passed, also tweaks `\thesubfigure` to include parentheses
-%   - If ezlist subenv is enabled, uses `\subenvFormatLabel` in `\thesubfigure`
+%   - If `ezlist subenv` is enabled, uses `\subenvFormatLabel` in `\thesubfigure`
 % - Not a package, but also turns on `\frenchspacing`
 
 % See top of guide for how to disable package options
 
 
-% ## Feature: font
+% ## Feature: `font`
 
 % Non-boolean feature (behavior under `default=maximal` described below)
 
@@ -437,7 +455,7 @@
 % - `font=libertinus`: use font set based around Libertinus (fork of Libertine and Biolinum)
 % - `font=charter`: use font set based around Charter and Vera Sans
 % - `font=palatino`: use font set based around Palatino
-% - Unless `font=none`, also loads fontenc with option `T1`
+% - Unless `font=none`, also loads [`fontenc`] with option `T1`
 
 % Other configuration:
 
@@ -447,13 +465,13 @@
 % Behavior with `default=maximal`:
 
 % - If a known built-in LaTeX class is loaded, default to `font=libertine`
-%   - These are: article, report, book
+%   - These are: `article`, `report`, `book`
 % - Otherwise, conservatively default to `font=none`
 %   - This avoids conflicts with journal/conference class files
-% - Either way, can be manually overridden by setting font explicitly
+% - Either way, can be manually overridden by setting `font` explicitly
 
 
-% ## Feature: number within
+% ## Feature: `number within`
 
 % Non-boolean feature (behavior under `default=maximal` described below)
 
@@ -465,31 +483,31 @@
 %   - Default under `default=minimal`
 % - `number within=default`: number within chapters or sections
 %   - Uses `chapter` if the document has chapters, `section` otherwise
-%   - This is the default under `default=maximal`
+%   - Default under `default=maximal`
 % - Any other setting: number within the given environment
 %   - E.g. `number within=section`, `number within=subsection`, etc.
 
 
-% ## Feature: margin
+% ## Feature: `margin`
 
 % Non-boolean feature (behavior under `default=maximal` described below)
 
-% Sets the page margins using the geometry package
+% Sets the page margins using the [`geometry`] package
 
 % - If absent or set to `margin=none`, has no effect
-% - If set to any other value, loads geometry with that margin value
-%   - To set more complex margins, load geometry before this package
+% - If set to any other value `v`, loads [`geometry`] with `margin=v`
+%   - To set more complex margins, load [`geometry`] before this package
 
 % Behavior with `default=maximal`:
 
 % - If a known built-in LaTeX class is loaded, default to `margin=1.25in`
-%   - These are: article, report, book
+%   - These are: `article`, `report`, `book`
 % - Otherwise, conservatively default to `margin=none`
 %   - This avoids conflicts with journal/conference class files
-% - Either way, can be manually overridden by setting margin explicitly
+% - Either way, can be manually overridden by setting `margin` explicitly
 
 
-% ## Feature: headings
+% ## Feature: `headings`
 
 % Non-boolean feature (behavior under `default=maximal` described below)
 
@@ -502,14 +520,13 @@
 % - `headings=default`: choose between `fancy` and `none`
 %   - If a known built-in LaTeX class is loaded, use `fancy`
 %   - Otherwise, use `none`
-%   - This is the default under `default=maximal`
+%   - Default under `default=maximal`
 % - `headings=fancy`: reformat section titles and headers
 %   - Section titles are styled in sans if the font has a nice sans pairing
 %   - Headers choose between two styles depending on if `\chapter` is defined
-%   - E.g. `number within=section`, `number within=subsection`, etc.
 % - `headings=inline`: use inline subsection titles
 %   - E.g. for short documents with a strict page limit
-%   - Equivalent to using `headings=fancy` and `headings inline=true` (see below)
+%   - Equivalent to `headings=fancy, headings inline=true, headings compact title=true` (see below)
 
 % Other configuriation:
 
@@ -517,8 +534,29 @@
 %   - Defaults to true if the font has a nice sans pairing, false otherwise
 % - `headings inline` (boolean): use inline subsection and lower-level headings
 %   - Defaults to false, but set to true by `headings=inline`
+% - `headings compact title` (boolean): use an alternative title style that's more compact
+%   - Defaults to false, but set to true by `headings=inline`
+%   - Has no effect unless using `headings=fancy` (possibly via `headings=inline` or `headings=default`)
 % - `headings inline period` (boolean): if using inline headings, add period after heading
 %   - Defaults to true
+
+
+% [`acmart`]: https://ctan.org/pkg/acmart
+% [`algorithm`]: https://ctan.org/pkg/algorithm
+% [`alrogithm`]: https://ctan.org/pkg/alrogithm
+% [`booktabs`]: https://ctan.org/pkg/booktabs
+% [`calc`]: https://ctan.org/pkg/calc
+% [`caption`]: https://ctan.org/pkg/caption
+% [`cleveref`]: https://ctan.org/pkg/cleveref
+% [`enumitem`]: https://ctan.org/pkg/enumitem
+% [`fontenc`]: https://ctan.org/pkg/fontenc
+% [`geometry`]: https://ctan.org/pkg/geometry
+% [`graphicx`]: https://ctan.org/pkg/graphicx
+% [`mathtools`]: https://ctan.org/pkg/mathtools
+% [`microtype`]: https://ctan.org/pkg/microtype
+% [`natbib`]: https://ctan.org/pkg/natbib
+% [`subcaption`]: https://ctan.org/pkg/subcaption
+% [`tikz`]: https://ctan.org/pkg/tikz
 
 
 %-- end README --%
@@ -593,6 +631,7 @@
 % Options for headings
 \DeclareStringOption[default]{headingssf}[true]
 \DeclareBoolOption[false]{headingsinline}
+\DeclareBoolOption[false]{headingscompacttitle}
 \DeclareBoolOption[true]{headingsinlineperiod}
 
 \ProcessLocalKeyvalOptions*
@@ -1423,7 +1462,10 @@
 }
 
 
-%%% Restating all restatables of a certain environment
+%%% Restating all restatables in a certain section/similar
+
+% TODO: document this
+% TODO: make sure this works with `number within=none`
 
 \newrobustcmd{\restateAll}[1][]{%
   \@ifstar{\ezlib@restateAll@go{#1}{\restate*}}{\ezlib@restateAll@go{#1}{\restate}}%
@@ -1894,6 +1936,7 @@
 \ifdefstring{\ezlib@headings}{inline}{
   \renewcommand{\ezlib@headings}{fancy}
   \setbool{ezlib@headingsinline}{true}
+  \setbool{ezlib@headingscompacttitle}{true}
 }
 
 
@@ -2036,20 +2079,7 @@
 }
 
 
-}{} % \ifdefstring{\ezlib@headings}{fancy}
-
-
-%%% Specific to inline headings
-
-\newcommand{\ezlib@headingsinline@numtitlesep}{2em/3}
-\newcommand{\ezlib@headingsinline@titletextsep}{3em/4}
-\newcommand{\ezlib@headingsinline@period}{\ezlib@addpunctafter{.}}
-\ifbool{ezlib@headingsinlineperiod}{}{
-  \renewcommand{\ezlib@headingsinline@titletextsep}{1em}
-  \renewcommand{\ezlib@headingsinline@period}{}
-}
-
-\ifbool{ezlib@headingsinline}{
+\ifbool{ezlib@headingscompacttitle}{
 
 
 \ezlib@RequirePackageWithOptions{raggedright}{titlesec}
@@ -2082,6 +2112,26 @@
     \NoIndentAfterThis%
   }
 }{}
+
+
+} % \ifbool{\ezlib@headingscompacttitle}
+
+
+}{} % \ifdefstring{\ezlib@headings}{fancy}
+
+
+%%% Specific to inline headings
+
+\newcommand{\ezlib@headingsinline@numtitlesep}{2em/3}
+\newcommand{\ezlib@headingsinline@titletextsep}{3em/4}
+\newcommand{\ezlib@headingsinline@period}{\ezlib@addpunctafter{.}}
+\ifbool{ezlib@headingsinlineperiod}{}{
+  \renewcommand{\ezlib@headingsinline@titletextsep}{1em}
+  \renewcommand{\ezlib@headingsinline@period}{}
+}
+
+\ifbool{ezlib@headingsinline}{
+
 
 \titleformat{\section}{\normalfont\Large\ezlib@titlestyle}{\thesection}{\ezlib@headingsinline@numtitlesep}{}
 \titlespacing*{\section}{0pt}{\bigskipamount}{\medskipamount}
