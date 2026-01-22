@@ -141,6 +141,8 @@ Additional notes:
   - It ensures the list starts on a new line after the heading
   - It prevents page breaks between the heading and the list
   - Main use case is lists that appear at the start of a theorem/lemma/etc.
+  - If using the [`theorems`] feature, tries to insert `afterheading` automatically if `\*` is the first thing in a theorem's text
+    - But this is pretty brittle: ignores `\label`s before the `\*` but nothing else
 
 
 ### Subfeature: `ezlist subenv`

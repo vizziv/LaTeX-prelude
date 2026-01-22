@@ -149,6 +149,8 @@
 %   - It ensures the list starts on a new line after the heading
 %   - It prevents page breaks between the heading and the list
 %   - Main use case is lists that appear at the start of a theorem/lemma/etc.
+%   - If using the [`theorems`] feature, tries to insert `afterheading` automatically if `\*` is the first thing in a theorem's text
+%     - But this is pretty brittle: ignores `\label`s before the `\*` but nothing else
 
 
 % ### Subfeature: `ezlist subenv`
@@ -1025,7 +1027,9 @@
     % We want to end a list, but is there actually a list to end?
     \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
       % There is not, so issue a warning and ignore this line
-      \PackageError{ezlist}{attempted to end easy list at too high a level}{}%
+      \PackageError{ezlist}{%
+        Attempted to end easy list at too high a level%
+      }{}%
       \setcounter{ezlib@ezlist@this}{1}%
     }{%
       % There is, so end the list without adding an \item
@@ -1347,9 +1351,9 @@
 \newcommand{\ezlib@restate@thmheadwrap}[1]{#1}
 
 \patchcmd{\@begintheorem}{%
-  \thm@swap\swappedhead\thmhead{#1}{#2}{#3}%
+  \ezlib@swap\swappedhead\thmhead{#1}{#2}{#3}%
 }{%
-  \ezlib@restate@thmheadwrap{{\thm@swap\swappedhead\thmhead{#1}{#2}{#3}}}%
+  \ezlib@restate@thmheadwrap{{\ezlib@swap\swappedhead\thmhead{#1}{#2}{#3}}}%
 }{}{}
 
 
@@ -1388,15 +1392,19 @@
 % #1 is * or {}
 % #2 should be only spaces
 \def\ezlib@restatably@checkopt#1#2\begin#3{%
-  \@ifnextchar[{%
+  \@ifnextchar[{% ] for Emacs
     \ezlib@restatably@go{#1}{#3}%
   }{%
     \ezlib@restatably@go{#1}{#3}[]%
   }%
 }
 
+% TODO: parse optional argument of `\label`
 \def\ezlib@restatably@go#1#2[#3]#4#5{%
-  \ifdefequal{#4}{\label}{%
+  \ifboolexpr{
+    test{\ifdefequal{#4}{\label}}
+    and not test{\ifstrequal{#5}{[}} % ] for Emacs
+  }{%
     \ezlib@ezrestate@collect@toks{}%
     \long\def\ezlib@ezrestate@collect@cont##1{%
       \Hy@SaveLastskip%
@@ -1437,8 +1445,10 @@
     \ezlib@ezrestate@collect@body@of{#2}\ezlib@ezrestate@collect@cont%
   }{%
     \PackageError{ezlib}{%
-      Environment after \restatably must start with a \label%
+      Environment after \restatably must start with a \protect\label\space that has no optional argument%
     }{}%
+    % Attempt to recover...
+    \begin#2[#3]#4#5%
   }%
 }
 
@@ -1483,7 +1493,7 @@
     \endgroup%
   }{%
     \PackageError{ezlib}{%
-      Attempted to restate undeclared theorem with label #2%
+      Attempted to \restate label #2, which doesn't match any \restatably declared theorem%
     }{}%
   }%
 }
@@ -1940,6 +1950,37 @@
   \csundef{c@#1}%
 }
 
+% TODO: hide this behind a subfeature flag
+\ifbool{ezlib@ezlist}{
+  % HACK: make \ezlib@checkezlist run just before the actual theorem body
+  % (`\addtotheorempostheadhook` is too early)
+  \ezlib@RequirePackage{thmtools}
+  \patchcmd{\thmt@parsetheoremargs}{%
+    \let\@parsecmd\ignorespaces%
+  }{%
+    \let\@parsecmd\ezlib@theorems@checkezlist%
+  }{}{}
+  \newcommand{\ezlib@theorems@checkezlist}{%
+    \ezlib@afterlabels{\ezlib@ifnextchar@gobble{\*}{\ezlib@theorems@checkezlist@go}{}}%
+  }
+  \newcommand{\ezlib@theorems@checkezlist@go}[1][]{%
+    \ifblank{#1}{\*[afterheading]}{\*[#1, afterheading]}%
+  }
+  \newcommand{\ezlib@afterlabels}[1]{%
+    \ezlib@ifnextchar@gobble{\label}{\ezlib@afterlabels@checkopt{#1}}{#1}%
+  }
+  \newcommand{\ezlib@afterlabels@checkopt}[1]{%
+    \@ifnextchar[{% ] for Emacs
+      \ezlib@afterlabels@go{#1}%
+    }{%
+      \ezlib@afterlabels@go{#1}[]%
+    }%
+  }
+  \def\ezlib@afterlabels@go#1[#2]#3{%
+    \ifstrempty{#2}{\label{#3}}{\label[#2]{#3}}%
+    \ezlib@afterlabels{#1}%
+  }
+}{}
 
 \fi % \ifezlib@theorems
 
