@@ -1351,10 +1351,14 @@
 \newcommand{\ezlib@restate@thmheadwrap}[1]{#1}
 
 \patchcmd{\@begintheorem}{%
-  \ezlib@swap\swappedhead\thmhead{#1}{#2}{#3}%
+  \thm@swap\swappedhead\thmhead{#1}{#2}{#3}%
 }{%
-  \ezlib@restate@thmheadwrap{{\ezlib@swap\swappedhead\thmhead{#1}{#2}{#3}}}%
-}{}{}
+  \ezlib@restate@thmheadwrap{{\thm@swap\swappedhead\thmhead{#1}{#2}{#3}}}%
+}{}{%
+  \PackageError{ezlib}{%
+    Failed to patch \protect\@begintheorem command%
+  }{}%
+}
 
 
 %%% Declaring restatables
@@ -1959,7 +1963,11 @@
     \let\@parsecmd\ignorespaces%
   }{%
     \let\@parsecmd\ezlib@theorems@checkezlist%
-  }{}{}
+  }{}{%
+    \PackageError{ezlib}{%
+      Failed to patch \protect\thmt@parsetheoremargs command%
+    }{}%
+  }
   \newcommand{\ezlib@theorems@checkezlist}{%
     \ezlib@afterlabels{\ezlib@ifnextchar@gobble{\*}{\ezlib@theorems@checkezlist@go}{}}%
   }
@@ -2037,7 +2045,13 @@
 
 \newcommand{\ezlib@nonewlines}[1]{{\def\\{\unskip\ \ignorespaces}#1}}
 
-\AtBeginDocument{\patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{}}
+\AtBeginDocument{%
+  \patchcmd{\abstract}{\bfseries}{\ezlib@titlestyle}{}{%
+    \PackageError{ezlib}{%
+      Failed to patch \protect\abstract command%
+    }{}%
+  }%
+}
 
 \@ifpackageloaded{microtype}{
   \newrobustcmd{\ezlib@noMicrotypeProtrusion}{\microtypesetup{protrusion=false}}
