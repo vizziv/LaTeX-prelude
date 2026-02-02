@@ -1027,7 +1027,7 @@
     % We want to end a list, but is there actually a list to end?
     \ifnumcomp{\value{ezlib@ezlist@this}}{>}{\value{ezlib@ezlist@prev}}{%
       % There is not, so issue a warning and ignore this line
-      \PackageError{ezlist}{%
+      \PackageError{ezlib}{%
         Attempted to end easy list at too high a level%
       }{}%
       \setcounter{ezlib@ezlist@this}{1}%
