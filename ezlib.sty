@@ -949,15 +949,23 @@
 \let\ezlib@ezlist@oldstar\*
 \protected\def\*{\ifbool{mmode}{\ezlib@ezlist@oldstar}{\ezlib@ezlist@item}}
 
-\newlist{ezlist}{enumerate}{8}
+\newlist{ezlist}{enumerate}{6}
 \setlist[ezlist,1]{label=\labelitemi}
 \setlist[ezlist,2]{label=\labelitemii}
 \setlist[ezlist,3]{label=\labelitemiii}
 \setlist[ezlist,4]{label=\labelitemiv}
 \setlist[ezlist,5]{label=\labelitemi}
 \setlist[ezlist,6]{label=\labelitemii}
-\setlist[ezlist,7]{label=\labelitemiii}
-\setlist[ezlist,8]{label=\labelitemiv}
+
+% TODO: document this?
+% Makes it so that (ez)lists inside a wide outer look as if the wide outer list weren't there
+\apptocmd{\enitkv@enumitem@wide}{%
+  \setlist*[ezlist,2]{leftmargin=\leftmargini}%
+  \setlist*[ezlist,3]{leftmargin=\leftmarginii}%
+  \setlist*[ezlist,4]{leftmargin=\leftmarginiii}%
+  \setlist*[ezlist,5]{leftmargin=\leftmarginiv}%
+  \setlist*[ezlist,6]{leftmargin=\leftmarginv}%
+}{}{}
 
 \newcounter{ezlib@ezlist@prev}
 \setcounter{ezlib@ezlist@prev}{0}
