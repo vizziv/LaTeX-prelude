@@ -887,11 +887,9 @@
 }{}
 
 \ifdefempty{\ezlib@numberwithin}{}{
-  \AtBeginDocument{%
-    \numberwithin{equation}{\ezlib@numberwithin}%
-    \numberwithin{figure}{\ezlib@numberwithin}%
-    \numberwithin{table}{\ezlib@numberwithin}%
-  }
+  \numberwithin{equation}{\ezlib@numberwithin}
+  \numberwithin{figure}{\ezlib@numberwithin}
+  \numberwithin{table}{\ezlib@numberwithin}
 }
 
 
